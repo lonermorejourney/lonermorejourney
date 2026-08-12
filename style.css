@@ -1,0 +1,43 @@
+/* ============================
+   VARIABLES GENERALES
+   (aquí pondremos los valores reales de Wix cuando los tengas)
+   ============================ */
+:root {
+  --color-fondo: #0d0d0d;
+  --color-texto-principal: #ffffff;
+  --color-texto-secundario: #b3b3b3;
+}
+
+/* ============================
+   RESET BÁSICO
+   ============================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ============================
+   FONDO (igual en PC y móvil)
+   ============================ */
+body {
+  background-image: url("fondo.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--color-texto-principal);
+}
+
+/* ============================
+   ESTILOS BASE / MÓVIL (mobile-first)
+   ============================ */
+
+
+/* ============================
+   ESTILOS PC (desktop)
+   ============================ */
+@media (min-width: 768px) {
+
+}
