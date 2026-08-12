@@ -1,11 +1,13 @@
 /* ============================
    VARIABLES GENERALES
-   (aquí pondremos los valores reales de Wix cuando los tengas)
    ============================ */
 :root {
-  --color-fondo: #0d0d0d;
   --color-texto-principal: #ffffff;
   --color-texto-secundario: #b3b3b3;
+
+  --fuente-heavy: 'SF UI Display', sans-serif;
+  --fuente-medium: 'SF UI Display', sans-serif;
+  --fuente-cuerpo: 'Proxima Nova', sans-serif;
 }
 
 /* ============================
@@ -31,15 +33,93 @@ body {
 }
 
 /* ============================
+   ESTRUCTURA GENERAL
+   ============================ */
+.home-container {
+  padding: 20px;
+}
+
+.posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.post-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.post-cover {
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.post-meta .dot {
+  margin: 0 2px;
+}
+
+/* ============================
    ESTILOS BASE / MÓVIL (mobile-first)
    ============================ */
+.section-title {
+  font-family: var(--fuente-heavy);
+  font-weight: 700; /* Bold */
+  font-size: 24px;
+  margin-bottom: 16px;
+}
 
+.post-cover {
+  width: 90px;
+  height: 90px;
+  border-radius: 16px; /* bordes redondeados en móvil */
+}
+
+.post-title {
+  font-family: var(--fuente-cuerpo); /* Proxima Nova */
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.post-meta {
+  font-family: var(--fuente-cuerpo); /* Proxima Nova */
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--color-texto-secundario);
+  margin-top: 2px;
+}
 
 /* ============================
    ESTILOS PC (desktop)
    ============================ */
 @media (min-width: 768px) {
   body {
-    background-position: center 10%;
+    background-position: center 25%;
+  }
+
+  .section-title {
+    font-weight: 800; /* Heavy */
+    font-size: 25px;
+  }
+
+  .post-cover {
+    width: 110px;
+    height: 110px;
+    border-radius: 0; /* sin bordes en PC */
+  }
+
+  .post-title {
+    font-family: var(--fuente-heavy);
+    font-weight: 800; /* Heavy */
+    font-size: 17px;
+  }
+
+  .post-meta {
+    font-family: var(--fuente-medium);
+    font-weight: 500; /* Medium */
+    font-size: 17px;
   }
 }
