@@ -101,7 +101,11 @@ body {
   }
 
   .home-container {
-    padding-top: 80px; /* baja el título "Últimos escritos" */
+    padding-top: 80px;
+    max-width: 900px;   /* ancho máximo del contenido */
+    margin: 0 auto;     /* centra el bloque completo en la página */
+    padding-left: 40px;
+    padding-right: 40px;
   }
 
   .section-title {
