@@ -3,11 +3,13 @@
    ============================ */
 :root {
   --color-texto-principal: #ffffff;
-  --color-texto-secundario: #b3b3b3;
+  --color-texto-secundario: #ebeaea;
 
   --fuente-heavy: 'SF UI Display', sans-serif;
   --fuente-medium: 'SF UI Display', sans-serif;
   --fuente-cuerpo: 'Proxima Nova', sans-serif;
+
+  --oscurecimiento-fondo: 0.40; /* 0 = sin oscurecer, 1 = negro total */
 }
 
 /* ============================
@@ -23,7 +25,9 @@
    FONDO (igual en PC y móvil)
    ============================ */
 body {
-  background-image: url("fondo.png");
+  background-image:
+    linear-gradient(rgba(0, 0, 0, var(--oscurecimiento-fondo)), rgba(0, 0, 0, var(--oscurecimiento-fondo))),
+    url("fondo.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -36,7 +40,6 @@ body {
    ESTRUCTURA GENERAL
    ============================ */
 .home-container {
-  padding: 20px;
 }
 
 .posts-list {
@@ -65,47 +68,71 @@ body {
 /* ============================
    ESTILOS BASE / MÓVIL (mobile-first)
    ============================ */
+.home-container {
+  padding: 10px; /* aquí controlas el padding-left para mover el post hacia los lados */
+}
+
 .section-title {
   font-family: var(--fuente-heavy);
   font-weight: 700; /* Bold */
-  font-size: 24px;
-  margin-bottom: 16px;
+  font-size: 30px;
+  margin-top: 40px;
+  margin-bottom: 50px;
+}
+
+.post-card {
+  width: 330px; /* limita el ancho para que el texto baje de línea - ajusta a tu gusto */
 }
 
 .post-cover {
-  width: 90px;
-  height: 90px;
-  border-radius: 16px; /* bordes redondeados en móvil */
+  width: 165px;
+  height: 165px;
+  border-radius: 10px; /* bordes redondeados en móvil */
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4); /* sombra suave para móvil */
 }
 
 .post-title {
   font-family: var(--fuente-cuerpo); /* Proxima Nova */
-  font-weight: 700;
-  font-size: 13px;
+  font-weight: 400;
+  font-size: 18px;
+  margin-top: 20px; /* separación entre imagen y título del post */
+  margin-left: 5px; /* separa el título de la portada */
 }
 
 .post-meta {
   font-family: var(--fuente-cuerpo); /* Proxima Nova */
   font-weight: 400;
-  font-size: 13px;
+  font-size: 17px;
   color: var(--color-texto-secundario);
   margin-top: 2px;
+  margin-left: 5px; /* separa la fecha de la portada */
 }
 
 /* ============================
    ESTILOS PC (desktop)
    ============================ */
 @media (min-width: 768px) {
+  :root {
+    --oscurecimiento-fondo: 0.20; /* valor propio para PC, más oscuro */
+  }
+
   body {
-    background-position: center 5%;
+    background-position: center 2%;
   }
 
   .home-container {
-    padding-top: 80px;
-    max-width: 900px;   /* ancho máximo del contenido */
-    margin: 0 auto;     /* centra el bloque completo en la página */
+    max-width: 900px;
+    margin: 0 auto;
     padding-left: 40px;
     padding-right: 40px;
+  }
+
+  .section-title {
+    margin-top: 90px; /* controla SOLO la posición del título */
+  }
+
+  .posts-list {
+    margin-top: 70px; /* controla SOLO la separación entre título y posts */
   }
 
   .section-title {
@@ -127,24 +154,708 @@ body {
     flex-direction: column;
     align-items: flex-start;
     text-align: left;
-    width: 220px; /* más grande que antes - valor de prueba */
+    width: 180px; /* más grande que antes - valor de prueba */
   }
 
   .post-cover {
     width: 220px;
     height: 220px;
     border-radius: 0;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45); /* sombra suave para PC */
   }
 
   .post-title {
     font-family: var(--fuente-heavy);
     font-weight: 800;
-    font-size: 17px;
+    font-size: 16px;
+    margin-top: -2px; /* separación entre el título y el post */
+    margin-left: 0px; /* separa el título de la portada */
   }
 
   .post-meta {
     font-family: var(--fuente-medium);
     font-weight: 500;
+    font-size: 15px;
+    margin-top: 4px; /* separación entre el título y la fecha */
+    margin-left: 0px; /* separa la fecha de la portada */
+  }
+}/* ============================
+   ÍNDICE DE ÁLBUM / TÍTULO
+   ============================ */
+
+.album-page {
+  padding: 20px;
+}
+
+.album-card {
+  background-color: #ffffff;
+  color: #1a1a1a;
+  border-radius: 20px;
+  padding: 20px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.album-cover {
+  width: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.album-title .reg,
+.poem-title .reg {
+  font-size: 0.5em;
+  vertical-align: super;
+}
+
+.album-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.album-author-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.album-meta-desktop {
+  display: none; /* oculto en móvil */
+}
+
+.dot {
+  margin: 0 4px;
+}
+
+.poems-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.poem-item {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.poem-cover {
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.rights-stamp {
+  color: #888;
+}
+
+/* ---------- MÓVIL ---------- */
+.album-tag {
+  display: none; /* en móvil NO se muestra, solo va pegado con la fecha */
+}
+
+.album-header {
+  margin-left: -10px; /* mueve el título y los textos de abajo hacia la izquierda */
+  padding-left: 0;
+}
+
+.album-page {
+  padding: 0; /* sin aire a los lados en móvil */
+}
+
+.album-card {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  margin-top: 30px; /* baja la tarjeta desde arriba - ajusta a tu gusto */
+  border-radius: 24px 24px 0 0; /* redondeado solo arriba, pegada abajo si hace falta */
+}
+
+.album-cover {
+  width: 250px;   /* tamaño de la portada en móvil - ajusta a tu gusto */
+  height: 250px;
+  display: block;
+  margin: 0 auto;  /* la mantiene centrada */
+  border-radius: 0px;
+  object-fit: cover;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.445); /* sombra suave para PC */
+}
+
+.album-title {
+  font-family: var(--fuente-cuerpo);
+  font-weight: 400;
+  font-size: 27px;
+  margin: 10px 0 5px;
+  letter-spacing: -0.07em; /* junta las letras - valor de prueba */
+}
+
+.album-title .reg {
+  font-size: 16px;
+}
+
+.album-genre-count {
+  font-family: var(--fuente-cuerpo);
+  font-size: 16px;
+  color: #1a1919;
+  margin-bottom: 4px;
+}
+
+.dot {
+  margin: 0 2px; /* separación del punto en MÓVIL - ajusta este valor */
+}
+
+.album-indicator-date {
+  font-family: var(--fuente-cuerpo);
+  font-size: 16px;
+  color: #161616;
+  margin-bottom: 8px;
+}
+
+.album-author {
+  font-family: var(--fuente-cuerpo);
+  font-size: 16px;
+}
+
+.album-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.poem-item {
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.poem-cover {
+  width: 54px;
+  height: 54px;
+  border-radius: 13px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.445); /* sombra suave para movil */
+}
+
+.poem-title {
+  font-family: var(--fuente-cuerpo);
+  font-weight: 500;
+  font-size: 23px;
+  letter-spacing: -0.06px; /* junta las letras - valor de prueba */
+}
+
+.poem-title .reg {
+  font-size: 12px;
+}
+
+.poems-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px; /* separación en móvil */
+  margin-left: -10px;
+}
+
+.rights-stamp {
+  font-family: var(--fuente-cuerpo);
+  font-size: 16px;
+  color: #161616;
+  margin-top: 40px;
+  margin-bottom: 15px;
+  margin-left: -5px;
+}
+
+/* ---------- PC (desktop) ---------- */
+@media (min-width: 768px) {
+
+  .album-card {
+    max-width: 1200px; /* tarjeta mucho más ancha */
+    padding: 32px;
+    border-radius: 0px;
+    margin: 0 auto; /* se centra en PC, a diferencia de móvil que va pegada */
+  }
+
+  .album-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+
+  /* portada + texto en fila, uno junto al otro */
+  .album-top {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .album-cover {
+    width: 240px;
+    height: 240px;
+    flex-shrink: 0;
+    margin: 0;
+    margin-bottom: 0;
+    border-radius: 0px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.445); /* sombra suave para PC */
+  }
+
+  .album-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 90px; /* baja el texto sin mover la imagen */
+    margin-left: 0px; /* mueve el título y los textos de abajo hacia la izquierda */
+  }
+
+  .dot {
+    margin: 0 1px; /* separación del punto en PC - ajusta este valor por separado */
+  }
+
+  .album-meta-mobile {
+    display: none;
+  }
+
+  .album-meta-desktop {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .album-tag {
+    display: block; /* aquí SÍ se muestra */
+    font-family: var(--fuente-cuerpo);
+    font-weight: 600;
+    font-size: 16px;
+    color: #131313;
+    margin-bottom: 9px;
+  }
+
+  .album-title {
+    font-family: var(--fuente-medium);
+    font-weight: 900;
+    font-size: 49px;
+    margin: 0 0 8px;
+  }
+
+  .album-title .reg {
+  font-size: 16px;
+}
+
+  .album-avatar {
+    width: 35px; /* tamaño propio en PC, ajusta a tu gusto */
+    height: 35px;
+    margin-top: -5px;
+  }
+
+  .album-meta-desktop-text {
+    font-family: var(--fuente-cuerpo);
+    font-weight: 600;
     font-size: 17px;
+    margin-top: -5px;
+    color: #252525;
+  }
+
+  .poem-item {
+    gap: 20px;
+    margin: 10px 0;
+  }
+
+  .poem-cover {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.445); /* sombra suave para PC */
+  }
+
+  .poem-title {
+    font-family: var(--fuente-cuerpo);
+    font-weight: 400;
+    font-size: 25px;
+  }
+
+  .poem-title .reg {
+  font-size: 20px;
+}
+
+  .poems-list {
+    margin-top: 55px; /* separación propia en PC */
+    margin-bottom: 35px;
+    margin-left: 0;
+  }
+
+  .rights-stamp {
+    font-family: var(--fuente-cuerpo);
+    font-size: 15px;
+    margin-left: 0px;
+    margin-top: 50px;
+    margin-bottom: -5px;
+    color: #252525;
+  }
+}/* ==========================================================
+   1. ESTILOS BASE Y COMUNES
+   ================================================---------- */
+.reproductor-page {
+  box-sizing: border-box;
+}
+
+.player-card {
+  background-color: #ffffff;
+  color: #1a1a1a;
+  box-sizing: border-box;
+}
+
+.back-link {
+  text-decoration: underline;
+  color: #1a1a1a;
+  font-family: var(--fuente-cuerpo);
+}
+
+.player-content-wrapper {
+  display: flex;
+}
+
+.player-cover {
+  width: 100%;
+  object-fit: cover;
+}
+
+/* El título y el disco van juntos y pegados */
+/* La fila del título vuelve a ser un bloque normal que ocupa su espacio sin romper la tarjeta */
+.player-title-row {
+  display: block;
+  width: 100%;
+  margin-bottom: 0; /* O el margen que tuviera */
+}
+
+/* El título mantiene tu fuente, peso y tamaño exactos que ya tenías */
+.player-poem-title {
+  font-family: var(--fuente-cuerpo);
+  font-weight: 700;
+  margin: 0;
+  display: inline; /* Permite que el texto fluya de forma natural */
+}
+
+/* El icono del disco se queda pegado a la última palabra sin alterar la línea */
+.disc-icon {
+  color: #555;
+  display: inline-block;
+  align-items: center;
+  margin-left: 6px;       /* Espacio justo entre el texto y el disco */
+  vertical-align: middle; /* Lo clava a la altura de las letras */
+  flex-shrink: 0;
+  transform: scale(1.4);
+}
+
+.player-author,
+.player-meta {
+  font-family: var(--fuente-cuerpo);
+  color: #302f2f;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+}
+
+.ctrl-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #363636;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.ctrl-share {
+  margin-left: auto;
+}
+
+.poem-title-reading {
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: 700;
+}
+
+.poem-body {
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.poem-body p {
+  margin-bottom: 20px;
+}
+
+.rights-stamp {
+  font-family: var(--fuente-cuerpo);
+  color: #888;
+}
+
+
+/* ==========================================================
+   VALORES ESPECÍFICOS PARA MÓVIL (Pegada a los lados, con espacio arriba y bordes redondeados)
+   ================================================---------- */
+@media (max-width: 767px) {
+  .reproductor-page {
+    padding: 20px 0 0 0; /* Espacio arriba para que no pegue al tope, 0 a los lados */
+    min-height: auto;
+  }
+
+  .player-card {
+  width: 100%;
+  margin: 0;
+  padding: 16px;
+  padding-bottom: 45px; /* Espacio para que el texto inferior no pise el poema */
+  border-radius: 20px 20px 0 0; /* Recupera los bordes redondeados arriba */
+  min-height: auto;
+  position: relative; /* Ancla los derechos al fondo de esta tarjeta */
+}
+
+  .back-link {
+    display: block;
+    text-align: center;
+    font-size: 17px;
+    margin-top: -10px;
+    margin-bottom: 5px;
+  }
+
+  .player-content-wrapper {
+    flex-direction: column;
+  }
+
+  .player-left {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    /* Ojo: SIN align-items: center aquí para que los textos NO se muevan */
+  }
+
+  .player-cover {
+    width: 377px;           /* Pon aquí tus píxeles exactos de ancho */
+    height: 377px;          /* Pon aquí tus píxeles exactos de alto */
+    object-fit: cover;
+    background-color: transparent;
+    border-radius: 0px;
+    align-self: center;     /* <-- ESTO CENTRA ÚNICAMENTE LA IMAGEN Y DEJA LOS TEXTOS A LA IZQUIERDA */
+    margin-bottom: 12px;
+    display: block;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.445); /* sombra suave para PC */
+  }
+
+  .player-poem-title {
+    font-size: 24px;
+    font-weight: 500;
+    font-family: var(--fuente-cuerpo);
+  }
+
+  .player-author {
+    font-size: 20px;
+    margin-bottom: 12px;
+    color: #696969;
+  }
+
+  .player-meta {
+    font-size: 18px;
+    margin-bottom: 11px;
+    order: 2;
+    margin-left: -5px;
+  }
+
+  .player-controls {
+    gap: 10px;
+    margin-bottom: 13px;
+    order: 1;
+  }
+
+  .ctrl-btn svg {
+    width: 50px;  /* Cambia esto al tamaño que quieras */
+    height: 50px; /* Cambia esto al tamaño que quieras */
+  }
+
+  .poem-origin-tag {
+    display: none;
+  }
+
+  .poem-title-reading {
+    font-size: 24px;
+    margin-bottom: 20px;
+    margin-left: -5px;
+  }
+
+  .poem-body {
+    font-size: 18px;
+    margin-bottom: 50px;
+    margin-left: -5px;
+    line-height: 1.2; /* Prueba con un valor suave como 1.5 o 1.6 en lugar de subirlo mucho */
+  }
+
+  .player-left .rights-stamp {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  font-size: 17px;
+  text-align: left;
+  margin-top: 0;
+  color: #2e2e2e;
+}
+}
+
+
+/* ==========================================================
+   VALORES ESPECÍFICOS PARA PC / DESKTOP (Cuadrada y completa)
+   ================================================---------- */
+@media (min-width: 768px) {
+  .reproductor-page {
+    padding: 40px 20px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .player-card {
+    max-width: 1120px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 7px 40px 25px 25px;
+    border-radius: 0px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    background-color: #ffffff;
+  }
+
+  .back-link {
+    display: block;
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .player-content-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    min-height: 680px; /* <--- PON ESTO EN SU LUGAR */
+  }
+
+  .player-left {
+  display: flex;
+  flex-direction: column;
+  width: 490px;
+  flex-shrink: 0;
+  height: auto; /* <--- Único añadido para que la caja crezca con el texto */
+  padding-bottom: 0px; /* <--- Esto deja un margen interior fijo abajo para que el texto nunca toque el borde */
+}
+
+  /* Portada en PC */
+  .player-cover {
+    width: 510px;           /* Ancho fijo exacto en píxeles */
+    height: 510px;          /* Alto fijo exacto en píxeles */
+    object-fit: cover;
+    background-color: transparent;
+    border-radius: 0;
+    margin-bottom: 12px;
+    display: block;
+    box-shadow: 0 3px 5px rgba(14, 14, 14, 0.445); /* sombra suave para PC */
+  }
+
+  .player-poem-title {
+    font-size: 30px;
+    font-family: var(--fuente-heavy);
+    font-weight: 800;
+    display: inline-block;       /* Obligatorio para que la altura responda al transform */
+    transform: scaleY(0.93);     /* <-- AQUÍ CONTROLAS LA ALTURA VERTICAL (prueba con 0.80, 0.85... menor número = más compacta/aplastada) */
+    transform-origin: left center; /* Mantiene la base fija a la izquierda */
+  }
+
+  .player-author {
+  font-size: 18px;
+  margin-top: 0px;    /* Espacio que lo separa del título de arriba */
+  margin-bottom: 4px; /* Espacio que lo separa de la fecha de abajo */
+}
+
+.player-meta {
+  font-size: 17px;
+  margin-top: 0px;    /* Espacio arriba de la fecha */
+  margin-bottom: 5px; /* Espacio abajo para separarlo de los controles */
+}
+
+  .player-controls {
+    gap: 2px;
+    margin-top: 4px;
+    margin-bottom: 0;
+  }
+
+  .ctrl-btn svg {
+    width: 45px;  /* Cambia esto al tamaño que quieras */
+    height: 45px; /* Cambia esto al tamaño que quieras */
+  }
+
+  .player-left .rights-stamp {
+    color: #3d3d3d;
+    margin-top: 15px;
+    margin-bottom: 0px; 
+    font-size: 15px;
+    text-align: left;
+    position: static !important; /* <--- SIN ESTO, SEGUIRÁ SALIÉNDOSE */
+  }
+
+  .poem-reading {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 0;
+  }
+
+  .poem-origin-tag {
+    display: block;
+    font-family: var(--fuente-cuerpo); /* <-- ¡AQUÍ ESTABA EL FALLO! FALTABA ESTO */
+    font-size: 14px;
+    font-weight: 300;
+    color: #070707;
+    margin-top: 10px;
+    margin-bottom: -5px;
+  }
+
+  .poem-scroll {
+    flex: 1;                /* Ocupa exactamente el espacio libre restante hacia abajo */
+    min-height: 0;          /* Obligatorio para que aparezca la barra deslizante */
+    overflow-y: auto;
+    padding-right: 14px;
+    font-size: 16px;        /* <-- Cambia aquí el tamaño de la letra del poema */
+    line-height: 1.6;       /* <-- Cambia aquí el espaciado entre líneas */
+  }
+
+  .poem-title-reading {
+    font-size: 30px;
+    margin-bottom: 14px;
+  }
+
+  .poem-body {
+    font-size: 22px;
+    line-height: 1.2; /* Prueba con un valor suave como 1.5 o 1.6 en lugar de subirlo mucho */
+  }
+
+  .disc-icon {
+  position: relative;
+  top: -5px;
+  transform: scaleY(1);     /* <-- AQUÍ CONTROLAS LA ALTURA VERTICAL (prueba con 0.80, 0.85... menor número = más compacta/aplastada) */
+  transform: scale(1.6);
+}
+}/* ==========================================================
+   ANIMACIÓN DEL DISCO DE VINILO
+   ========================================================== */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
+
+.disc-icon svg.spin {
+  animation: spin 8s linear infinite;
+  transform-origin: center;
+}
+
