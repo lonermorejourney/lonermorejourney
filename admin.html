@@ -435,9 +435,9 @@
   <!-- Modal personalizado para cambios sin guardar -->
   <div id="unsaved-modal">
     <div class="modal-content">
-      <h3 id="modal-title">¿Qué deseas hacer con esta obra?</h3>
-      <p id="modal-desc">Tienes cambios actuales que no se han guardado en la nube.</p>
-      <div class="modal-buttons" id="modal-buttons-container">
+      <h3>¿Qué deseas hacer con esta obra?</h3>
+      <p>Tienes cambios actuales que no se han guardado en la nube.</p>
+      <div class="modal-buttons">
         <button class="modal-btn-primary" onclick="modalGuardarYNuva()">Guardar obra y crear nueva</button>
         <button class="modal-btn-danger" onclick="modalLimpiarSinGuardar()">Limpiar sin guardar</button>
         <button class="modal-btn-secondary" onclick="cerrarModalUnsaved()">Cancelar</button>
@@ -525,7 +525,6 @@
     let cambiosLocales = {}; // Memoria temporal para textos no guardados al cambiar de título
     let obraActualKey = null;
     let draggedTitle = null;
-    let pendingTargetTitle = null; // Almacena el título al que se intentaba cambiar en el sidebar
 
     window.addEventListener('DOMContentLoaded', () => {
       if (localStorage.getItem("admin_logueado") === "true" && tokenGitHub) {
@@ -678,42 +677,15 @@
       }
     }
 
-    function tieneCambiosSinGuardar() {
-      const tituloActual = document.getElementById('doc-title').value.trim();
-      const textoActual = document.getElementById('doc-editor').innerHTML.trim();
-
-      if (!obraActualKey) {
-        return (tituloActual !== "" || textoActual !== "");
-      } else {
-        const contenidoCloud = borradoresNube[obraActualKey] || "";
-        return (tituloActual !== obraActualKey || textoActual !== contenidoCloud);
-      }
-    }
-
     function cargarBorrador(titulo) {
-      if (obraActualKey === titulo) return;
-
-      if (tieneCambiosSinGuardar()) {
-        pendingTargetTitle = titulo;
-        document.getElementById('modal-title').textContent = "¿Qué deseas hacer con esta obra?";
-        document.getElementById('modal-desc').textContent = "Tienes cambios actuales que no se han guardado en la nube.";
-        document.getElementById('modal-buttons-container').innerHTML = `
-          <button class="modal-btn-primary" onclick="modalGuardarYCambiar()">Guardar y cambiar</button>
-          <button class="modal-btn-danger" onclick="modalCambiarSinGuardar()">Cambiar sin guardar</button>
-          <button class="modal-btn-secondary" onclick="cerrarModalUnsaved()">Cancelar</button>
-        `;
-        document.getElementById('unsaved-modal').style.display = 'flex';
-      } else {
-        ejecutarCargarBorrador(titulo);
+      // Guardar cambios actuales en memoria antes de cambiar de obra
+      if (obraActualKey) {
+        cambiosLocales[obraActualKey] = document.getElementById('doc-editor').innerHTML;
       }
-    }
 
-    function ejecutarCargarBorrador(titulo) {
-      if (obraActualKey && cambiosLocales[obraActualKey]) {
-        delete cambiosLocales[obraActualKey];
-      }
       document.getElementById('doc-title').value = titulo;
-      const textoACargar = borradoresNube[titulo] || "";
+      // Recuperar de cambios locales si hay edición sin guardar, sino de la nube
+      const textoACargar = cambiosLocales[titulo] !== undefined ? cambiosLocales[titulo] : (borradoresNube[titulo] || "");
       document.getElementById('doc-editor').innerHTML = textoACargar;
       
       obraActualKey = titulo;
@@ -860,42 +832,26 @@
     }
 
     function nuevaIdea() {
-      if (tieneCambiosSinGuardar()) {
-        pendingTargetTitle = null;
-        document.getElementById('modal-title').textContent = "¿Qué deseas hacer con esta obra?";
-        document.getElementById('modal-desc').textContent = "Tienes cambios actuales que no se han guardado en la nube.";
-        document.getElementById('modal-buttons-container').innerHTML = `
-          <button class="modal-btn-primary" onclick="modalGuardarYNuva()">Guardar obra y crear nueva</button>
-          <button class="modal-btn-danger" onclick="modalLimpiarSinGuardar()">Limpiar sin guardar</button>
-          <button class="modal-btn-secondary" onclick="cerrarModalUnsaved()">Cancelar</button>
-        `;
+      const tituloActual = document.getElementById('doc-title').value.trim();
+      const textoActual = document.getElementById('doc-editor').innerHTML.trim();
+
+      const estaGuardado = (borradoresNube[tituloActual] === textoActual);
+
+      if ((tituloActual || textoActual) && !estaGuardado) {
         document.getElementById('unsaved-modal').style.display = 'flex';
       } else {
         ejecutarNuevaIdea();
       }
     }
 
-    async function modalGuardarYCambiar() {
-      const target = pendingTargetTitle;
-      cerrarModalUnsaved();
-      await guardarObra();
-      if (target) {
-        ejecutarCargarBorrador(target);
-      }
-    }
-
-    function modalCambiarSinGuardar() {
-      const target = pendingTargetTitle;
-      cerrarModalUnsaved();
-      if (target) {
-        ejecutarCargarBorrador(target);
-      }
-    }
-
     async function modalGuardarYNuva() {
       cerrarModalUnsaved();
       await guardarObra();
-      ejecutarNuevaIdea();
+      const tituloActual = document.getElementById('doc-title').value.trim();
+      const textoActual = document.getElementById('doc-editor').innerHTML.trim();
+      if (borradoresNube[tituloActual] === textoActual) {
+        ejecutarNuevaIdea();
+      }
     }
 
     function modalLimpiarSinGuardar() {
@@ -905,7 +861,6 @@
 
     function cerrarModalUnsaved() {
       document.getElementById('unsaved-modal').style.display = 'none';
-      pendingTargetTitle = null;
     }
 
     function ejecutarNuevaIdea() {
