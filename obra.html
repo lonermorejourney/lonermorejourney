@@ -70,7 +70,7 @@
             // Actualizar título de la pestaña del navegador
             document.getElementById('page-title').textContent = `${obra.titulo} — Lonermorejourney`;
 
-            // Rellenar portada principal (apuntando a la carpeta portadas/ o por defecto)
+            // Rellenar portada principal
             const coverImg = document.getElementById('album-cover');
             coverImg.src = obra.imagen ? obra.imagen : 'portada.png';
             coverImg.alt = obra.titulo;
@@ -87,11 +87,11 @@
             const mobileDateEl = document.getElementById('mobile-indicator-date');
 
             if (obra.tipo === 'individual') {
-                tagEl.textContent = "Título • Poesía";
-                mobileDateEl.textContent = obra.fecha; // Formato limpio para individual
+                tagEl.textContent = "Título";
+                mobileDateEl.textContent = obra.fecha; 
             } else {
                 tagEl.textContent = "Álbum";
-                mobileDateEl.textContent = `Álbum ${obra.fecha}`; // Formato con prefijo para álbum
+                mobileDateEl.textContent = `Álbum ${obra.fecha}`;
             }
 
             // Inyectar contadores y fechas en móvil y escritorio
