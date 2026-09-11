@@ -53,11 +53,6 @@
       font-size: 15px;
       margin-bottom: 16px;
       outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .login-input:focus {
-      border-color: #1a1a1a;
     }
 
     .login-btn {
@@ -71,11 +66,6 @@
       font-weight: 600;
       font-size: 15px;
       cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .login-btn:hover {
-      background: #333;
     }
 
     .error-msg {
@@ -88,26 +78,120 @@
     #studio-screen {
       display: none;
       width: 100%;
-      max-width: 1100px;
+      max-width: 1300px;
       flex-direction: column;
       align-items: center;
       z-index: 2;
     }
 
+    /* Cabecera superior con botones de acción rápida */
+    .studio-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 12px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .header-actions-left {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .action-top-btn {
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-family: var(--fuente-cuerpo);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .action-top-btn:hover {
+      background: #333;
+    }
+
+    .action-top-btn.secondary {
+      background: #e0e0e0;
+      color: #1a1a1a;
+    }
+
+    .action-top-btn.secondary:hover {
+      background: #d0d0d0;
+    }
+
+    /* Estructura de 3 columnas: Izquierda (Borradores), Centro (Editor), Derecha (Publicación) */
     .admin-layout {
       display: flex;
       width: 100%;
       gap: 20px;
-      margin-top: 20px;
       position: relative;
     }
 
+    /* Panel Izquierdo: Obras Guardadas */
+    .drafts-sidebar {
+      width: 260px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      max-height: 700px;
+    }
+
+    .drafts-sidebar h3 {
+      font-family: var(--fuente-heavy);
+      font-size: 16px;
+      margin-bottom: 15px;
+      color: #1a1a1a;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 8px;
+    }
+
+    .drafts-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .draft-item {
+      padding: 10px 12px;
+      background: #f4f4f4;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--fuente-cuerpo);
+      font-size: 14px;
+      color: #333;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .draft-item:hover, .draft-item.active {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    /* Centro: Documento Word */
     .document-container {
       flex: 1;
       background: #ffffff;
       color: #1a1a1a;
       border-radius: 12px;
-      padding: 40px;
+      padding: 30px 40px;
       box-shadow: 0 15px 35px rgba(0,0,0,0.3);
       display: flex;
       flex-direction: column;
@@ -119,12 +203,12 @@
       flex-wrap: wrap;
       gap: 10px;
       padding-bottom: 15px;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       border-bottom: 1px solid #e0e0e0;
       align-items: center;
     }
 
-    .tool-btn, .tool-select {
+    .tool-btn {
       background: #f4f4f4;
       border: 1px solid #dcdcdc;
       padding: 6px 12px;
@@ -135,9 +219,13 @@
       color: #333;
     }
 
+    .tool-btn:hover {
+      background: #eaeaea;
+    }
+
     .doc-title-input {
       font-family: var(--fuente-heavy);
-      font-size: 28px;
+      font-size: 26px;
       border: none;
       border-bottom: 2px dashed #e0e0e0;
       outline: none;
@@ -147,6 +235,7 @@
       color: #1a1a1a;
     }
 
+    /* Editor con fuente Times New Roman fija */
     .doc-editor {
       flex: 1;
       font-family: 'Times New Roman', Times, serif;
@@ -154,11 +243,13 @@
       line-height: 1.6;
       border: none;
       outline: none;
-      resize: none;
       width: 100%;
       background: transparent;
+      overflow-y: auto;
+      white-space: pre-wrap;
     }
 
+    /* Barra lateral derecha: Publicación */
     .sidebar-actions {
       width: 240px;
       display: flex;
@@ -207,22 +298,20 @@
       margin: 0;
     }
 
-    @media (max-width: 850px) {
+    @media (max-width: 1050px) {
       .admin-layout {
         flex-direction: column;
       }
-      .sidebar-actions {
+      .drafts-sidebar, .sidebar-actions {
         width: 100%;
+        max-height: none;
+      }
+      .sidebar-actions {
         flex-direction: row;
         overflow-x: auto;
-        padding-bottom: 10px;
       }
       .action-card {
         min-width: 210px;
-      }
-      .document-container {
-        padding: 20px;
-        min-height: 500px;
       }
     }
   </style>
@@ -241,34 +330,45 @@
 
   <!-- ESTUDIO DE CREACIÓN -->
   <div id="studio-screen">
-    <header style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-      <h1 style="font-family: var(--fuente-heavy); font-size: 22px; color: #fff;">Lonermorejourney <span style="font-weight: 300; font-size: 15px; opacity: 0.8;">— Estudio Privado</span></h1>
+    
+    <!-- Cabecera con Guardar, Nueva idea y Sesión -->
+    <header class="studio-header">
+      <div class="header-actions-left">
+        <button class="action-top-btn" onclick="guardarObra()">Guardar obra</button>
+        <button class="action-top-btn secondary" onclick="nuevaIdea()">Nueva idea</button>
+      </div>
       <div style="display: flex; gap: 15px; align-items: center;">
-        <a href="index.html" style="color: #fff; font-family: var(--fuente-cuerpo); text-decoration: none; font-size: 14px; opacity: 0.8;">Ver sitio web ↗</a>
-        <button onclick="cerrarSesion()" style="background: rgba(255,255,255,0.2); border: none; color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-family: var(--fuente-cuerpo); font-size: 13px;">Cerrar sesión</button>
+        <span id="sync-status" style="font-family: var(--fuente-cuerpo); font-size: 12px; color: #666;">Sincronizado</span>
+        <a href="index.html" style="color: #1a1a1a; font-family: var(--fuente-cuerpo); text-decoration: none; font-size: 14px; font-weight: 600;">Ver sitio ↗</a>
+        <button onclick="cerrarSesion()" style="background: #d9534f; border: none; color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-family: var(--fuente-cuerpo); font-size: 13px;">Salir</button>
       </div>
     </header>
 
     <main class="admin-layout">
+      
+      <!-- Izquierda: Lista de obras guardadas en la nube -->
+      <div class="drafts-sidebar">
+        <h3>Obras y Borradores</h3>
+        <div id="drafts-list" class="drafts-list">
+          <!-- Se cargan dinámicamente -->
+        </div>
+      </div>
+
       <!-- Centro: Documento Word -->
       <div class="document-container">
         <div class="editor-toolbar">
-          <select class="tool-select">
-            <option>Proxima Nova / Serif</option>
-            <option>Times New Roman</option>
-            <option>SF UI Display</option>
-          </select>
-          <button class="tool-btn" title="Negrita"><b>B</b></button>
-          <button class="tool-btn" title="Cursiva"><i>I</i></button>
-          <button class="tool-btn" title="Alinear Centrado">Centrar</button>
-          <button class="tool-btn" title="Justificar">Justificar</button>
+          <button class="tool-btn" style="font-family: 'Times New Roman'; font-style: italic;">Times New Roman</button>
+          <button class="tool-btn" title="Negrita" onclick="aplicarFormato('bold')"><b>B</b></button>
+          <button class="tool-btn" title="Cursiva" onclick="aplicarFormato('italic')"><i>I</i></button>
+          <button class="tool-btn" title="Alinear Centrado" onclick="aplicarFormato('justifyCenter')">Centrar</button>
+          <button class="tool-btn" title="Justificar" onclick="aplicarFormato('justifyFull')">Justificar</button>
         </div>
 
-        <input type="text" class="doc-title-input" placeholder="Escribe el título del título o poema aquí...">
-        <textarea class="doc-editor" placeholder="Escribe o pega tu texto libremente... Usa los puntos y aparte que necesites."></textarea>
+        <input type="text" id="doc-title" class="doc-title-input" placeholder="Título del poema (ej. ÁRBOL DESDECORADO)...">
+        <div id="doc-editor" class="doc-editor" contenteditable="true" placeholder="Escribe o pega tu texto libremente..."></div>
       </div>
 
-      <!-- Barra lateral derecha -->
+      <!-- Derecha: Opciones de publicación -->
       <div class="sidebar-actions">
         <div class="action-card" title="Montar un álbum completo de golpe">
           <div class="action-icon">
@@ -320,8 +420,13 @@
   </div>
 
   <script>
+    let tokenGitHub = localStorage.getItem("github_token");
+    let repoInfo = null; // { owner, repo }
+    let borradoresNube = {}; // { "Titulo": "Contenido" }
+    let obraActualKey = null;
+
     window.addEventListener('DOMContentLoaded', () => {
-      if (localStorage.getItem("admin_logueado") === "true" && localStorage.getItem("github_token")) {
+      if (localStorage.getItem("admin_logueado") === "true" && tokenGitHub) {
         mostrarEstudio();
       }
     });
@@ -338,14 +443,13 @@
 
       try {
         const response = await fetch('https://api.github.com/user', {
-          headers: {
-            'Authorization': `token ${token}`
-          }
+          headers: { 'Authorization': `token ${token}` }
         });
 
         if (response.ok) {
           localStorage.setItem("github_token", token);
           localStorage.setItem("admin_logueado", "true");
+          tokenGitHub = token;
           mostrarEstudio();
         } else {
           errorMsg.textContent = "Token de GitHub incorrecto.";
@@ -357,11 +461,168 @@
       }
     }
 
-    function mostrarEstudio() {
+    async function mostrarEstudio() {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('studio-screen').style.display = 'flex';
       document.body.style.justifyContent = 'flex-start';
-      document.body.style.paddingTop = '20px';
+      document.body.style.paddingTop = '15px';
+
+      await detectarRepositorio();
+      await cargarBorradoresDeNube();
+    }
+
+    async function detectarRepositorio() {
+      if (repoInfo) return;
+      try {
+        const res = await fetch('https://api.github.com/user/repos?per_page=100', {
+          headers: { 'Authorization': `token ${tokenGitHub}` }
+        });
+        const repos = await res.json();
+        for (let repo of repos) {
+          const check = await fetch(`https://api.github.com/repos/${repo.owner.login}/${repo.name}/contents/admin.html`, {
+            headers: { 'Authorization': `token ${tokenGitHub}` }
+          });
+          if (check.ok) {
+            repoInfo = { owner: repo.owner.login, repo: repo.name };
+            break;
+          }
+        }
+      } catch (e) {
+        console.error("Error detectando repositorio", e);
+      }
+    }
+
+    async function cargarBorradoresDeNube() {
+      if (!repoInfo) return;
+      document.getElementById('sync-status').textContent = "Sincronizando...";
+      try {
+        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
+          headers: { 'Authorization': `token ${tokenGitHub}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const contenidoDecodificado = decodeURIComponent(escape(atob(data.content)));
+          borradoresNube = JSON.parse(contenidoDecodificado);
+        } else {
+          borradoresNube = {};
+        }
+        renderizarBorradores();
+        document.getElementById('sync-status').textContent = "Sincronizado";
+      } catch (e) {
+        document.getElementById('sync-status').textContent = "Error de sincronización";
+      }
+    }
+
+    function renderizarBorradores() {
+      const lista = document.getElementById('drafts-list');
+      lista.innerHTML = "";
+      
+      if (Object.keys(borradoresNube).length === 0) {
+        lista.innerHTML = '<p style="font-size: 13px; color: #888; text-align: center; padding: 10px;">Sin obras guardadas</p>';
+        return;
+      }
+
+      for (let titulo in borradoresNube) {
+        const item = document.createElement('div');
+        item.className = `draft-item ${obraActualKey === titulo ? 'active' : ''}`;
+        item.textContent = titulo;
+        item.onclick = () => cargarBorrador(titulo);
+        lista.appendChild(item);
+      }
+    }
+
+    function cargarBorrador(titulo) {
+      document.getElementById('doc-title').value = titulo;
+      document.getElementById('doc-editor').innerHTML = borradoresNube[titulo];
+      obraActualKey = titulo;
+      renderizarBorradores();
+    }
+
+    async function guardarObra() {
+      const titulo = document.getElementById('doc-title').value.trim();
+      const contenido = document.getElementById('doc-editor').innerHTML;
+
+      if (!titulo) {
+        alert("Por favor, escribe un título para la obra antes de guardar.");
+        return;
+      }
+
+      if (!repoInfo) {
+        alert("No se ha detectado el repositorio de GitHub.");
+        return;
+      }
+
+      document.getElementById('sync-status').textContent = "Guardando en GitHub...";
+
+      // Actualizar borrador local
+      if (obraActualKey && obraActualKey !== titulo) {
+        delete borradoresNube[obraActualKey];
+      }
+      borradoresNube[titulo] = contenido;
+      obraActualKey = titulo;
+
+      try {
+        // Obtener SHA actual de drafts.json si existe
+        let sha = null;
+        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
+          headers: { 'Authorization': `token ${tokenGitHub}` }
+        });
+        if (check.ok) {
+          const fileData = await check.json();
+          sha = fileData.sha;
+        }
+
+        const jsonString = JSON.stringify(borradoresNube, null, 2);
+        const encodedContent = btoa(unescape(encodeURIComponent(jsonString)));
+
+        const bodyData = {
+          message: `Actualizar borrador: ${titulo}`,
+          content: encodedContent,
+          sha: sha
+        };
+
+        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${tokenGitHub}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(bodyData)
+        });
+
+        if (res.ok) {
+          document.getElementById('sync-status').textContent = "Sincronizado";
+          renderizarBorradores();
+          alert("¡Obra guardada correctamente en la nube!");
+        } else {
+          document.getElementById('sync-status').textContent = "Error al guardar";
+          alert("Hubo un error al guardar en GitHub.");
+        }
+      } catch (e) {
+        document.getElementById('sync-status').textContent = "Error de red";
+        alert("Error de conexión al guardar.");
+      }
+    }
+
+    function nuevaIdea() {
+      const tituloActual = document.getElementById('doc-title').value.trim();
+      const textoActual = document.getElementById('doc-editor').innerHTML.trim();
+
+      if ((tituloActual || textoActual) && !borradoresNube[tituloActual]) {
+        if (!confirm("Tienes cambios sin guardar. ¿Deseas crear una nueva idea sin guardar esta?")) {
+          return;
+        }
+      }
+
+      document.getElementById('doc-title').value = "";
+      document.getElementById('doc-editor').innerHTML = "";
+      obraActualKey = null;
+      renderizarBorradores();
+    }
+
+    function aplicarFormato(comando) {
+      document.execCommand(comando, false, null);
+      document.getElementById('doc-editor').focus();
     }
 
     function cerrarSesion() {
