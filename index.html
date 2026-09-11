@@ -16,18 +16,51 @@
     <h2 class="section-title">Últimos escritos</h2>
 
     <div id="posts-list" class="posts-list">
-
-      <!-- POST ESTÁTICO DE PRUEBA -->
-      <a href="#" class="post-card">
-        <img class="post-cover" src="portada.png" alt="TE PERDÍ PARA NAVIDAD">
-        <div class="post-info">
-          <h3 class="post-title">TE PERDÍ PARA NAVIDAD</h3>
-          <p class="post-meta">2026 <span class="dot">•</span> Álbum</p>
-        </div>
-      </a>
-
+      <!-- Los posts se inyectarán dinámicamente aquí -->
     </div>
   </main>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        try {
+            const response = await fetch('posts.json');
+            const posts = await response.json();
+
+            const container = document.getElementById('posts-list');
+            container.innerHTML = '';
+
+            if (!posts || posts.length === 0) return;
+
+            posts.forEach((post, index) => {
+                const card = document.createElement('a');
+                card.href = `obra.html?id=${index}`;
+                card.className = 'post-card';
+
+                const portada = post.imagen ? post.imagen : 'portada.png';
+                const tipoTexto = post.tipo === 'individual' ? 'Título' : 'Álbum';
+                
+                // Extraer el año de la fecha registrada
+                let anio = new Date().getFullYear();
+                if (post.fecha) {
+                    const partesFecha = post.fecha.split(' ');
+                    anio = partesFecha[partesFecha.length - 1] || anio;
+                }
+
+                card.innerHTML = `
+                    <img class="post-cover" src="${portada}" alt="${post.titulo}">
+                    <div class="post-info">
+                        <h3 class="post-title">${post.titulo}</h3>
+                        <p class="post-meta">${anio} <span class="dot">•</span> ${tipoTexto}</p>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+        } catch (error) {
+            console.error("Error al cargar los posts en el index:", error);
+        }
+    });
+  </script>
 </body>
 </html>
