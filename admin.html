@@ -432,12 +432,12 @@
 <body class="admin-body">
   <div class="fondo-oscuro"></div>
 
-  <!-- Modal personalizado para cambios sin guardar -->
+  <!-- Modal personalizado para cambios sin guardar en títulos nuevos -->
   <div id="unsaved-modal">
     <div class="modal-content">
-      <h3>¿Qué deseas hacer con esta obra?</h3>
-      <p>Tienes cambios actuales que no se han guardado en la nube.</p>
-      <div class="modal-buttons">
+      <h3 id="modal-title">¿Qué deseas hacer con esta obra?</h3>
+      <p id="modal-desc">Tienes una obra nueva que no se ha guardado en la lista.</p>
+      <div class="modal-buttons" id="modal-buttons-container">
         <button class="modal-btn-primary" onclick="modalGuardarYNuva()">Guardar obra y crear nueva</button>
         <button class="modal-btn-danger" onclick="modalLimpiarSinGuardar()">Limpiar sin guardar</button>
         <button class="modal-btn-secondary" onclick="cerrarModalUnsaved()">Cancelar</button>
@@ -522,9 +522,10 @@
     let tokenGitHub = localStorage.getItem("github_token");
     let repoInfo = null;
     let borradoresNube = {};
-    let cambiosLocales = {}; // Memoria temporal para textos no guardados al cambiar de título
+    let cambiosLocales = {}; // Memoria temporal para textos no guardados entre obras existentes
     let obraActualKey = null;
     let draggedTitle = null;
+    let pendingTargetTitle = null;
 
     window.addEventListener('DOMContentLoaded', () => {
       if (localStorage.getItem("admin_logueado") === "true" && tokenGitHub) {
@@ -678,18 +679,39 @@
     }
 
     function cargarBorrador(titulo) {
-      // Guardar cambios actuales en memoria antes de cambiar de obra
-      if (obraActualKey) {
-        cambiosLocales[obraActualKey] = document.getElementById('doc-editor').innerHTML;
-      }
+      if (obraActualKey === titulo) return;
 
-      document.getElementById('doc-title').value = titulo;
-      // Recuperar de cambios locales si hay edición sin guardar, sino de la nube
-      const textoACargar = cambiosLocales[titulo] !== undefined ? cambiosLocales[titulo] : (borradoresNube[titulo] || "");
-      document.getElementById('doc-editor').innerHTML = textoACargar;
-      
-      obraActualKey = titulo;
-      renderizarBorradores();
+      const tituloActualInput = document.getElementById('doc-title').value.trim();
+      const contenidoActualInput = document.getElementById('doc-editor').innerHTML.trim();
+
+      // Detectar si estamos en un título NUEVO que NO existe todavía en la lista
+      const esTituloNuevoNoExistente = (obraActualKey === null && (tituloActualInput !== "" || contenidoActualInput !== "")) ||
+                                       (tituloActualInput !== "" && !borradoresNube[tituloActualInput] && obraActualKey !== tituloActualInput);
+
+      if (esTituloNuevoNoExistente) {
+        // Mostrar cartel SÓLO si es un título nuevo no existente
+        pendingTargetTitle = titulo;
+        document.getElementById('modal-title').textContent = "¿Qué deseas hacer con esta obra?";
+        document.getElementById('modal-desc').textContent = "Tienes una obra nueva que no se ha guardado en la lista.";
+        document.getElementById('modal-buttons-container').innerHTML = `
+          <button class="modal-btn-primary" onclick="modalGuardarYCambiar()">Guardar obra y cambiar</button>
+          <button class="modal-btn-danger" onclick="modalCambiarSinGuardar()">Cambiar sin guardar</button>
+          <button class="modal-btn-secondary" onclick="cerrarModalUnsaved()">Cancelar</button>
+        `;
+        document.getElementById('unsaved-modal').style.display = 'flex';
+      } else {
+        // Para obras que YA están en la lista: aplicar lógica de memoria silenciosa (sin cartel)
+        if (obraActualKey) {
+          cambiosLocales[obraActualKey] = document.getElementById('doc-editor').innerHTML;
+        }
+
+        document.getElementById('doc-title').value = titulo;
+        const textoACargar = cambiosLocales[titulo] !== undefined ? cambiosLocales[titulo] : (borradoresNube[titulo] || "");
+        document.getElementById('doc-editor').innerHTML = textoACargar;
+        
+        obraActualKey = titulo;
+        renderizarBorradores();
+      }
     }
 
     async function guardarObra() {
@@ -838,20 +860,52 @@
       const estaGuardado = (borradoresNube[tituloActual] === textoActual);
 
       if ((tituloActual || textoActual) && !estaGuardado) {
+        document.getElementById('modal-title').textContent = "¿Qué deseas hacer con esta obra?";
+        document.getElementById('modal-desc').textContent = "Tienes cambios actuales que no se han guardado en la nube.";
+        document.getElementById('modal-buttons-container').innerHTML = `
+          <button class="modal-btn-primary" onclick="modalGuardarYNuva()">Guardar obra y crear nueva</button>
+          <button class="modal-btn-danger" onclick="modalLimpiarSinGuardar()">Limpiar sin guardar</button>
+          <button class="modal-btn-secondary" onclick="cerrarModalUnsaved()">Cancelar</button>
+        `;
         document.getElementById('unsaved-modal').style.display = 'flex';
       } else {
         ejecutarNuevaIdea();
       }
     }
 
+    async function modalGuardarYCambiar() {
+      const target = pendingTargetTitle;
+      cerrarModalUnsaved();
+      await guardarObra();
+      if (target) {
+        ejecutarCargarBorradorDesdeModal(target);
+      }
+    }
+
+    function modalCambiarSinGuardar() {
+      const target = pendingTargetTitle;
+      cerrarModalUnsaved();
+      if (target) {
+        ejecutarCargarBorradorDesdeModal(target);
+      }
+    }
+
+    function ejecutarCargarBorradorDesdeModal(titulo) {
+      if (obraActualKey && cambiosLocales[obraActualKey]) {
+        delete cambiosLocales[obraActualKey];
+      }
+      document.getElementById('doc-title').value = titulo;
+      const textoACargar = cambiosLocales[titulo] !== undefined ? cambiosLocales[titulo] : (borradoresNube[titulo] || "");
+      document.getElementById('doc-editor').innerHTML = textoACargar;
+      
+      obraActualKey = titulo;
+      renderizarBorradores();
+    }
+
     async function modalGuardarYNuva() {
       cerrarModalUnsaved();
       await guardarObra();
-      const tituloActual = document.getElementById('doc-title').value.trim();
-      const textoActual = document.getElementById('doc-editor').innerHTML.trim();
-      if (borradoresNube[tituloActual] === textoActual) {
-        ejecutarNuevaIdea();
-      }
+      ejecutarNuevaIdea();
     }
 
     function modalLimpiarSinGuardar() {
@@ -861,6 +915,7 @@
 
     function cerrarModalUnsaved() {
       document.getElementById('unsaved-modal').style.display = 'none';
+      pendingTargetTitle = null;
     }
 
     function ejecutarNuevaIdea() {
