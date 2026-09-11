@@ -167,23 +167,14 @@
       padding: 10px 12px;
       background: #f4f4f4;
       border-radius: 8px;
-      cursor: grab;
+      cursor: pointer;
       font-family: var(--fuente-cuerpo);
       font-size: 14px;
       color: #333;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: background 0.2s, color 0.2s, opacity 0.2s;
-      user-select: none;
-    }
-
-    .draft-item:active {
-      cursor: grabbing;
-    }
-
-    .draft-item.dragging {
-      opacity: 0.4;
+      transition: background 0.2s, color 0.2s;
     }
 
     .draft-item:hover, .draft-item.active {
@@ -325,6 +316,92 @@
       margin: 0;
     }
 
+    /* Estilos del Modal Personalizado */
+    #unsaved-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .modal-content h3 {
+      font-family: var(--fuente-heavy);
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #1a1a1a;
+    }
+
+    .modal-content p {
+      font-family: var(--fuente-cuerpo);
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 24px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .modal-btn-primary {
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: var(--fuente-cuerpo);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .modal-btn-primary:hover { background: #333; }
+
+    .modal-btn-danger {
+      background: #d9534f;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: var(--fuente-cuerpo);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .modal-btn-danger:hover { background: #c9302c; }
+
+    .modal-btn-secondary {
+      background: #e0e0e0;
+      color: #1a1a1a;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: var(--fuente-cuerpo);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .modal-btn-secondary:hover { background: #d0d0d0; }
+
     @media (max-width: 1050px) {
       .admin-layout {
         flex-direction: column;
@@ -345,6 +422,19 @@
 </head>
 <body class="admin-body">
   <div class="fondo-oscuro"></div>
+
+  <!-- Modal personalizado para cambios sin guardar -->
+  <div id="unsaved-modal">
+    <div class="modal-content">
+      <h3>¿Qué deseas hacer con esta obra?</h3>
+      <p>Tienes cambios actuales que no se han guardado en la nube.</p>
+      <div class="modal-buttons">
+        <button class="modal-btn-primary" onclick="modalGuardarYNuva()">Guardar obra y crear nueva</button>
+        <button class="modal-btn-danger" onclick="modalLimpiarSinGuardar()">Limpiar sin guardar</button>
+        <button class="modal-btn-secondary" onclick="cerrarModalUnsaved()">Cancelar</button>
+      </div>
+    </div>
+  </div>
 
   <div id="login-screen">
     <h2>Acceso Restringido</h2>
@@ -413,7 +503,7 @@
               <circle cx="52" cy="14" r="10"></circle><circle cx="52" cy="14" r="1.5" fill="currentColor"></circle>
             </svg>
           </div>
-          <div class="action-info"><h3>Sucesivo</h3><p>Programar / secuencia</p></div>
+          <div class="action-info"><h3>Sucesivo</h3><p>Programar / Secuencia</p></div>
         </div>
       </div>
     </main>
@@ -423,30 +513,11 @@
     let tokenGitHub = localStorage.getItem("github_token");
     let repoInfo = null;
     let borradoresNube = {};
-    let draftsLocales = {}; // Memoria local para cambios no guardados al cambiar de título
     let obraActualKey = null;
-    let fileSha = null;
-    let draggedTitle = null;
 
     window.addEventListener('DOMContentLoaded', () => {
       if (localStorage.getItem("admin_logueado") === "true" && tokenGitHub) {
         mostrarEstudio();
-      }
-    });
-
-    // Auto-guardado silencioso en la nube al actualizar o cerrar la página
-    window.addEventListener('beforeunload', () => {
-      guardarEstadoActualEnLocal();
-      if (repoInfo && Object.keys(draftsLocales).length > 0) {
-        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(draftsLocales, null, 2))));
-        navigator.sendBeacon(
-          `https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`,
-          JSON.stringify({
-            message: `Auto-guardado al salir/actualizar`,
-            content: encodedContent,
-            sha: fileSha
-          })
-        );
       }
     });
 
@@ -510,12 +581,10 @@
         });
         if (res.ok) {
           const data = await res.json();
-          fileSha = data.sha;
           borradoresNube = JSON.parse(decodeURIComponent(escape(atob(data.content))));
         } else {
           borradoresNube = {};
         }
-        draftsLocales = JSON.parse(JSON.stringify(borradoresNube));
         renderizarBorradores();
         document.getElementById('sync-status').textContent = "Sincronizado";
       } catch (e) {
@@ -523,77 +592,17 @@
       }
     }
 
-    function guardarEstadoActualEnLocal() {
-      const tituloInput = document.getElementById('doc-title').value.trim();
-      const contenido = document.getElementById('doc-editor').innerHTML;
-
-      if (!tituloInput && !contenido.trim()) return;
-
-      const claveReal = tituloInput || "Sin título";
-
-      if (obraActualKey && obraActualKey !== claveReal) {
-        delete draftsLocales[obraActualKey];
-      }
-
-      draftsLocales[claveReal] = contenido;
-      obraActualKey = claveReal;
-    }
-
     function renderizarBorradores() {
       const lista = document.getElementById('drafts-list');
       lista.innerHTML = "";
-      const keys = Object.keys(draftsLocales);
-
-      if (keys.length === 0) {
+      if (Object.keys(borradoresNube).length === 0) {
         lista.innerHTML = '<p style="font-size: 13px; color: #888; text-align: center; padding: 10px;">Sin obras guardadas</p>';
         return;
       }
-
-      keys.forEach(titulo => {
+      for (let titulo in borradoresNube) {
         const item = document.createElement('div');
         item.className = `draft-item ${obraActualKey === titulo ? 'active' : ''}`;
-        item.setAttribute('draggable', 'true');
-        item.setAttribute('data-titulo', titulo);
-
-        // Eventos de Drag and Drop para ordenar títulos
-        item.addEventListener('dragstart', (e) => {
-          draggedTitle = titulo;
-          e.dataTransfer.effectAllowed = 'move';
-          setTimeout(() => item.classList.add('dragging'), 0);
-        });
-
-        item.addEventListener('dragend', () => {
-          item.classList.remove('dragging');
-          draggedTitle = null;
-        });
-
-        item.addEventListener('dragover', (e) => {
-          e.preventDefault();
-          e.dataTransfer.dropEffect = 'move';
-        });
-
-        item.addEventListener('drop', (e) => {
-          e.preventDefault();
-          if (!draggedTitle || draggedTitle === titulo) return;
-
-          const currentKeys = Object.keys(draftsLocales);
-          const draggedIndex = currentKeys.indexOf(draggedTitle);
-          const targetIndex = currentKeys.indexOf(titulo);
-
-          if (draggedIndex > -1 && targetIndex > -1) {
-            currentKeys.splice(draggedIndex, 1);
-            currentKeys.splice(targetIndex, 0, draggedTitle);
-
-            const reordered = {};
-            currentKeys.forEach(k => {
-              reordered[k] = draftsLocales[k];
-            });
-            draftsLocales = reordered;
-            borradoresNube = { ...reordered };
-            renderizarBorradores();
-          }
-        });
-
+        
         const spanTitulo = document.createElement('span');
         spanTitulo.className = 'draft-title-text';
         spanTitulo.textContent = titulo;
@@ -613,20 +622,19 @@
 
         item.onclick = () => cargarBorrador(titulo);
         lista.appendChild(item);
-      });
+      }
     }
 
     function cargarBorrador(titulo) {
-      guardarEstadoActualEnLocal();
-      obraActualKey = titulo;
       document.getElementById('doc-title').value = titulo;
-      document.getElementById('doc-editor').innerHTML = draftsLocales[titulo] || "";
+      document.getElementById('doc-editor').innerHTML = borradoresNube[titulo];
+      obraActualKey = titulo;
       renderizarBorradores();
     }
 
     async function guardarObra() {
-      guardarEstadoActualEnLocal();
       const titulo = document.getElementById('doc-title').value.trim();
+      const contenido = document.getElementById('doc-editor').innerHTML;
 
       if (!titulo) { alert("Escribe un título para la obra."); return; }
       if (!repoInfo) { alert("Repositorio no detectado."); return; }
@@ -634,16 +642,25 @@
       document.getElementById('sync-status').textContent = "Guardando...";
 
       try {
-        // Obtener el SHA más reciente antes de hacer PUT para evitar conflictos
+        let sha = null;
+        let remoteDrafts = {};
         const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
           headers: { 'Authorization': `token ${tokenGitHub}` }
         });
         if (check.ok) {
           const fileData = await check.json();
-          fileSha = fileData.sha;
+          sha = fileData.sha;
+          remoteDrafts = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
         }
 
-        borradoresNube = { ...draftsLocales };
+        if (obraActualKey && obraActualKey !== titulo && remoteDrafts[obraActualKey]) {
+          delete remoteDrafts[obraActualKey];
+        }
+
+        remoteDrafts[titulo] = contenido;
+        borradoresNube = remoteDrafts;
+        obraActualKey = titulo;
+
         const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(borradoresNube, null, 2))));
 
         const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
@@ -655,16 +672,13 @@
           body: JSON.stringify({
             message: `Guardar obra: ${titulo}`,
             content: encodedContent,
-            sha: fileSha
+            sha: sha
           })
         });
 
         if (res.ok) {
-          const dataRes = await res.json();
-          fileSha = dataRes.content.sha;
           document.getElementById('sync-status').textContent = "Sincronizado";
           renderizarBorradores();
-          alert("¡Obra guardada en GitHub correctamente!");
         } else {
           const errData = await res.json();
           document.getElementById('sync-status').textContent = "Error al guardar";
@@ -687,16 +701,25 @@
       document.getElementById('sync-status').textContent = "Eliminando...";
 
       try {
+        let sha = null;
+        let remoteDrafts = {};
         const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
           headers: { 'Authorization': `token ${tokenGitHub}` }
         });
         if (check.ok) {
           const fileData = await check.json();
-          fileSha = fileData.sha;
+          sha = fileData.sha;
+          remoteDrafts = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
         }
 
-        delete draftsLocales[titulo];
-        delete borradoresNube[titulo];
+        if (remoteDrafts[titulo] !== undefined) {
+          delete remoteDrafts[titulo];
+        } else if (borradoresNube[titulo] !== undefined) {
+          delete borradoresNube[titulo];
+          remoteDrafts = { ...borradoresNube };
+        }
+
+        borradoresNube = remoteDrafts;
 
         if (obraActualKey === titulo) {
           document.getElementById('doc-title').value = "";
@@ -704,7 +727,7 @@
           obraActualKey = null;
         }
 
-        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(draftsLocales, null, 2))));
+        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(borradoresNube, null, 2))));
 
         const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
           method: 'PUT',
@@ -715,13 +738,11 @@
           body: JSON.stringify({
             message: `Eliminar borrador: ${titulo}`,
             content: encodedContent,
-            sha: fileSha
+            sha: sha
           })
         });
 
         if (res.ok) {
-          const dataRes = await res.json();
-          fileSha = dataRes.content.sha;
           document.getElementById('sync-status').textContent = "Sincronizado";
           renderizarBorradores();
         } else {
@@ -736,7 +757,41 @@
     }
 
     function nuevaIdea() {
-      guardarEstadoActualEnLocal();
+      const tituloActual = document.getElementById('doc-title').value.trim();
+      const textoActual = document.getElementById('doc-editor').innerHTML.trim();
+
+      // Verificar si hay cambios escritos que no coinciden con lo guardado en la nube
+      const estaGuardado = (borradoresNube[tituloActual] === textoActual);
+
+      if ((tituloActual || textoActual) && !estaGuardado) {
+        // Mostrar ventana modal personalizada
+        document.getElementById('unsaved-modal').style.display = 'flex';
+      } else {
+        ejecutarNuevaIdea();
+      }
+    }
+
+    async function modalGuardarYNuva() {
+      cerrarModalUnsaved();
+      await guardarObra();
+      // Tras guardar correctamente, limpiamos el editor para la nueva idea
+      const tituloActual = document.getElementById('doc-title').value.trim();
+      const textoActual = document.getElementById('doc-editor').innerHTML.trim();
+      if (borradoresNube[tituloActual] === textoActual) {
+        ejecutarNuevaIdea();
+      }
+    }
+
+    function modalLimpiarSinGuardar() {
+      cerrarModalUnsaved();
+      ejecutarNuevaIdea();
+    }
+
+    function cerrarModalUnsaved() {
+      document.getElementById('unsaved-modal').style.display = 'none';
+    }
+
+    function ejecutarNuevaIdea() {
       document.getElementById('doc-title').value = "";
       document.getElementById('doc-editor').innerHTML = "";
       obraActualKey = null;
@@ -749,7 +804,6 @@
     }
 
     function cerrarSesion() {
-      guardarEstadoActualEnLocal();
       localStorage.removeItem("admin_logueado");
       localStorage.removeItem("github_token");
       location.reload();
