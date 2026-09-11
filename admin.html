@@ -522,6 +522,7 @@
     let tokenGitHub = localStorage.getItem("github_token");
     let repoInfo = null;
     let borradoresNube = {};
+    let cambiosLocales = {}; // Memoria temporal para textos no guardados al cambiar de título
     let obraActualKey = null;
     let draggedTitle = null;
 
@@ -595,6 +596,7 @@
         } else {
           borradoresNube = {};
         }
+        cambiosLocales = {};
         renderizarBorradores();
         document.getElementById('sync-status').textContent = "Sincronizado";
       } catch (e) {
@@ -676,8 +678,16 @@
     }
 
     function cargarBorrador(titulo) {
+      // Guardar cambios actuales en memoria antes de cambiar de obra
+      if (obraActualKey) {
+        cambiosLocales[obraActualKey] = document.getElementById('doc-editor').innerHTML;
+      }
+
       document.getElementById('doc-title').value = titulo;
-      document.getElementById('doc-editor').innerHTML = borradoresNube[titulo];
+      // Recuperar de cambios locales si hay edición sin guardar, sino de la nube
+      const textoACargar = cambiosLocales[titulo] !== undefined ? cambiosLocales[titulo] : (borradoresNube[titulo] || "");
+      document.getElementById('doc-editor').innerHTML = textoACargar;
+      
       obraActualKey = titulo;
       renderizarBorradores();
     }
@@ -707,10 +717,23 @@
           delete remoteDrafts[obraActualKey];
         }
 
-        // Mantenemos el orden actual de borradoresNube al guardar
         remoteDrafts[titulo] = contenido;
-        borradoresNube[titulo] = contenido; 
+
+        // Reordenar para que la obra guardada quede al PRINCIPIO de la lista
+        const reorderedDrafts = {};
+        reorderedDrafts[titulo] = contenido;
+        for (let k in remoteDrafts) {
+          if (k !== titulo) {
+            reorderedDrafts[k] = remoteDrafts[k];
+          }
+        }
+        remoteDrafts = reorderedDrafts;
+
+        borradoresNube = remoteDrafts;
         obraActualKey = titulo;
+
+        // Limpiar cambios locales ya que se ha guardado
+        if (cambiosLocales[titulo]) delete cambiosLocales[titulo];
 
         const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(borradoresNube, null, 2))));
 
@@ -771,6 +794,7 @@
         }
 
         borradoresNube = remoteDrafts;
+        if (cambiosLocales[titulo]) delete cambiosLocales[titulo];
 
         if (obraActualKey === titulo) {
           document.getElementById('doc-title').value = "";
@@ -840,6 +864,9 @@
     }
 
     function ejecutarNuevaIdea() {
+      if (obraActualKey && cambiosLocales[obraActualKey]) {
+        delete cambiosLocales[obraActualKey];
+      }
       document.getElementById('doc-title').value = "";
       document.getElementById('doc-editor').innerHTML = "";
       obraActualKey = null;
