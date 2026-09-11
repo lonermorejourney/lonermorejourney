@@ -115,18 +115,9 @@
       transition: background 0.2s;
     }
 
-    .action-top-btn:hover {
-      background: #333;
-    }
-
-    .action-top-btn.secondary {
-      background: #e0e0e0;
-      color: #1a1a1a;
-    }
-
-    .action-top-btn.secondary:hover {
-      background: #d0d0d0;
-    }
+    .action-top-btn:hover { background: #333; }
+    .action-top-btn.secondary { background: #e0e0e0; color: #1a1a1a; }
+    .action-top-btn.secondary:hover { background: #d0d0d0; }
 
     .admin-layout {
       display: flex;
@@ -178,18 +169,9 @@
       user-select: none;
     }
 
-    .draft-item:active {
-      cursor: grabbing;
-    }
-
-    .draft-item.dragging {
-      opacity: 0.4;
-    }
-
-    .draft-item:hover, .draft-item.active {
-      background: #1a1a1a;
-      color: #fff;
-    }
+    .draft-item:active { cursor: grabbing; }
+    .draft-item.dragging { opacity: 0.4; }
+    .draft-item:hover, .draft-item.active { background: #1a1a1a; color: #fff; }
 
     .draft-title-text {
       white-space: nowrap;
@@ -210,10 +192,7 @@
       transition: opacity 0.2s;
       flex-shrink: 0;
     }
-
-    .delete-draft-btn:hover {
-      opacity: 1;
-    }
+    .delete-draft-btn:hover { opacity: 1; }
 
     .document-container {
       flex: 1;
@@ -247,10 +226,7 @@
       cursor: pointer;
       color: #333;
     }
-
-    .tool-btn:hover {
-      background: #eaeaea;
-    }
+    .tool-btn:hover { background: #eaeaea; }
 
     .doc-title-input {
       font-family: var(--fuente-heavy);
@@ -296,11 +272,7 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.2);
       transition: transform 0.2s, background 0.2s;
     }
-
-    .action-card:hover {
-      transform: translateY(-3px);
-      background: #ffffff;
-    }
+    .action-card:hover { transform: translateY(-3px); background: #ffffff; }
 
     .action-icon {
       flex-shrink: 0;
@@ -311,19 +283,8 @@
       justify-content: center;
     }
 
-    .action-info h3 {
-      font-family: var(--fuente-cuerpo);
-      font-size: 15px;
-      font-weight: 700;
-      margin: 0 0 2px 0;
-    }
-
-    .action-info p {
-      font-family: var(--fuente-cuerpo);
-      font-size: 12px;
-      color: #666;
-      margin: 0;
-    }
+    .action-info h3 { font-family: var(--fuente-cuerpo); font-size: 15px; font-weight: 700; margin: 0 0 2px 0; }
+    .action-info p { font-family: var(--fuente-cuerpo); font-size: 12px; color: #666; margin: 0; }
 
     /* Estilos del layout de tres columnas para Montar Álbum */
     #album-studio-layout {
@@ -340,13 +301,13 @@
       box-shadow: 0 15px 35px rgba(0,0,0,0.2);
       display: flex;
       flex-direction: column;
-      max-height: 750px;
+      max-height: 800px;
       overflow-y: auto;
     }
 
     .album-col-left { width: 300px; gap: 15px; }
     .album-col-center { flex: 1; gap: 15px; background: #fff; }
-    .album-col-right { width: 280px; gap: 20px; }
+    .album-col-right { width: 300px; gap: 16px; }
 
     .album-col h3 {
       font-family: var(--fuente-heavy);
@@ -363,7 +324,7 @@
       border-radius: 8px;
       padding: 10px;
       min-height: 120px;
-      max-height: 220px;
+      max-height: 200px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -379,7 +340,10 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      cursor: grab;
     }
+    .sublist-item:active { cursor: grabbing; }
+    .sublist-item.dragging { opacity: 0.4; }
 
     .sublist-item button {
       background: none;
@@ -391,7 +355,6 @@
     }
     .sublist-item button:hover { opacity: 1; }
 
-    /* Gestor Visual de Portadas */
     .cover-dropzone {
       width: 100%;
       aspect-ratio: 1 / 1;
@@ -406,9 +369,7 @@
       overflow: hidden;
       transition: border-color 0.2s;
     }
-    .cover-dropzone:hover {
-      border-color: #1a1a1a;
-    }
+    .cover-dropzone:hover { border-color: #1a1a1a; }
     .cover-dropzone img {
       width: 100%;
       height: 100%;
@@ -432,14 +393,9 @@
       text-align: center;
       padding: 10px;
     }
-    .cover-dropzone:hover .cover-overlay {
-      opacity: 1;
-    }
+    .cover-dropzone:hover .cover-overlay { opacity: 1; }
 
-    .date-selectors {
-      display: flex;
-      gap: 8px;
-    }
+    .date-selectors { display: flex; gap: 8px; }
     .date-selectors select {
       flex: 1;
       padding: 8px;
@@ -456,15 +412,21 @@
       padding: 15px;
       margin-bottom: 10px;
     }
-    .album-editor-item h4 {
-      margin: 0 0 8px 0;
-      font-size: 14px;
+    .album-poem-title-input {
       font-family: var(--fuente-heavy);
-      color: #333;
+      font-size: 15px;
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid #ccc;
+      background: transparent;
+      outline: none;
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      color: #1a1a1a;
     }
     .album-editor-textarea {
       width: 100%;
-      min-height: 100px;
+      min-height: 90px;
       font-family: 'Times New Roman', Times, serif;
       font-size: 16px;
       padding: 8px;
@@ -473,14 +435,18 @@
       resize: vertical;
       outline: none;
       background: #fff;
+      color: #1a1a1a;
     }
 
     .album-actions-bottom {
       display: flex;
-      gap: 10px;
-      margin-top: auto;
-      padding-top: 15px;
-      border-top: 1px solid #e0e0e0;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 5px;
+    }
+    .album-actions-row {
+      display: flex;
+      gap: 8px;
     }
 
     .btn-lanzar {
@@ -492,6 +458,7 @@
       border-radius: 6px;
       font-weight: 600;
       cursor: pointer;
+      font-size: 13px;
     }
     .btn-lanzar:hover { background: #333; }
 
@@ -504,67 +471,114 @@
       border-radius: 6px;
       font-weight: 600;
       cursor: pointer;
+      font-size: 13px;
     }
     .btn-preparar:hover { background: #d0d0d0; }
 
-    /* Sección de Preparados */
-    .prepared-section {
+    .btn-guardar-cambios {
       width: 100%;
-      margin-top: 20px;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      background: #28a745;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 13px;
+      display: none;
     }
-    .prepared-section h3 {
+    .btn-guardar-cambios:hover { background: #218838; }
+
+    /* Lista integrada de Preparados en la Columna Derecha */
+    .prepared-sidebar-section {
+      margin-top: 10px;
+      border-top: 1px solid #e0e0e0;
+      padding-top: 12px;
+    }
+    .prepared-sidebar-section h4 {
       font-family: var(--fuente-heavy);
-      font-size: 16px;
-      margin-bottom: 12px;
-      border-bottom: 1px solid #e0e0e0;
-      padding-bottom: 6px;
+      font-size: 13px;
+      color: #333;
+      margin-bottom: 8px;
     }
-    .prepared-list {
+    .prepared-side-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
+      max-height: 160px;
+      overflow-y: auto;
     }
-    .prepared-item {
+    .prepared-side-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       background: #f4f4f4;
-      padding: 10px 15px;
-      border-radius: 8px;
-      font-size: 14px;
+      color: #1a1a1a;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 12px;
     }
-    .prepared-item-actions {
+    .icon-btn-group {
       display: flex;
-      gap: 10px;
+      gap: 6px;
       align-items: center;
     }
     .icon-btn {
       background: none;
       border: none;
       cursor: pointer;
+      color: #1a1a1a;
       opacity: 0.7;
       transition: opacity 0.2s;
     }
     .icon-btn:hover { opacity: 1; }
 
-    /* Estilos del Modal Personalizado */
+    /* Modal de Previsualización Real */
+    #preview-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .preview-modal-content {
+      background: #fff;
+      color: #1a1a1a;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 650px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 30px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      position: relative;
+    }
+    .preview-close-btn {
+      position: absolute;
+      top: 20px; right: 20px;
+      background: #f4f4f4;
+      border: none;
+      font-size: 18px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .preview-close-btn:hover { background: #e0e0e0; }
+
+    /* Modal de Advertencia Cambios Sin Guardar */
     #unsaved-modal {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.6);
       z-index: 1000;
       align-items: center;
       justify-content: center;
     }
-
     .modal-content {
       background: #fff;
       padding: 30px;
@@ -574,91 +588,36 @@
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
-
-    .modal-content h3 {
-      font-family: var(--fuente-heavy);
-      font-size: 20px;
-      margin-bottom: 10px;
-      color: #1a1a1a;
-    }
-
-    .modal-content p {
-      font-family: var(--fuente-cuerpo);
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 24px;
-    }
-
-    .modal-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .modal-btn-primary {
-      background: #1a1a1a;
-      color: #fff;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-family: var(--fuente-cuerpo);
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
+    .modal-content h3 { font-family: var(--fuente-heavy); font-size: 20px; margin-bottom: 10px; color: #1a1a1a; }
+    .modal-content p { font-family: var(--fuente-cuerpo); font-size: 14px; color: #666; margin-bottom: 24px; }
+    .modal-buttons { display: flex; flex-direction: column; gap: 10px; }
+    .modal-btn-primary { background: #1a1a1a; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
     .modal-btn-primary:hover { background: #333; }
-
-    .modal-btn-danger {
-      background: #d9534f;
-      color: #fff;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-family: var(--fuente-cuerpo);
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
+    .modal-btn-danger { background: #d9534f; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
     .modal-btn-danger:hover { background: #c9302c; }
-
-    .modal-btn-secondary {
-      background: #e0e0e0;
-      color: #1a1a1a;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-family: var(--fuente-cuerpo);
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
+    .modal-btn-secondary { background: #e0e0e0; color: #1a1a1a; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
     .modal-btn-secondary:hover { background: #d0d0d0; }
 
     @media (max-width: 1050px) {
-      .admin-layout, #album-studio-layout {
-        flex-direction: column;
-      }
-      .drafts-sidebar, .sidebar-actions, .album-col {
-        width: 100%;
-        max-height: none;
-      }
-      .sidebar-actions {
-        flex-direction: row;
-        overflow-x: auto;
-      }
-      .action-card {
-        min-width: 210px;
-      }
+      .admin-layout, #album-studio-layout { flex-direction: column; }
+      .drafts-sidebar, .sidebar-actions, .album-col { width: 100%; max-height: none; }
+      .sidebar-actions { flex-direction: row; overflow-x: auto; }
+      .action-card { min-width: 210px; }
     }
   </style>
 </head>
 <body class="admin-body">
   <div class="fondo-oscuro"></div>
 
-  <!-- Modal personalizado para cambios sin guardar en títulos nuevos -->
+  <!-- Modal de Previsualización Real -->
+  <div id="preview-modal">
+    <div class="preview-modal-content">
+      <button class="preview-close-btn" onclick="cerrarPreviewModal()">×</button>
+      <div id="preview-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Modal de cambios sin guardar -->
   <div id="unsaved-modal">
     <div class="modal-content">
       <h3 id="modal-title">¿Qué deseas hacer con esta obra?</h3>
@@ -691,7 +650,7 @@
       <div style="display: flex; gap: 15px; align-items: center;">
         <span id="sync-status" style="font-family: var(--fuente-cuerpo); font-size: 12px; color: #666;">Sincronizado</span>
         <a href="index.html" style="color: #1a1a1a; font-family: var(--fuente-cuerpo); text-decoration: none; font-size: 14px; font-weight: 600;">Ver sitio ↗</a>
-        <button onclick="cerrarSesion()" style="background: #d9534f; border: none; color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-family: var(--fuente-cuerpo); font-size: 13px;">Salir</button>
+        <button onclick="cerrarSesion()" style="background: #d9534f; border: none; color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;">Salir</button>
       </div>
     </header>
 
@@ -749,10 +708,10 @@
 
     <!-- Vista de Tres Columnas para Montar Álbum -->
     <div id="album-studio-layout">
-      <!-- Columna Izquierda: Lista de títulos y sublistado -->
+      <!-- Columna Izquierda: Obras Disponibles y Poemas Seleccionados ordenables -->
       <div class="album-col album-col-left">
         <h3>Obras Disponibles</h3>
-        <div id="album-source-list" class="drafts-list" style="max-height: 250px;"></div>
+        <div id="album-source-list" class="drafts-list" style="max-height: 200px;"></div>
         
         <h3>Poemas Seleccionados (<span id="selected-count">0</span>/2 mín)</h3>
         <div id="album-selected-sublist" class="sublist-container">
@@ -760,17 +719,17 @@
         </div>
       </div>
 
-      <!-- Columna Central: Editor de textos y nombre del álbum -->
+      <!-- Columna Central: Editor del Álbum -->
       <div class="album-col album-col-center">
         <h3>Editor del Álbum</h3>
         <input type="text" id="album-name-input" class="doc-title-input" placeholder="Nombre del álbum..." style="font-size: 20px; margin-bottom: 10px;">
         
         <div id="album-poems-editors" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
-          <p style="font-size: 13px; color: #888; text-align: center; margin-top: 40px;">Selecciona al menos dos poemas para editar sus textos aquí</p>
+          <p style="font-size: 13px; color: #888; text-align: center; margin-top: 40px;">Selecciona al menos dos poemas para editar sus títulos y textos aquí</p>
         </div>
       </div>
 
-      <!-- Columna Derecha: Portada, Fechas y Acciones -->
+      <!-- Columna Derecha: Portada, Fecha, Acciones y Preparados Integrados -->
       <div class="album-col album-col-right">
         <h3>Portada del Álbum</h3>
         <div class="cover-dropzone" id="album-cover-dropzone" onclick="document.getElementById('cover-file-input').click()">
@@ -781,9 +740,7 @@
 
         <h3>Fecha de Lanzamiento</h3>
         <div class="date-selectors">
-          <select id="album-day">
-            <option value="">Día</option>
-          </select>
+          <select id="album-day"><option value="">Día</option></select>
           <select id="album-month">
             <option value="">Mes</option>
             <option value="1">Ene</option><option value="2">Feb</option><option value="3">Mar</option>
@@ -791,22 +748,23 @@
             <option value="7">Jul</option><option value="8">Ago</option><option value="9">Sep</option>
             <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dic</option>
           </select>
-          <select id="album-year">
-            <option value="">Año</option>
-          </select>
+          <select id="album-year"><option value="">Año</option></select>
         </div>
 
         <div class="album-actions-bottom">
-          <button class="btn-lanzar" onclick="lanzarAlbumDirecto()">Lanzamiento</button>
-          <button class="btn-preparar" onclick="desplegarAlbumPreparado()">Desplegar</button>
+          <button id="btn-guardar-cambios" class="btn-guardar-cambios" onclick="guardarCambiosAlbumPreparado()">Guardar cambios</button>
+          <div class="album-actions-row">
+            <button class="btn-lanzar" onclick="lanzarAlbumDirecto()">Lanzamiento</button>
+            <button class="btn-preparar" onclick="desplegarAlbumPreparado()">Desplegar</button>
+          </div>
+        </div>
+
+        <!-- Álbumes Preparados (Privados) bien integrados en la derecha -->
+        <div class="prepared-sidebar-section" id="prepared-sidebar-container" style="display: none;">
+          <h4>Álbumes Preparados</h4>
+          <div id="prepared-side-list" class="prepared-side-list"></div>
         </div>
       </div>
-    </div>
-
-    <!-- Sección de Preparados (Privados) -->
-    <div class="prepared-section" id="prepared-section-container" style="display: none;">
-      <h3>Álbumes Preparados (Privados)</h3>
-      <div id="prepared-list" class="prepared-list"></div>
     </div>
   </div>
 
@@ -820,10 +778,10 @@
     let draggedTitle = null;
     let pendingTargetTitle = null;
 
-    // Estado local del álbum actual en montaje
-    let albumSeleccionados = []; // Array de títulos
-    let albumTextosEditados = {}; // { titulo: texto }
+    let albumPoemas = [];
     let albumPortadaBase64 = null;
+    let editingPreparedAlbumKey = null;
+    let draggedSelectedIndex = null;
 
     window.addEventListener('DOMContentLoaded', () => {
       if (localStorage.getItem("admin_logueado") === "true" && tokenGitHub) {
@@ -930,7 +888,7 @@
         if (res.ok) {
           const data = await res.json();
           albumesPreparadosNube = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-          renderizarPreparados();
+          renderizarPreparadosSidebar();
         } else {
           albumesPreparadosNube = {};
         }
@@ -956,29 +914,20 @@
           e.dataTransfer.effectAllowed = 'move';
           setTimeout(() => item.classList.add('dragging'), 0);
         });
-
         item.addEventListener('dragend', () => {
           item.classList.remove('dragging');
           draggedTitle = null;
         });
-
-        item.addEventListener('dragover', (e) => {
-          e.preventDefault();
-          e.dataTransfer.dropEffect = 'move';
-        });
-
+        item.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
         item.addEventListener('drop', (e) => {
           e.preventDefault();
           if (!draggedTitle || draggedTitle === titulo) return;
-
           const keys = Object.keys(borradoresNube);
           const draggedIndex = keys.indexOf(draggedTitle);
           const targetIndex = keys.indexOf(titulo);
-
           if (draggedIndex > -1 && targetIndex > -1) {
             keys.splice(draggedIndex, 1);
             keys.splice(targetIndex, 0, draggedTitle);
-
             const reordered = {};
             keys.forEach(k => { reordered[k] = borradoresNube[k]; });
             borradoresNube = reordered;
@@ -994,12 +943,7 @@
         const btnBorrar = document.createElement('button');
         btnBorrar.className = 'delete-draft-btn';
         btnBorrar.title = 'Eliminar obra';
-        btnBorrar.innerHTML = `
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="3 6 5 6 21 6"></polyline>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-          </svg>
-        `;
+        btnBorrar.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`;
         btnBorrar.onclick = (e) => eliminarBorrador(titulo, e);
         item.appendChild(btnBorrar);
 
@@ -1010,10 +954,8 @@
 
     function cargarBorrador(titulo) {
       if (obraActualKey === titulo) return;
-
       const tituloActualInput = document.getElementById('doc-title').value.trim();
       const contenidoActualInput = document.getElementById('doc-editor').innerHTML.trim();
-
       const esTituloNuevoNoExistente = (obraActualKey === null && (tituloActualInput !== "" || contenidoActualInput !== "")) ||
                                        (tituloActualInput !== "" && !borradoresNube[tituloActualInput] && obraActualKey !== tituloActualInput);
 
@@ -1028,14 +970,10 @@
         `;
         document.getElementById('unsaved-modal').style.display = 'flex';
       } else {
-        if (obraActualKey) {
-          cambiosLocales[obraActualKey] = document.getElementById('doc-editor').innerHTML;
-        }
-
+        if (obraActualKey) { cambiosLocales[obraActualKey] = document.getElementById('doc-editor').innerHTML; }
         document.getElementById('doc-title').value = titulo;
         const textoACargar = cambiosLocales[titulo] !== undefined ? cambiosLocales[titulo] : (borradoresNube[titulo] || "");
         document.getElementById('doc-editor').innerHTML = textoACargar;
-        
         obraActualKey = titulo;
         renderizarBorradores();
       }
@@ -1044,12 +982,10 @@
     async function guardarObra() {
       const titulo = document.getElementById('doc-title').value.trim();
       const contenido = document.getElementById('doc-editor').innerHTML;
-
       if (!titulo) { alert("Escribe un título para la obra."); return; }
       if (!repoInfo) { alert("Repositorio no detectado."); return; }
 
       document.getElementById('sync-status').textContent = "Guardando...";
-
       try {
         let sha = null;
         let remoteDrafts = {};
@@ -1061,51 +997,31 @@
           sha = fileData.sha;
           remoteDrafts = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
         }
-
-        if (obraActualKey && obraActualKey !== titulo && remoteDrafts[obraActualKey]) {
-          delete remoteDrafts[obraActualKey];
-        }
-
+        if (obraActualKey && obraActualKey !== titulo && remoteDrafts[obraActualKey]) { delete remoteDrafts[obraActualKey]; }
         remoteDrafts[titulo] = contenido;
 
         const reorderedDrafts = {};
         reorderedDrafts[titulo] = contenido;
-        for (let k in remoteDrafts) {
-          if (k !== titulo) { reorderedDrafts[k] = remoteDrafts[k]; }
-        }
-        remoteDrafts = reorderedDrafts;
-
-        borradoresNube = remoteDrafts;
+        for (let k in remoteDrafts) { if (k !== titulo) { reorderedDrafts[k] = remoteDrafts[k]; } }
+        borradoresNube = reorderedDrafts;
         obraActualKey = titulo;
-
         if (cambiosLocales[titulo]) delete cambiosLocales[titulo];
 
         const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(borradoresNube, null, 2))));
-
         const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
           method: 'PUT',
-          headers: {
-            'Authorization': `token ${tokenGitHub}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            message: `Guardar obra: ${titulo}`,
-            content: encodedContent,
-            sha: sha
-          })
+          headers: { 'Authorization': `token ${tokenGitHub}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: `Guardar obra: ${titulo}`, content: encodedContent, sha: sha })
         });
 
         if (res.ok) {
           document.getElementById('sync-status').textContent = "Sincronizado";
           renderizarBorradores();
         } else {
-          const errData = await res.json();
           document.getElementById('sync-status').textContent = "Error al guardar";
-          alert("Error de GitHub: " + (errData.message || "No se pudo guardar"));
         }
       } catch (e) {
         document.getElementById('sync-status').textContent = "Error de red";
-        alert("Error de red al guardar.");
       }
     }
 
@@ -1115,7 +1031,6 @@
       if (!repoInfo) { alert("Repositorio no detectado."); return; }
 
       document.getElementById('sync-status').textContent = "Eliminando...";
-
       try {
         let sha = null;
         let remoteDrafts = {};
@@ -1127,16 +1042,11 @@
           sha = fileData.sha;
           remoteDrafts = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
         }
-
         if (remoteDrafts[titulo] !== undefined) delete remoteDrafts[titulo];
-        else if (borradoresNube[titulo] !== undefined) {
-          delete borradoresNube[titulo];
-          remoteDrafts = { ...borradoresNube };
-        }
+        else if (borradoresNube[titulo] !== undefined) { delete borradoresNube[titulo]; remoteDrafts = { ...borradoresNube }; }
 
         borradoresNube = remoteDrafts;
         if (cambiosLocales[titulo]) delete cambiosLocales[titulo];
-
         if (obraActualKey === titulo) {
           document.getElementById('doc-title').value = "";
           document.getElementById('doc-editor').innerHTML = "";
@@ -1144,20 +1054,11 @@
         }
 
         const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(borradoresNube, null, 2))));
-
         const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
           method: 'PUT',
-          headers: {
-            'Authorization': `token ${tokenGitHub}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            message: `Eliminar borrador: ${titulo}`,
-            content: encodedContent,
-            sha: sha
-          })
+          headers: { 'Authorization': `token ${tokenGitHub}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: `Eliminar borrador: ${titulo}`, content: encodedContent, sha: sha })
         });
-
         if (res.ok) {
           document.getElementById('sync-status').textContent = "Sincronizado";
           renderizarBorradores();
@@ -1194,13 +1095,11 @@
       await guardarObra();
       if (target) ejecutarCargarBorradorDesdeModal(target);
     }
-
     function modalCambiarSinGuardar() {
       const target = pendingTargetTitle;
       cerrarModalUnsaved();
       if (target) ejecutarCargarBorradorDesdeModal(target);
     }
-
     function ejecutarCargarBorradorDesdeModal(titulo) {
       if (obraActualKey && cambiosLocales[obraActualKey]) delete cambiosLocales[obraActualKey];
       document.getElementById('doc-title').value = titulo;
@@ -1209,23 +1108,19 @@
       obraActualKey = titulo;
       renderizarBorradores();
     }
-
     async function modalGuardarYNuva() {
       cerrarModalUnsaved();
       await guardarObra();
       ejecutarNuevaIdea();
     }
-
     function modalLimpiarSinGuardar() {
       cerrarModalUnsaved();
       ejecutarNuevaIdea();
     }
-
     function cerrarModalUnsaved() {
       document.getElementById('unsaved-modal').style.display = 'none';
       pendingTargetTitle = null;
     }
-
     function ejecutarNuevaIdea() {
       if (obraActualKey && cambiosLocales[obraActualKey]) delete cambiosLocales[obraActualKey];
       document.getElementById('doc-title').value = "";
@@ -1233,19 +1128,17 @@
       obraActualKey = null;
       renderizarBorradores();
     }
-
     function aplicarFormato(comando) {
       document.execCommand(comando, false, null);
       document.getElementById('doc-editor').focus();
     }
-
     function cerrarSesion() {
       localStorage.removeItem("admin_logueado");
       localStorage.removeItem("github_token");
       location.reload();
     }
 
-    // --- LÓGICA DE MONTAR ÁLBUM ---
+    // --- LÓGICA DE MONTAR ÁLBUM Y GESTIÓN DE PREPARADOS ---
 
     function abrirMontarAlbum() {
       document.getElementById('main-admin-layout').style.display = 'none';
@@ -1253,10 +1146,11 @@
       document.getElementById('header-actions-normal').style.display = 'none';
       document.getElementById('header-actions-album').style.display = 'flex';
       
-      albumSeleccionados = [];
-      albumTextosEditados = {};
+      albumPoemas = [];
       albumPortadaBase64 = null;
+      editingPreparedAlbumKey = null;
       document.getElementById('album-name-input').value = "";
+      document.getElementById('btn-guardar-cambios').style.display = 'none';
       document.getElementById('album-cover-dropzone').innerHTML = `
         <span id="cover-placeholder-text" style="font-size: 12px; color: #666; text-align: center; padding: 10px;">Subir o arrastrar portada</span>
         <input type="file" id="cover-file-input" accept="image/*" style="display: none;" onchange="cargarPortadaAlbum(event)">
@@ -1280,11 +1174,13 @@
       const sourceList = document.getElementById('album-source-list');
       sourceList.innerHTML = "";
       
+      const titulosSeleccionados = albumPoemas.map(p => p.originalTitle);
+
       if (Object.keys(borradoresNube).length === 0) {
         sourceList.innerHTML = '<p style="font-size: 13px; color: #888; text-align: center; padding: 10px;">Sin obras</p>';
       } else {
         for (let titulo in borradoresNube) {
-          if (albumSeleccionados.includes(titulo)) continue; // Ocultar si ya está seleccionado
+          if (titulosSeleccionados.includes(titulo)) continue;
           const item = document.createElement('div');
           item.className = 'draft-item';
           item.textContent = titulo;
@@ -1295,15 +1191,36 @@
 
       const sublistContainer = document.getElementById('album-selected-sublist');
       sublistContainer.innerHTML = "";
-      document.getElementById('selected-count').textContent = albumSeleccionados.length;
+      document.getElementById('selected-count').textContent = albumPoemas.length;
 
-      if (albumSeleccionados.length === 0) {
+      if (albumPoemas.length === 0) {
         sublistContainer.innerHTML = '<p style="font-size: 12px; color: #888; text-align: center; margin: auto;">Haz clic en las obras para añadirlas</p>';
       } else {
-        albumSeleccionados.forEach((titulo) => {
+        albumPoemas.forEach((poema, idx) => {
           const subItem = document.createElement('div');
           subItem.className = 'sublist-item';
-          subItem.innerHTML = `<span>${titulo}</span><button onclick="removerPoemaDeAlbum('${titulo}')">×</button>`;
+          subItem.setAttribute('draggable', 'true');
+
+          subItem.addEventListener('dragstart', (e) => {
+            draggedSelectedIndex = idx;
+            e.dataTransfer.effectAllowed = 'move';
+            setTimeout(() => subItem.classList.add('dragging'), 0);
+          });
+          subItem.addEventListener('dragend', () => {
+            subItem.classList.remove('dragging');
+            draggedSelectedIndex = null;
+          });
+          subItem.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
+          subItem.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (draggedSelectedIndex === null || draggedSelectedIndex === idx) return;
+            const movedItem = albumPoemas.splice(draggedSelectedIndex, 1)[0];
+            albumPoemas.splice(idx, 0, movedItem);
+            draggedSelectedIndex = null;
+            renderizarListasMontarAlbum();
+          });
+
+          subItem.innerHTML = `<span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;">${idx + 1}. ${poema.title}</span><button onclick="removerPoemaDeAlbum('${poema.originalTitle}')">×</button>`;
           sublistContainer.appendChild(subItem);
         });
       }
@@ -1312,17 +1229,16 @@
     }
 
     function seleccionarPoemaParaAlbum(titulo) {
-      if (!albumSeleccionados.includes(titulo)) {
-        albumSeleccionados.push(titulo);
-        if (albumTextosEditados[titulo] === undefined) {
-          albumTextosEditados[titulo] = borradoresNube[titulo] || "";
-        }
-        renderizarListasMontarAlbum();
-      }
+      albumPoemas.push({
+        originalTitle: titulo,
+        title: titulo,
+        text: borradoresNube[titulo] || ""
+      });
+      renderizarListasMontarAlbum();
     }
 
-    function removerPoemaDeAlbum(titulo) {
-      albumSeleccionados = albumSeleccionados.filter(t => t !== titulo);
+    function removerPoemaDeAlbum(originalTitle) {
+      albumPoemas = albumPoemas.filter(p => p.originalTitle !== originalTitle);
       renderizarListasMontarAlbum();
     }
 
@@ -1330,24 +1246,35 @@
       const container = document.getElementById('album-poems-editors');
       container.innerHTML = "";
 
-      if (albumSeleccionados.length === 0) {
-        container.innerHTML = '<p style="font-size: 13px; color: #888; text-align: center; margin-top: 40px;">Selecciona al menos dos poemas para editar sus textos aquí</p>';
+      if (albumPoemas.length === 0) {
+        container.innerHTML = '<p style="font-size: 13px; color: #888; text-align: center; margin-top: 40px;">Selecciona al menos dos poemas para editar sus títulos y textos aquí</p>';
         return;
       }
 
-      albumSeleccionados.forEach((titulo, index) => {
+      albumPoemas.forEach((poema, index) => {
         const wrapper = document.createElement('div');
         wrapper.className = 'album-editor-item';
         wrapper.innerHTML = `
-          <h4>${index + 1}. ${titulo}</h4>
-          <textarea class="album-editor-textarea" oninput="actualizarTextoPoemaAlbum('${titulo}', this.value)">${albumTextosEditados[titulo] || ""}</textarea>
+          <label style="font-size: 12px; color: #666; font-family: var(--fuente-cuerpo);">Título del poema ${index + 1}:</label>
+          <input type="text" class="album-poem-title-input" value="${poema.title}" oninput="actualizarTituloPoema(${index}, this.value)">
+          <label style="font-size: 12px; color: #666; font-family: var(--fuente-cuerpo); margin-top: 6px; display: block;">Texto:</label>
+          <textarea class="album-editor-textarea" oninput="actualizarTextoPoema(${index}, this.value)">${poema.text}</textarea>
         `;
         container.appendChild(wrapper);
       });
     }
 
-    function actualizarTextoPoemaAlbum(titulo, texto) {
-      albumTextosEditados[titulo] = texto;
+    function actualizarTituloPoema(index, nuevoTitulo) {
+      albumPoemas[index].title = nuevoTitulo;
+      const sublistContainer = document.getElementById('album-selected-sublist');
+      const items = sublistContainer.getElementsByClassName('sublist-item');
+      if (items[index]) {
+        items[index].querySelector('span').textContent = `${index + 1}. ${nuevoTitulo}`;
+      }
+    }
+
+    function actualizarTextoPoema(index, nuevoTexto) {
+      albumPoemas[index].text = nuevoTexto;
     }
 
     function cargarPortadaAlbum(event) {
@@ -1369,7 +1296,7 @@
     function validarAlbumListo() {
       const nombreAlbum = document.getElementById('album-name-input').value.trim();
       if (!nombreAlbum) { alert("Introduce el nombre del álbum."); return false; }
-      if (albumSeleccionados.length < 2) { alert("Debes seleccionar al menos dos títulos para formar un álbum válido."); return false; }
+      if (albumPoemas.length < 2) { alert("Debes seleccionar al menos dos títulos para formar un álbum válido."); return false; }
       if (!albumPortadaBase64) { alert("Sube una imagen de portada para el álbum."); return false; }
       const dia = document.getElementById('album-day').value;
       const mes = document.getElementById('album-month').value;
@@ -1381,23 +1308,16 @@
     async function lanzarAlbumDirecto() {
       if (!validarAlbumListo()) return;
       if (!confirm("¿Deseas publicar este álbum directamente en el feed público?")) return;
-      
-      // Lógica de lanzamiento directo (simulada/preparada para integrarse con feed público)
       alert("¡Álbum lanzado exitosamente al feed público!");
       volverAlEstudioNormal();
     }
 
     async function desplegarAlbumPreparado() {
       if (!validarAlbumListo()) return;
-
       const nombreAlbum = document.getElementById('album-name-input').value.trim();
       const albumData = {
         nombre: nombreAlbum,
-        poemas: albumSeleccionados.map(titulo => ({
-          titulo: titulo,
-          texto: albumTextosEditados[titulo] || "",
-          imagen: albumPortadaBase64
-        })),
+        poemas: albumPoemas.map(p => ({ originalTitle: p.originalTitle, titulo: p.title, texto: p.text })),
         portada: albumPortadaBase64,
         fecha: {
           dia: document.getElementById('album-day').value,
@@ -1407,7 +1327,6 @@
       };
 
       document.getElementById('sync-status').textContent = "Guardando preparado...";
-
       try {
         let sha = null;
         const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
@@ -1424,35 +1343,83 @@
         const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(albumesPreparadosNube, null, 2))));
         const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
           method: 'PUT',
-          headers: {
-            'Authorization': `token ${tokenGitHub}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            message: `Guardar álbum preparado: ${nombreAlbum}`,
-            content: encodedContent,
-            sha: sha
-          })
+          headers: { 'Authorization': `token ${tokenGitHub}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: `Guardar álbum preparado: ${nombreAlbum}`, content: encodedContent, sha: sha })
         });
 
         if (res.ok) {
           document.getElementById('sync-status').textContent = "Sincronizado";
-          renderizarPreparados();
-          alert("Álbum guardado en la sección de 'Preparados'.");
+          renderizarPreparadosSidebar();
+          alert("Álbum guardado en la sección de preparados.");
           volverAlEstudioNormal();
         } else {
           document.getElementById('sync-status').textContent = "Error al guardar";
-          alert("No se pudo guardar el álbum preparado.");
         }
       } catch (e) {
         document.getElementById('sync-status').textContent = "Error de red";
-        alert("Error de red al guardar el álbum preparado.");
       }
     }
 
-    function renderizarPreparados() {
-      const container = document.getElementById('prepared-section-container');
-      const lista = document.getElementById('prepared-list');
+    async function guardarCambiosAlbumPreparado() {
+      if (!validarAlbumListo()) return;
+      const nombreAlbum = document.getElementById('album-name-input').value.trim();
+      
+      if (editingPreparedAlbumKey && editingPreparedAlbumKey !== nombreAlbum) {
+        delete albumesPreparadosNube[editingPreparedAlbumKey];
+      }
+
+      const albumData = {
+        nombre: nombreAlbum,
+        poemas: albumPoemas.map(p => ({ originalTitle: p.originalTitle, titulo: p.title, texto: p.text })),
+        portada: albumPortadaBase64,
+        fecha: {
+          dia: document.getElementById('album-day').value,
+          mes: document.getElementById('album-month').value,
+          año: document.getElementById('album-year').value
+        }
+      };
+
+      document.getElementById('sync-status').textContent = "Actualizando preparado...";
+      try {
+        let sha = null;
+        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
+          headers: { 'Authorization': `token ${tokenGitHub}` }
+        });
+        if (check.ok) {
+          const fileData = await check.json();
+          sha = fileData.sha;
+          albumesPreparadosNube = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+        }
+
+        if (editingPreparedAlbumKey && albumesPreparadosNube[editingPreparedAlbumKey]) {
+          delete albumesPreparadosNube[editingPreparedAlbumKey];
+        }
+        albumesPreparadosNube[nombreAlbum] = albumData;
+
+        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(albumesPreparadosNube, null, 2))));
+        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
+          method: 'PUT',
+          headers: { 'Authorization': `token ${tokenGitHub}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: `Actualizar álbum preparado: ${nombreAlbum}`, content: encodedContent, sha: sha })
+        });
+
+        if (res.ok) {
+          document.getElementById('sync-status').textContent = "Sincronizado";
+          renderizarPreparadosSidebar();
+          alert("Cambios guardados correctamente en el álbum preparado.");
+          editingPreparedAlbumKey = nombreAlbum;
+          document.getElementById('btn-guardar-cambios').style.display = 'block';
+        } else {
+          document.getElementById('sync-status').textContent = "Error al actualizar";
+        }
+      } catch (e) {
+        document.getElementById('sync-status').textContent = "Error de red";
+      }
+    }
+
+    function renderizarPreparadosSidebar() {
+      const container = document.getElementById('prepared-sidebar-container');
+      const lista = document.getElementById('prepared-side-list');
       lista.innerHTML = "";
 
       const keys = Object.keys(albumesPreparadosNube);
@@ -1464,15 +1431,18 @@
       container.style.display = 'block';
       keys.forEach(nombre => {
         const item = document.createElement('div');
-        item.className = 'prepared-item';
+        item.className = 'prepared-side-item';
         item.innerHTML = `
-          <span><b>${nombre}</b> (${albumesPreparadosNube[nombre].poemas.length} poemas)</span>
-          <div class="prepared-item-actions">
-            <button class="icon-btn" title="Previsualizar en plantilla" onclick="previsualizarAlbumPreparado('${nombre}')">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;"><b>${nombre}</b></span>
+          <div class="icon-btn-group">
+            <button class="icon-btn" title="Previsualizar" onclick="previsualizarAlbumPreparado('${nombre}')">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
             </button>
-            <button class="icon-btn" title="Editar o reordenar" onclick="editarAlbumPreparado('${nombre}')">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            <button class="icon-btn" title="Editar" onclick="editarAlbumPreparado('${nombre}')">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            </button>
+            <button class="icon-btn" title="Eliminar" onclick="eliminarAlbumPreparado('${nombre}', event)">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
             </button>
           </div>
         `;
@@ -1480,8 +1450,79 @@
       });
     }
 
+    async function eliminarAlbumPreparado(nombre, event) {
+      event.stopPropagation();
+      if (!confirm(`¿Estás seguro de que deseas eliminar el álbum preparado "${nombre}"?`)) return;
+      if (!repoInfo) { alert("Repositorio no detectado."); return; }
+
+      document.getElementById('sync-status').textContent = "Eliminando preparado...";
+      try {
+        let sha = null;
+        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
+          headers: { 'Authorization': `token ${tokenGitHub}` }
+        });
+        if (check.ok) {
+          const fileData = await check.json();
+          sha = fileData.sha;
+          albumesPreparadosNube = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+        }
+
+        if (albumesPreparadosNube[nombre] !== undefined) {
+          delete albumesPreparadosNube[nombre];
+        }
+
+        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(albumesPreparadosNube, null, 2))));
+        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
+          method: 'PUT',
+          headers: { 'Authorization': `token ${tokenGitHub}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: `Eliminar álbum preparado: ${nombre}`, content: encodedContent, sha: sha })
+        });
+
+        if (res.ok) {
+          document.getElementById('sync-status').textContent = "Sincronizado";
+          renderizarPreparadosSidebar();
+          if (editingPreparedAlbumKey === nombre) {
+            volverAlEstudioNormal();
+          }
+        } else {
+          document.getElementById('sync-status').textContent = "Error al eliminar";
+        }
+      } catch (e) {
+        document.getElementById('sync-status').textContent = "Error de red";
+      }
+    }
+
     function previsualizarAlbumPreparado(nombre) {
-      alert(`Abriendo vista previa para el álbum: ${nombre} (Plantilla privada)`);
+      const album = albumesPreparadosNube[nombre];
+      if (!album) return;
+
+      const modalBody = document.getElementById('preview-modal-body');
+      let htmlContent = `
+        <div style="text-align: center; margin-bottom: 20px;">
+          ${album.portada ? `<img src="${album.portada}" style="width: 180px; height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">` : ''}
+          <h2 style="font-family: var(--fuente-heavy); font-size: 24px; margin: 0 0 6px 0;">${album.nombre}</h2>
+          <p style="font-size: 13px; color: #666; margin: 0;">Lanzamiento: ${album.fecha.dia}/${album.fecha.mes}/${album.fecha.año}</p>
+        </div>
+        <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
+        <div style="display: flex; flex-direction: column; gap: 30px;">
+      `;
+
+      album.poemas.forEach((p, idx) => {
+        htmlContent += `
+          <div>
+            <h3 style="font-family: var(--fuente-heavy); font-size: 18px; margin-bottom: 8px;">${idx + 1}. ${p.titulo}</h3>
+            <div style="font-family: 'Times New Roman', Times, serif; font-size: 16px; line-height: 1.6; white-space: pre-wrap; color: #333;">${p.texto}</div>
+          </div>
+        `;
+      });
+
+      htmlContent += `</div>`;
+      modalBody.innerHTML = htmlContent;
+      document.getElementById('preview-modal').style.display = 'flex';
+    }
+
+    function cerrarPreviewModal() {
+      document.getElementById('preview-modal').style.display = 'none';
     }
 
     function editarAlbumPreparado(nombre) {
@@ -1489,11 +1530,16 @@
       if (!album) return;
 
       abrirMontarAlbum();
+      editingPreparedAlbumKey = nombre;
       document.getElementById('album-name-input').value = album.nombre;
-      albumSeleccionados = album.poemas.map(p => p.titulo);
-      album.poemas.forEach(p => {
-        albumTextosEditados[p.titulo] = p.texto;
-      });
+      document.getElementById('btn-guardar-cambios').style.display = 'block';
+
+      albumPoemas = album.poemas.map(p => ({
+        originalTitle: p.originalTitle || p.titulo,
+        title: p.titulo,
+        text: p.texto
+      }));
+
       albumPortadaBase64 = album.portada;
       if (albumPortadaBase64) {
         const dropzone = document.getElementById('album-cover-dropzone');
