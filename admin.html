@@ -316,6 +316,92 @@
       margin: 0;
     }
 
+    /* Estilos del Modal Personalizado */
+    #unsaved-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .modal-content h3 {
+      font-family: var(--fuente-heavy);
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #1a1a1a;
+    }
+
+    .modal-content p {
+      font-family: var(--fuente-cuerpo);
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 24px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .modal-btn-primary {
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: var(--fuente-cuerpo);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .modal-btn-primary:hover { background: #333; }
+
+    .modal-btn-danger {
+      background: #d9534f;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: var(--fuente-cuerpo);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .modal-btn-danger:hover { background: #c9302c; }
+
+    .modal-btn-secondary {
+      background: #e0e0e0;
+      color: #1a1a1a;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: var(--fuente-cuerpo);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .modal-btn-secondary:hover { background: #d0d0d0; }
+
     @media (max-width: 1050px) {
       .admin-layout {
         flex-direction: column;
@@ -336,6 +422,19 @@
 </head>
 <body class="admin-body">
   <div class="fondo-oscuro"></div>
+
+  <!-- Modal personalizado para cambios sin guardar -->
+  <div id="unsaved-modal">
+    <div class="modal-content">
+      <h3>¿Qué deseas hacer con esta obra?</h3>
+      <p>Tienes cambios actuales que no se han guardado en la nube.</p>
+      <div class="modal-buttons">
+        <button class="modal-btn-primary" onclick="modalGuardarYNuva()">Guardar obra y crear nueva</button>
+        <button class="modal-btn-danger" onclick="modalLimpiarSinGuardar()">Limpiar sin guardar</button>
+        <button class="modal-btn-secondary" onclick="cerrarModalUnsaved()">Cancelar</button>
+      </div>
+    </div>
+  </div>
 
   <div id="login-screen">
     <h2>Acceso Restringido</h2>
@@ -580,12 +679,14 @@
         if (res.ok) {
           document.getElementById('sync-status').textContent = "Sincronizado";
           renderizarBorradores();
-          alert("¡Obra guardada en GitHub correctamente!");
         } else {
+          const errData = await res.json();
           document.getElementById('sync-status').textContent = "Error al guardar";
+          alert("Error de GitHub: " + (errData.message || "No se pudo guardar"));
         }
       } catch (e) {
         document.getElementById('sync-status').textContent = "Error de red";
+        alert("Error de red al guardar.");
       }
     }
 
@@ -611,9 +712,13 @@
           remoteDrafts = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
         }
 
-        if (remoteDrafts[titulo]) {
+        if (remoteDrafts[titulo] !== undefined) {
           delete remoteDrafts[titulo];
+        } else if (borradoresNube[titulo] !== undefined) {
+          delete borradoresNube[titulo];
+          remoteDrafts = { ...borradoresNube };
         }
+
         borradoresNube = remoteDrafts;
 
         if (obraActualKey === titulo) {
@@ -641,10 +746,13 @@
           document.getElementById('sync-status').textContent = "Sincronizado";
           renderizarBorradores();
         } else {
+          const errData = await res.json();
           document.getElementById('sync-status').textContent = "Error al eliminar";
+          alert("Error de GitHub al eliminar: " + (errData.message || "Conflicto de versión"));
         }
       } catch (e) {
         document.getElementById('sync-status').textContent = "Error de red";
+        alert("Error de red al intentar eliminar.");
       }
     }
 
@@ -652,12 +760,38 @@
       const tituloActual = document.getElementById('doc-title').value.trim();
       const textoActual = document.getElementById('doc-editor').innerHTML.trim();
 
-      if ((tituloActual || textoActual) && !borradoresNube[tituloActual]) {
-        if (!confirm("Tienes cambios sin guardar. ¿Deseas limpiar la página?")) {
-          return;
-        }
-      }
+      // Verificar si hay cambios escritos que no coinciden con lo guardado en la nube
+      const estaGuardado = (borradoresNube[tituloActual] === textoActual);
 
+      if ((tituloActual || textoActual) && !estaGuardado) {
+        // Mostrar ventana modal personalizada
+        document.getElementById('unsaved-modal').style.display = 'flex';
+      } else {
+        ejecutarNuevaIdea();
+      }
+    }
+
+    async function modalGuardarYNuva() {
+      cerrarModalUnsaved();
+      await guardarObra();
+      // Tras guardar correctamente, limpiamos el editor para la nueva idea
+      const tituloActual = document.getElementById('doc-title').value.trim();
+      const textoActual = document.getElementById('doc-editor').innerHTML.trim();
+      if (borradoresNube[tituloActual] === textoActual) {
+        ejecutarNuevaIdea();
+      }
+    }
+
+    function modalLimpiarSinGuardar() {
+      cerrarModalUnsaved();
+      ejecutarNuevaIdea();
+    }
+
+    function cerrarModalUnsaved() {
+      document.getElementById('unsaved-modal').style.display = 'none';
+    }
+
+    function ejecutarNuevaIdea() {
       document.getElementById('doc-title').value = "";
       document.getElementById('doc-editor').innerHTML = "";
       obraActualKey = null;
