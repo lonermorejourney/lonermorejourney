@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TE PERDÍ PARA NAVIDAD — Lonermorejourney</title>
+  <title id="page-title">Lonermorejourney</title>
 
   <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/sf-ui-display">
   <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/proxima-nova-2">
@@ -17,16 +17,16 @@
     <div class="album-card">
 
       <div class="album-top">
-        <img class="album-cover" src="portada.png" alt="TE PERDÍ PARA NAVIDAD">
+        <img class="album-cover" id="album-cover" src="portada.png" alt="">
 
         <div class="album-header">
-          <p class="album-tag">Álbum</p>
-          <h1 class="album-title">TE PERDÍ PARA NAVIDAD<span class="reg">®</span></h1>
+          <p class="album-tag" id="album-tag">Álbum</p>
+          <h1 class="album-title"><span id="album-title-text"></span><span class="reg">®</span></h1>
 
           <!-- Metadatos MÓVIL (3 líneas separadas) -->
           <div class="album-meta-mobile">
-            <p class="album-genre-count">Poesía <span class="dot">•</span> 8 Títulos</p>
-            <p class="album-indicator-date">Álbum 1 ene 2026</p>
+            <p class="album-genre-count">Poesía <span class="dot">•</span> <span id="mobile-count-text">0 Títulos</span></p>
+            <p class="album-indicator-date" id="mobile-indicator-date">Álbum</p>
             <div class="album-author-row">
               <img class="album-avatar" src="avatar.jpeg" alt="">
               <p class="album-author">de felipeortegareyes</p>
@@ -36,44 +36,13 @@
           <!-- Metadatos PC (1 línea combinada) -->
           <div class="album-meta-desktop">
             <img class="album-avatar" src="avatar.jpeg" alt="">
-            <p class="album-meta-desktop-text">de felipeortegareyes <span class="dot">•</span> 1 ene 2026 <span class="dot">•</span> 8 Títulos</p>
+            <p class="album-meta-desktop-text">de felipeortegareyes <span class="dot">•</span> <span id="desktop-date-text"></span> <span class="dot">•</span> <span id="desktop-count-text">0 Títulos</span></p>
           </div>
         </div>
       </div>
 
-      <div class="poems-list">
-        <a href="#" class="poem-item">
-          <img class="poem-cover" src="portada.png" alt="">
-          <span class="poem-title">ÁRBOL DESDECORADO<span class="reg">®</span></span>
-        </a>
-        <a href="#" class="poem-item">
-          <img class="poem-cover" src="portada.png" alt="">
-          <span class="poem-title">NUESTRO ÚLTIMO AÑO<span class="reg">®</span></span>
-        </a>
-        <a href="#" class="poem-item">
-          <img class="poem-cover" src="portada.png" alt="">
-          <span class="poem-title">LAS RUTITAS Y LO MALO<span class="reg">®</span></span>
-        </a>
-        <a href="#" class="poem-item">
-          <img class="poem-cover" src="portada.png" alt="">
-          <span class="poem-title">MIS BESOS RECHINANTES<span class="reg">®</span></span>
-        </a>
-        <a href="#" class="poem-item">
-          <img class="poem-cover" src="portada.png" alt="">
-          <span class="poem-title">DE SU DESEO ASUSTADIZA<span class="reg">®</span></span>
-        </a>
-        <a href="#" class="poem-item">
-          <img class="poem-cover" src="portada.png" alt="">
-          <span class="poem-title">NUNCA TE ECHARÉ DE MAS<span class="reg">®</span></span>
-        </a>
-        <a href="#" class="poem-item">
-          <img class="poem-cover" src="portada.png" alt="">
-          <span class="poem-title">HECHOS DEL CLARAZÓN<span class="reg">®</span></span>
-        </a>
-        <a href="#" class="poem-item">
-          <img class="poem-cover" src="portada.png" alt="">
-          <span class="poem-title">EL DÍA QUE NOS DESCONOCIMOS<span class="reg">®</span></span>
-        </a>
+      <div class="poems-list" id="poems-list">
+        <!-- Los poemas se inyectarán dinámicamente aquí -->
       </div>
 
       <p class="rights-stamp">®<span id="rights-year"></span> lonermorejourney</p>
@@ -83,6 +52,78 @@
 
   <script>
     document.getElementById('rights-year').textContent = new Date().getFullYear();
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const obraIndex = urlParams.get('id');
+
+            const response = await fetch('posts.json');
+            const posts = await response.json();
+
+            if (!posts || posts.length === 0) return;
+
+            // Selecciona la obra concreta por ID en la URL o carga la última publicada por defecto
+            const obra = obraIndex !== null ? posts[obraIndex] : posts[posts.length - 1];
+            if (!obra) return;
+
+            // Actualizar título de la pestaña del navegador
+            document.getElementById('page-title').textContent = `${obra.titulo} — Lonermorejourney`;
+
+            // Rellenar portada principal (apuntando a la carpeta portadas/ o por defecto)
+            const coverImg = document.getElementById('album-cover');
+            coverImg.src = obra.imagen ? obra.imagen : 'portada.png';
+            coverImg.alt = obra.titulo;
+
+            // Título principal
+            document.getElementById('album-title-text').textContent = obra.titulo;
+
+            // Calcular cantidad total de títulos/poemas dinámicamente
+            const totalPoemas = obra.poemas ? obra.poemas.length : 0;
+            const textoConteo = totalPoemas === 1 ? '1 Título' : `${totalPoemas} Títulos`;
+
+            // Configuración visual según el tipo explícito definido en el panel
+            const tagEl = document.getElementById('album-tag');
+            const mobileDateEl = document.getElementById('mobile-indicator-date');
+
+            if (obra.tipo === 'individual') {
+                tagEl.textContent = "Título • Poesía";
+                mobileDateEl.textContent = obra.fecha; // Formato limpio para individual
+            } else {
+                tagEl.textContent = "Álbum";
+                mobileDateEl.textContent = `Álbum ${obra.fecha}`; // Formato con prefijo para álbum
+            }
+
+            // Inyectar contadores y fechas en móvil y escritorio
+            document.getElementById('mobile-count-text').textContent = textoConteo;
+            document.getElementById('desktop-date-text').textContent = obra.fecha;
+            document.getElementById('desktop-count-text').textContent = textoConteo;
+
+            // Renderizar la lista de poemas limpia y dinámica
+            const poemsListContainer = document.getElementById('poems-list');
+            poemsListContainer.innerHTML = '';
+
+            if (obra.poemas && obra.poemas.length > 0) {
+                obra.poemas.forEach(poema => {
+                    const poemItem = document.createElement('a');
+                    poemItem.href = '#';
+                    poemItem.className = 'poem-item';
+
+                    const nombrePoema = typeof poema === 'string' ? poema : (poema.titulo || poema);
+                    const miniatura = (typeof poema === 'object' && poema.imagen) ? poema.imagen : (obra.imagen || 'portada.png');
+
+                    poemItem.innerHTML = `
+                        <img class="poem-cover" src="${miniatura}" alt="">
+                        <span class="poem-title">${nombrePoema}<span class="reg">®</span></span>
+                    `;
+                    poemsListContainer.appendChild(poemItem);
+                });
+            }
+
+        } catch (error) {
+            console.error("Error al cargar los datos dinámicos de la obra:", error);
+        }
+    });
   </script>
 </body>
 </html>
