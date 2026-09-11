@@ -778,11 +778,10 @@
     let draggedTitle = null;
     let pendingTargetTitle = null;
 
-    // Estado del álbum en montaje: Array de objetos { originalTitle, title, text }
     let albumPoemas = [];
     let albumPortadaBase64 = null;
-    let editingPreparedAlbumKey = null; // Nombre del álbum preparado que se está editando actualmente
-    let draggedSelectedIndex = null; // Para reordenar poemas seleccionados
+    let editingPreparedAlbumKey = null;
+    let draggedSelectedIndex = null;
 
     window.addEventListener('DOMContentLoaded', () => {
       if (localStorage.getItem("admin_logueado") === "true" && tokenGitHub) {
@@ -836,6 +835,7 @@
       document.body.style.paddingTop = '15px';
 
       await detectarRepositorio();
+      if (!repoInfo) return;
       await cargarBorradoresDeNube();
       await cargarPreparadosDeNube();
     }
@@ -843,20 +843,53 @@
     async function detectarRepositorio() {
       if (repoInfo) return;
       try {
-        const res = await fetch('https://api.github.com/user/repos?per_page=100', {
+        const userRes = await fetch('https://api.github.com/user', {
           headers: { 'Authorization': `token ${tokenGitHub}` }
         });
-        const repos = await res.json();
-        for (let repo of repos) {
-          const check = await fetch(`https://api.github.com/repos/${repo.owner.login}/${repo.name}/contents/admin.html`, {
-            headers: { 'Authorization': `token ${tokenGitHub}` }
-          });
-          if (check.ok) {
-            repoInfo = { owner: repo.owner.login, repo: repo.name };
-            break;
+        if (!userRes.ok) throw new Error("Token inválido");
+        const userData = await userRes.json();
+        const username = userData.login;
+
+        const res = await fetch(`https://api.github.com/users/${username}/repos?per_page=100`, {
+          headers: { 'Authorization': `token ${tokenGitHub}` }
+        });
+        if (res.ok) {
+          const repos = await res.json();
+          for (let repo of repos) {
+            const check = await fetch(`https://api.github.com/repos/${repo.owner.login}/${repo.name}/contents/admin.html`, {
+              headers: { 'Authorization': `token ${tokenGitHub}` }
+            });
+            if (check.ok) {
+              repoInfo = { owner: repo.owner.login, repo: repo.name };
+              break;
+            }
           }
         }
       } catch (e) { console.error(e); }
+
+      // Si aún no se detecta, intentamos fallback directo al repositorio del usuario autenticado si coincide con los nombres comunes
+      if (!repoInfo) {
+        try {
+          const userRes = await fetch('https://api.github.com/user', {
+            headers: { 'Authorization': `token ${tokenGitHub}` }
+          });
+          const userData = await userRes.json();
+          const reposRes = await fetch(`https://api.github.com/user/repos?per_page=1,sort=updated`, {
+            headers: { 'Authorization': `token ${tokenGitHub}` }
+          });
+          if (reposRes.ok) {
+            const repos = await reposRes.json();
+            if (repos.length > 0) {
+              repoInfo = { owner: userData.login, repo: repos[0].name };
+            }
+          }
+        } catch (err) {}
+      }
+
+      if (!repoInfo) {
+        document.getElementById('sync-status').textContent = "Error: Repositorio no encontrado";
+        alert("No se pudo detectar automáticamente tu repositorio en GitHub. Asegúrate de que el token tenga permisos de 'repo'.");
+      }
     }
 
     async function cargarBorradoresDeNube() {
@@ -1139,7 +1172,7 @@
       location.reload();
     }
 
-    // --- LÓGICA DE MONTAR ÁLBUM Y EDITAR POEMAS CON TÍTULOS CAMBIABLES Y DRAG & DROP ---
+    // --- LÓGICA DE MONTAR ÁLBUM Y GESTIÓN DE PREPARADOS ---
 
     function abrirMontarAlbum() {
       document.getElementById('main-admin-layout').style.display = 'none';
@@ -1267,7 +1300,6 @@
 
     function actualizarTituloPoema(index, nuevoTitulo) {
       albumPoemas[index].title = nuevoTitulo;
-      // Actualizar visualmente la sublista izquierda sin perder foco total
       const sublistContainer = document.getElementById('album-selected-sublist');
       const items = sublistContainer.getElementsByClassName('sublist-item');
       if (items[index]) {
@@ -1316,6 +1348,8 @@
 
     async function desplegarAlbumPreparado() {
       if (!validarAlbumListo()) return;
+      if (!repoInfo) { alert("Repositorio no detectado."); return; }
+
       const nombreAlbum = document.getElementById('album-name-input').value.trim();
       const albumData = {
         nombre: nombreAlbum,
@@ -1364,9 +1398,10 @@
 
     async function guardarCambiosAlbumPreparado() {
       if (!validarAlbumListo()) return;
+      if (!repoInfo) { alert("Repositorio no detectado."); return; }
+
       const nombreAlbum = document.getElementById('album-name-input').value.trim();
       
-      // Si cambió el nombre del álbum, removemos el anterior en nube
       if (editingPreparedAlbumKey && editingPreparedAlbumKey !== nombreAlbum) {
         delete albumesPreparadosNube[editingPreparedAlbumKey];
       }
@@ -1444,10 +1479,55 @@
             <button class="icon-btn" title="Editar" onclick="editarAlbumPreparado('${nombre}')">
               <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
             </button>
+            <button class="icon-btn" title="Eliminar" onclick="eliminarAlbumPreparado('${nombre}', event)">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
           </div>
         `;
         lista.appendChild(item);
       });
+    }
+
+    async function eliminarAlbumPreparado(nombre, event) {
+      event.stopPropagation();
+      if (!confirm(`¿Estás seguro de que deseas eliminar el álbum preparado "${nombre}"?`)) return;
+      if (!repoInfo) { alert("Repositorio no detectado."); return; }
+
+      document.getElementById('sync-status').textContent = "Eliminando preparado...";
+      try {
+        let sha = null;
+        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
+          headers: { 'Authorization': `token ${tokenGitHub}` }
+        });
+        if (check.ok) {
+          const fileData = await check.json();
+          sha = fileData.sha;
+          albumesPreparadosNube = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+        }
+
+        if (albumesPreparadosNube[nombre] !== undefined) {
+          delete albumesPreparadosNube[nombre];
+        }
+
+        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(albumesPreparadosNube, null, 2))));
+        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
+          method: 'PUT',
+          headers: { 'Authorization': `token ${tokenGitHub}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: `Eliminar álbum preparado: ${nombre}`, content: encodedContent, sha: sha })
+        });
+
+        if (res.ok) {
+          document.getElementById('sync-status').textContent = "Sincronizado";
+          renderizarPreparadosSidebar();
+          if (editingPreparedAlbumKey === nombre) {
+            volverAlEstudioNormal();
+          }
+        } else {
+          document.getElementById('sync-status').textContent = "Error al eliminar";
+        }
+      } catch (e) {
+        document.getElementById('sync-status').textContent = "Error de red";
+      }
     }
 
     function previsualizarAlbumPreparado(nombre) {
