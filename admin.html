@@ -867,7 +867,6 @@
         }
       } catch (e) { console.error(e); }
 
-      // Si aún no se detecta, intentamos fallback directo al repositorio del usuario autenticado si coincide con los nombres comunes
       if (!repoInfo) {
         try {
           const userRes = await fetch('https://api.github.com/user', {
