@@ -167,14 +167,23 @@
       padding: 10px 12px;
       background: #f4f4f4;
       border-radius: 8px;
-      cursor: pointer;
+      cursor: grab;
       font-family: var(--fuente-cuerpo);
       font-size: 14px;
       color: #333;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: background 0.2s, color 0.2s;
+      transition: background 0.2s, color 0.2s, opacity 0.2s;
+      user-select: none;
+    }
+
+    .draft-item:active {
+      cursor: grabbing;
+    }
+
+    .draft-item.dragging {
+      opacity: 0.4;
     }
 
     .draft-item:hover, .draft-item.active {
@@ -514,6 +523,7 @@
     let repoInfo = null;
     let borradoresNube = {};
     let obraActualKey = null;
+    let draggedTitle = null;
 
     window.addEventListener('DOMContentLoaded', () => {
       if (localStorage.getItem("admin_logueado") === "true" && tokenGitHub) {
@@ -602,6 +612,46 @@
       for (let titulo in borradoresNube) {
         const item = document.createElement('div');
         item.className = `draft-item ${obraActualKey === titulo ? 'active' : ''}`;
+        item.setAttribute('draggable', 'true');
+        item.setAttribute('data-titulo', titulo);
+
+        // Eventos de Arrastrar y Soltar (Drag & Drop)
+        item.addEventListener('dragstart', (e) => {
+          draggedTitle = titulo;
+          e.dataTransfer.effectAllowed = 'move';
+          setTimeout(() => item.classList.add('dragging'), 0);
+        });
+
+        item.addEventListener('dragend', () => {
+          item.classList.remove('dragging');
+          draggedTitle = null;
+        });
+
+        item.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+        });
+
+        item.addEventListener('drop', (e) => {
+          e.preventDefault();
+          if (!draggedTitle || draggedTitle === titulo) return;
+
+          const keys = Object.keys(borradoresNube);
+          const draggedIndex = keys.indexOf(draggedTitle);
+          const targetIndex = keys.indexOf(titulo);
+
+          if (draggedIndex > -1 && targetIndex > -1) {
+            keys.splice(draggedIndex, 1);
+            keys.splice(targetIndex, 0, draggedTitle);
+
+            const reordered = {};
+            keys.forEach(k => {
+              reordered[k] = borradoresNube[k];
+            });
+            borradoresNube = reordered;
+            renderizarBorradores();
+          }
+        });
         
         const spanTitulo = document.createElement('span');
         spanTitulo.className = 'draft-title-text';
@@ -657,8 +707,9 @@
           delete remoteDrafts[obraActualKey];
         }
 
+        // Mantenemos el orden actual de borradoresNube al guardar
         remoteDrafts[titulo] = contenido;
-        borradoresNube = remoteDrafts;
+        borradoresNube[titulo] = contenido; 
         obraActualKey = titulo;
 
         const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(borradoresNube, null, 2))));
@@ -760,11 +811,9 @@
       const tituloActual = document.getElementById('doc-title').value.trim();
       const textoActual = document.getElementById('doc-editor').innerHTML.trim();
 
-      // Verificar si hay cambios escritos que no coinciden con lo guardado en la nube
       const estaGuardado = (borradoresNube[tituloActual] === textoActual);
 
       if ((tituloActual || textoActual) && !estaGuardado) {
-        // Mostrar ventana modal personalizada
         document.getElementById('unsaved-modal').style.display = 'flex';
       } else {
         ejecutarNuevaIdea();
@@ -774,7 +823,6 @@
     async function modalGuardarYNuva() {
       cerrarModalUnsaved();
       await guardarObra();
-      // Tras guardar correctamente, limpiamos el editor para la nueva idea
       const tituloActual = document.getElementById('doc-title').value.trim();
       const textoActual = document.getElementById('doc-editor').innerHTML.trim();
       if (borradoresNube[tituloActual] === textoActual) {
