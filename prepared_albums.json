@@ -1,1 +1,33 @@
-{}
+{
+  "EL DISCO DE LAS ESTRELLAS": {
+    "nombre": "EL DISCO DE LAS ESTRELLAS",
+    "poemas": [
+      {
+        "originalTitle": "ASDASDADASDASD",
+        "titulo": "ASDASDADASDASD",
+        "texto": "SDSDSDS"
+      },
+      {
+        "originalTitle": "FSDSDSDSCSC",
+        "titulo": "FSDSDSDSCSC",
+        "texto": ""
+      },
+      {
+        "originalTitle": "AAAAAAAAAAA",
+        "titulo": "AAAAAAAAAAA",
+        "texto": ""
+      },
+      {
+        "originalTitle": "sdsdsds",
+        "titulo": "sdsdsds",
+        "texto": ""
+      }
+    ],
+    "portada": "portadas/portada_1789231376460_Captura_de_pantalla_(34222.jpg",
+    "fecha": {
+      "dia": "14",
+      "mes": "12",
+      "año": "2025"
+    }
+  }
+}
