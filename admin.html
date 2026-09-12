@@ -787,9 +787,15 @@
     let draggedSelectedIndex = null;
 
     window.addEventListener('DOMContentLoaded', () => {
-      if (localStorage.getItem("admin_logueado") === "true" && tokenGitHub) {
-        mostrarEstudio();
+      // Si hay un token guardado en el navegador, lo escribimos automáticamente en la casilla
+      const tokenGuardado = localStorage.getItem("github_token");
+      if (tokenGuardado) {
+        const inputToken = document.getElementById('token-input');
+        if (inputToken) {
+          inputToken.value = tokenGuardado;
+        }
       }
+      
       inicializarSelectoresFecha();
     });
 
