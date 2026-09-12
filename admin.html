@@ -772,7 +772,7 @@
   </div>
 
   <script>
-    let tokenGitHub = localStorage.getItem("github_token");
+    const getToken = () => localStorage.getItem("github_token") || "";
     let repoInfo = { owner: 'familiaortegareyes16-prog', repo: 'lonermorejourney' };
     let borradoresNube = {};
     let albumesPreparadosNube = {};
