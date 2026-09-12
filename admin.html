@@ -1666,7 +1666,8 @@ async function desplegarAlbumPreparado() {
     }
 
     function renderizarPreparadosSidebar() {
-  const container = document.getElementById('prepared-albums-list'); // Ajusta al ID de tu contenedor lateral si es distinto
+  // Busca el contenedor debajo de los botones de la derecha
+  const container = document.getElementById('preparados-container') || document.getElementById('prepared-albums-list');
   if (!container) return;
   container.innerHTML = '';
 
@@ -1676,7 +1677,6 @@ async function desplegarAlbumPreparado() {
     const item = document.createElement('div');
     item.className = 'prepared-item';
     
-    // Asignar el slug o ID correcto
     const albumId = album.slug || album.id || album.nombre.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
     item.innerHTML = `
@@ -1684,7 +1684,7 @@ async function desplegarAlbumPreparado() {
       <button class="btn-preview-eye" title="Previsualizar">👁️</button>
     `;
 
-    // Evento del botón del ojo con la URL correcta
+    // Evento del ojo pasando el ID en la URL
     const btnOjo = item.querySelector('.btn-preview-eye');
     btnOjo.onclick = (e) => {
       e.stopPropagation();
