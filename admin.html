@@ -703,6 +703,14 @@
           </div>
           <div class="action-info"><h3>Sucesivo</h3><p>Programar / Secuencia</p></div>
         </div>
+
+        <!-- Álbumes Preparados acoplados en la barra lateral principal -->
+        <div class="action-card" id="prepared-sidebar-container" style="display: none; flex-direction: column; align-items: stretch; cursor: default;">
+          <div class="action-info" style="width: 100%;">
+            <h3 style="margin-bottom: 8px; border-bottom: 1px solid #e0e0e0; padding-bottom: 6px;">Álbumes Preparados</h3>
+            <div id="prepared-side-list" class="prepared-side-list"></div>
+          </div>
+        </div>
       </div>
     </main>
 
@@ -759,12 +767,7 @@
           </div>
         </div>
 
-        <!-- Álbumes Preparados (Privados) bien integrados en la derecha -->
-        <div class="prepared-sidebar-section" id="prepared-sidebar-container" style="display: none;">
-          <h4>Álbumes Preparados</h4>
-          <div id="prepared-side-list" class="prepared-side-list"></div>
-        </div>
-      </div>
+        
     </div>
   </div>
 
@@ -1341,8 +1344,60 @@
     async function lanzarAlbumDirecto() {
       if (!validarAlbumListo()) return;
       if (!confirm("¿Deseas publicar este álbum directamente en el feed público?")) return;
-      alert("¡Álbum lanzado exitosamente al feed público!");
-      volverAlEstudioNormal();
+      if (!repoInfo) { alert("Repositorio no detectado."); return; }
+
+      const nombreAlbum = document.getElementById('album-name-input').value.trim();
+      const albumData = {
+        tipo: "album",
+        nombre: nombreAlbum,
+        poemas: albumPoemas.map(p => ({ originalTitle: p.originalTitle, titulo: p.title, texto: p.text })),
+        portada: albumPortadaBase64,
+        fecha: {
+          dia: document.getElementById('album-day').value,
+          mes: document.getElementById('album-month').value,
+          año: document.getElementById('album-year').value
+        }
+      };
+
+      document.getElementById('sync-status').textContent = "Publicando álbum...";
+      try {
+        let sha = null;
+        let postsData = [];
+        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+          headers: { 'Authorization': `token ${tokenGitHub}` }
+        });
+        if (check.ok) {
+          const fileData = await check.json();
+          sha = fileData.sha;
+          try {
+            postsData = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+            if (!Array.isArray(postsData)) postsData = [];
+          } catch (e) {
+            postsData = [];
+          }
+        }
+
+        postsData.unshift(albumData);
+
+        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsData, null, 2))));
+        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+          method: 'PUT',
+          headers: { 'Authorization': `token ${tokenGitHub}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: `Publicar álbum en el feed: ${nombreAlbum}`, content: encodedContent, sha: sha })
+        });
+
+        if (res.ok) {
+          document.getElementById('sync-status').textContent = "Sincronizado";
+          alert("¡Álbum lanzado y publicado exitosamente en posts.json!");
+          volverAlEstudioNormal();
+        } else {
+          document.getElementById('sync-status').textContent = "Error al publicar";
+          alert("Hubo un error al guardar en posts.json.");
+        }
+      } catch (e) {
+        document.getElementById('sync-status').textContent = "Error de red";
+        alert("Error de red al intentar publicar.");
+      }
     }
 
     async function desplegarAlbumPreparado() {
