@@ -1522,7 +1522,17 @@
   }
 }
 
-    async function desplegarAlbumPreparado() {
+    // Funciones de codificación/decodificación blindadas para tildes y saltos de línea de GitHub
+function utf8ToBase64(str) {
+  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)));
+}
+
+function base64ToUtf8(str) {
+  const cleanStr = str.replace(/[\r\n\s]/g, '');
+  return decodeURIComponent(Array.prototype.map.call(atob(cleanStr), c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+}
+
+async function desplegarAlbumPreparado() {
   if (!validarAlbumListo()) return;
   if (!repoInfo) { alert("Repositorio no detectado."); return; }
 
@@ -1538,7 +1548,7 @@
     nombre: nombreAlbum,
     titulo: nombreAlbum,
     publicado: false,
-    poemas: albumPoemas.map(p => ({ originalTitle: p.originalTitle, titulo: p.title, texto: p.text })),
+    poemas: albumPoemas.map(p => ({ originalTitle: p.originalTitle || p.title, titulo: p.title || p.titulo, texto: p.text || p.texto })),
     portada: albumPortadaBase64,
     fecha: {
       dia: document.getElementById('album-day').value,
@@ -1548,6 +1558,7 @@
   };
 
   document.getElementById('sync-status').textContent = "Guardando preparado...";
+
   try {
     const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
       headers: { 'Authorization': `Bearer ${token}` }
@@ -1559,18 +1570,21 @@
     if (check.ok) {
       const fileData = await check.json();
       sha = fileData.sha;
-      const parsed = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
-      postsArray = Array.isArray(parsed) ? parsed : [];
+      const jsonTexto = base64ToUtf8(fileData.content);
+      postsArray = JSON.parse(jsonTexto);
+      if (!Array.isArray(postsArray)) postsArray = [];
     }
 
-    const indexExistente = postsArray.findIndex(item => (item.id === slug || item.slug === slug || item.nombre === nombreAlbum));
+    const indexExistente = postsArray.findIndex(item => (item.id === slug || item.slug === slug || item.nombre === nombreAlbum || item.titulo === nombreAlbum));
     if (indexExistente !== -1) {
       postsArray[indexExistente] = nuevoAlbum;
     } else {
       postsArray.push(nuevoAlbum);
     }
 
-    const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsArray, null, 2))));
+    const jsonString = JSON.stringify(postsArray, null, 2);
+    const encodedContent = utf8ToBase64(jsonString);
+
     const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
       method: 'PUT',
       headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -1585,10 +1599,11 @@
       alert("Álbum guardado en la sección de preparados.");
       volverAlEstudioNormal();
     } else {
-      document.getElementById('sync-status').textContent = "Error al guardar";
+      document.getElementById('sync-status').textContent = "Error en GitHub";
     }
   } catch (e) {
-    document.getElementById('sync-status').textContent = "Error de red";
+    console.error("Error al desplegar:", e);
+    document.getElementById('sync-status').textContent = "Error al procesar";
   }
 }
 
