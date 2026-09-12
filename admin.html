@@ -851,7 +851,7 @@
       
       try {
         const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/admin.html`, {
-          headers: { 'Authorization': `token ${tokenGitHub}` }
+          headers: { 'Authorization': `Bearer ${tokenGitHub}` }
         });
         if (!check.ok) {
           console.warn("No se pudo verificar el repositorio principal automáticamente.");
@@ -860,12 +860,13 @@
         console.error(e);
       }
     }
+
     async function cargarBorradoresDeNube() {
       if (!repoInfo) return;
       document.getElementById('sync-status').textContent = "Sincronizando...";
       try {
         const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
-          headers: { 'Authorization': `token ${tokenGitHub}` }
+          headers: { 'Authorization': `Bearer ${tokenGitHub}` }
         });
         if (res.ok) {
           const data = await res.json();
@@ -885,7 +886,7 @@
       if (!repoInfo) return;
       try {
         const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
-          headers: { 'Authorization': `token ${tokenGitHub}` }
+          headers: { 'Authorization': `Bearer ${tokenGitHub}` }
         });
         if (res.ok) {
           const data = await res.json();
