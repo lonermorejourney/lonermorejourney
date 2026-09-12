@@ -918,22 +918,37 @@
     }
 
     async function cargarPreparadosDeNube() {
-      if (!repoInfo) return;
-      try {
-        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
-          headers: { 'Authorization': `Bearer ${getToken()}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          albumesPreparadosNube = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-          renderizarPreparadosSidebar();
-        } else {
-          albumesPreparadosNube = {};
+  if (!repoInfo) return;
+  try {
+    const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      window.postsSha = data.sha; // Guardamos el SHA para poder actualizar posts.json después
+      const todosLosPosts = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+      
+      window.postsNube = Array.isArray(todosLosPosts) ? todosLosPosts : [];
+      albumesPreparadosNube = {};
+
+      // Convertimos las obras con publicado: false en el objeto para la barra lateral
+      window.postsNube.forEach(item => {
+        if (item.publicado === false) {
+          const key = item.id || item.slug || item.titulo || item.nombre;
+          albumesPreparadosNube[key] = item;
         }
-      } catch (e) {
-        albumesPreparadosNube = {};
-      }
+      });
+
+      renderizarPreparadosSidebar();
+    } else {
+      window.postsNube = [];
+      albumesPreparadosNube = {};
     }
+  } catch (e) {
+    window.postsNube = [];
+    albumesPreparadosNube = {};
+  }
+}
 
     function renderizarBorradores() {
       const lista = document.getElementById('drafts-list');
@@ -1431,119 +1446,151 @@
     }
 
     async function lanzarAlbumDirecto() {
-      if (!validarAlbumListo()) return;
-      if (!confirm("¿Deseas publicar este álbum directamente en el feed público?")) return;
-      if (!repoInfo) { alert("Repositorio no detectado."); return; }
+  if (!validarAlbumListo()) return;
+  if (!confirm("¿Deseas publicar este álbum directamente en el feed público?")) return;
+  if (!repoInfo) { alert("Repositorio no detectado."); return; }
 
-      const token = getToken();
-      if (!token) { alert("No hay token guardado."); return; }
+  const token = getToken();
+  if (!token) { alert("No hay token guardado."); return; }
 
-      const nombreAlbum = document.getElementById('album-name-input').value.trim();
-      const albumData = {
-        tipo: "album",
-        nombre: nombreAlbum,
-        poemas: albumPoemas.map(p => ({ originalTitle: p.originalTitle, titulo: p.title, texto: p.text })),
-        portada: albumPortadaBase64,
-        fecha: {
-          dia: document.getElementById('album-day').value,
-          mes: document.getElementById('album-month').value,
-          año: document.getElementById('album-year').value
-        }
-      };
+  const nombreAlbum = document.getElementById('album-name-input').value.trim();
+  const slug = nombreAlbum.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
-      document.getElementById('sync-status').textContent = "Publicando álbum...";
+  const albumData = {
+    id: slug,
+    slug: slug,
+    tipo: "album",
+    nombre: nombreAlbum,
+    titulo: nombreAlbum,
+    publicado: true,
+    poemas: albumPoemas.map(p => ({ originalTitle: p.originalTitle, titulo: p.title, texto: p.text })),
+    portada: albumPortadaBase64,
+    fecha: {
+      dia: document.getElementById('album-day').value,
+      mes: document.getElementById('album-month').value,
+      año: document.getElementById('album-year').value
+    }
+  };
+
+  document.getElementById('sync-status').textContent = "Publicando álbum...";
+  try {
+    let sha = null;
+    let postsData = [];
+    const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (check.ok) {
+      const fileData = await check.json();
+      sha = fileData.sha;
       try {
-        let sha = null;
-        let postsData = [];
-        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (check.ok) {
-          const fileData = await check.json();
-          sha = fileData.sha;
-          try {
-            postsData = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
-            if (!Array.isArray(postsData)) postsData = [];
-          } catch (e) {
-            postsData = [];
-          }
-        }
-
-        postsData.unshift(albumData);
-
-        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsData, null, 2))));
-        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
-          method: 'PUT',
-          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: `Publicar álbum en el feed: ${nombreAlbum}`, content: encodedContent, sha: sha })
-        });
-
-        if (res.ok) {
-          document.getElementById('sync-status').textContent = "Sincronizado";
-          alert("¡Álbum lanzado y publicado exitosamente en posts.json!");
-          volverAlEstudioNormal();
-        } else {
-          document.getElementById('sync-status').textContent = "Error al publicar";
-          alert("Hubo un error al guardar en posts.json.");
-        }
+        const parsed = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+        postsData = Array.isArray(parsed) ? parsed : [];
       } catch (e) {
-        document.getElementById('sync-status').textContent = "Error de red";
-        alert("Error de red al intentar publicar.");
+        postsData = [];
       }
     }
+
+    const indexExistente = postsData.findIndex(item => (item.id === slug || item.slug === slug || item.nombre === nombreAlbum));
+    if (indexExistente !== -1) {
+      postsData[indexExistente] = albumData;
+    } else {
+      postsData.unshift(albumData);
+    }
+
+    const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsData, null, 2))));
+    const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+      method: 'PUT',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: `Publicar álbum en el feed: ${nombreAlbum}`, content: encodedContent, sha: sha })
+    });
+
+    if (res.ok) {
+      document.getElementById('sync-status').textContent = "Sincronizado";
+      window.postsNube = postsData;
+      delete albumesPreparadosNube[slug];
+      delete albumesPreparadosNube[nombreAlbum];
+      renderizarPreparadosSidebar();
+      alert("¡Álbum lanzado y publicado exitosamente!");
+      volverAlEstudioNormal();
+    } else {
+      document.getElementById('sync-status').textContent = "Error al publicar";
+      alert("Hubo un error al guardar en posts.json.");
+    }
+  } catch (e) {
+    document.getElementById('sync-status').textContent = "Error de red";
+    alert("Error de red al intentar publicar.");
+  }
+}
 
     async function desplegarAlbumPreparado() {
-      if (!validarAlbumListo()) return;
-      if (!repoInfo) { alert("Repositorio no detectado."); return; }
+  if (!validarAlbumListo()) return;
+  if (!repoInfo) { alert("Repositorio no detectado."); return; }
 
-      const token = getToken();
-      if (!token) { alert("No hay token guardado."); return; }
+  const token = getToken();
+  if (!token) { alert("No hay token guardado."); return; }
 
-      const nombreAlbum = document.getElementById('album-name-input').value.trim();
-      const albumData = {
-        nombre: nombreAlbum,
-        poemas: albumPoemas.map(p => ({ originalTitle: p.originalTitle, titulo: p.title, texto: p.text })),
-        portada: albumPortadaBase64,
-        fecha: {
-          dia: document.getElementById('album-day').value,
-          mes: document.getElementById('album-month').value,
-          año: document.getElementById('album-year').value
-        }
-      };
+  const nombreAlbum = document.getElementById('album-name-input').value.trim();
+  const slug = nombreAlbum.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
-      document.getElementById('sync-status').textContent = "Guardando preparado...";
-      try {
-        let sha = null;
-        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (check.ok) {
-          const fileData = await check.json();
-          sha = fileData.sha;
-          albumesPreparadosNube = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
-        }
-
-        albumesPreparadosNube[nombreAlbum] = albumData;
-
-        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(albumesPreparadosNube, null, 2))));
-        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
-          method: 'PUT',
-          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: `Guardar álbum preparado: ${nombreAlbum}`, content: encodedContent, sha: sha })
-        });
-
-        if (res.ok) {
-          document.getElementById('sync-status').textContent = "Sincronizado";
-          renderizarPreparadosSidebar();
-          alert("Álbum guardado en la sección de preparados.");
-          volverAlEstudioNormal();
-        } else {
-          document.getElementById('sync-status').textContent = "Error al guardar";
-        }
-      } catch (e) {
-        document.getElementById('sync-status').textContent = "Error de red";
-      }
+  const nuevoAlbum = {
+    id: slug,
+    slug: slug,
+    nombre: nombreAlbum,
+    titulo: nombreAlbum,
+    publicado: false,
+    poemas: albumPoemas.map(p => ({ originalTitle: p.originalTitle, titulo: p.title, texto: p.text })),
+    portada: albumPortadaBase64,
+    fecha: {
+      dia: document.getElementById('album-day').value,
+      mes: document.getElementById('album-month').value,
+      año: document.getElementById('album-year').value
     }
+  };
+
+  document.getElementById('sync-status').textContent = "Guardando preparado...";
+  try {
+    const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    let postsArray = [];
+    let sha = null;
+
+    if (check.ok) {
+      const fileData = await check.json();
+      sha = fileData.sha;
+      const parsed = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+      postsArray = Array.isArray(parsed) ? parsed : [];
+    }
+
+    const indexExistente = postsArray.findIndex(item => (item.id === slug || item.slug === slug || item.nombre === nombreAlbum));
+    if (indexExistente !== -1) {
+      postsArray[indexExistente] = nuevoAlbum;
+    } else {
+      postsArray.push(nuevoAlbum);
+    }
+
+    const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsArray, null, 2))));
+    const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+      method: 'PUT',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: `Guardar álbum preparado: ${nombreAlbum}`, content: encodedContent, sha: sha })
+    });
+
+    if (res.ok) {
+      document.getElementById('sync-status').textContent = "Sincronizado";
+      window.postsNube = postsArray;
+      albumesPreparadosNube[slug] = nuevoAlbum;
+      renderizarPreparadosSidebar();
+      alert("Álbum guardado en la sección de preparados.");
+      volverAlEstudioNormal();
+    } else {
+      document.getElementById('sync-status').textContent = "Error al guardar";
+    }
+  } catch (e) {
+    document.getElementById('sync-status').textContent = "Error de red";
+  }
+}
 
     async function guardarCambiosAlbumPreparado() {
       if (!validarAlbumListo()) return;
@@ -1637,83 +1684,80 @@
     }
 
     function previsualizarAlbumPreparado(nombre) {
-      const album = albumesPreparadosNube[nombre];
-      if (!album) return;
-      const modal = document.getElementById('preview-modal');
-      const body = document.getElementById('preview-modal-body');
-      
-      let html = `<h2 style="font-family: var(--fuente-heavy); font-size: 22px; margin-bottom: 15px;">${album.nombre}</h2>`;
-      if (album.portada) {
-        const src = album.portada.startsWith('data:') || album.portada.startsWith('http') 
-          ? album.portada 
-          : `https://raw.githubusercontent.com/${repoInfo.owner}/${repoInfo.repo}/main/${album.portada}`;
-        html += `<img src="${src}" style="width: 100%; max-height: 250px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">`;
-      }
-      html += `<p style="font-size: 13px; color: #666; margin-bottom: 15px;"><b>Fecha:</b> ${album.fecha.dia}/${album.fecha.mes}/${album.fecha.año}</p>`;
-      html += `<h4 style="font-family: var(--fuente-heavy); margin-bottom: 10px;">Poemas del álbum:</h4>`;
-      if (album.poemas && album.poemas.length > 0) {
-        album.poemas.forEach((p, i) => {
-          html += `
-            <div style="background: #f9f9f9; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #eee;">
-              <h5 style="font-family: var(--fuente-heavy); font-size: 15px; margin-bottom: 5px;">${i + 1}. ${p.titulo}</h5>
-              <div style="font-family: 'Times New Roman', serif; font-size: 15px; white-space: pre-wrap;">${p.texto}</div>
-            </div>
-          `;
-        });
-      }
+  const album = albumesPreparadosNube[nombre];
+  if (!album) return;
 
-      body.innerHTML = html;
-      modal.style.display = 'flex';
-    }
+  const slug = album.slug || album.id || album.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+  
+  // Abre la plantilla real del sitio web
+  window.open(`obra.html?id=${slug}`, '_blank');
+}
+
+function cerrarPreviewModal() {
+  const modal = document.getElementById('preview-modal');
+  if (modal) modal.style.display = 'none';
+}
 
     function cerrarPreviewModal() {
       document.getElementById('preview-modal').style.display = 'none';
     }
 
     async function eliminarAlbumPreparado(nombre, event) {
-      event.stopPropagation();
-      if (!confirm(`¿Estás seguro de que deseas eliminar el álbum preparado "${nombre}"?`)) return;
-      if (!repoInfo) { alert("Repositorio no detectado."); return; }
+  if (event) event.stopPropagation();
+  if (!confirm(`¿Estás seguro de que deseas eliminar el álbum preparado "${nombre}"?`)) return;
+  if (!repoInfo) { alert("Repositorio no detectado."); return; }
 
-      const token = getToken();
-      if (!token) { alert("No hay token guardado."); return; }
+  const token = getToken();
+  if (!token) { alert("No hay token guardado."); return; }
 
-      document.getElementById('sync-status').textContent = "Eliminando preparado...";
+  document.getElementById('sync-status').textContent = "Eliminando preparado...";
+  try {
+    let sha = null;
+    let postsData = [];
+    const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (check.ok) {
+      const fileData = await check.json();
+      sha = fileData.sha;
       try {
-        let sha = null;
-        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (check.ok) {
-          const fileData = await check.json();
-          sha = fileData.sha;
-          albumesPreparadosNube = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
-        }
-
-        if (albumesPreparadosNube[nombre] !== undefined) {
-          delete albumesPreparadosNube[nombre];
-        }
-
-        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(albumesPreparadosNube, null, 2))));
-        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
-          method: 'PUT',
-          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: `Eliminar álbum preparado: ${nombre}`, content: encodedContent, sha: sha })
-        });
-
-        if (res.ok) {
-          document.getElementById('sync-status').textContent = "Sincronizado";
-          renderizarPreparadosSidebar();
-          if (editingPreparedAlbumKey === nombre) {
-            volverAlEstudioNormal();
-          }
-        } else {
-          document.getElementById('sync-status').textContent = "Error al eliminar";
-        }
+        const parsed = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+        postsData = Array.isArray(parsed) ? parsed : [];
       } catch (e) {
-        document.getElementById('sync-status').textContent = "Error de red";
+        postsData = [];
       }
     }
+
+    // Filtrar para remover el elemento del array
+    const postsFiltrados = postsData.filter(item => {
+      const itemKey = item.id || item.slug || item.nombre || item.titulo;
+      return itemKey !== nombre && item.nombre !== nombre && item.titulo !== nombre;
+    });
+
+    const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsFiltrados, null, 2))));
+    const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+      method: 'PUT',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: `Eliminar álbum preparado: ${nombre}`, content: encodedContent, sha: sha })
+    });
+
+    if (res.ok) {
+      document.getElementById('sync-status').textContent = "Sincronizado";
+      window.postsNube = postsFiltrados;
+      delete albumesPreparadosNube[nombre];
+      renderizarPreparadosSidebar();
+
+      if (editingPreparedAlbumKey === nombre) {
+        volverAlEstudioNormal();
+      }
+    } else {
+      document.getElementById('sync-status').textContent = "Error al eliminar";
+    }
+  } catch (e) {
+    document.getElementById('sync-status').textContent = "Error de red";
+  }
+}
 
     function editarAlbumPreparado(nombre) {
       const album = albumesPreparadosNube[nombre];
