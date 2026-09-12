@@ -20,7 +20,7 @@
 
       <div class="player-content-wrapper">
         
-        <!-- Columna Izquierda (Portada, Título con disco, Controles y Copyright) -->
+        <!-- Columna Izquierda -->
         <div class="player-left">
           <img class="player-cover" id="player-cover" src="portada.png" alt="">
 
@@ -83,7 +83,7 @@
           <p class="rights-stamp">®<span id="rights-year"></span> lonermorejourney</p>
         </div>
 
-        <!-- Columna Derecha (Poema con scroll interno) -->
+        <!-- Columna Derecha -->
         <div class="poem-reading">
           <p class="poem-origin-tag" id="poem-origin-tag">de Álbum</p>
           <div class="poem-scroll">
@@ -105,38 +105,72 @@
     document.addEventListener("DOMContentLoaded", async () => {
         try {
             const urlParams = new URLSearchParams(window.location.search);
-            const obraId = parseInt(urlParams.get('id')) || 0;
-            const poemaId = parseInt(urlParams.get('poema')) || 0;
+            const obraParam = urlParams.get('id');
+            
+            // Permite leer el índice de track o de poema indistintamente
+            const trackVal = urlParams.get('track') !== null ? urlParams.get('track') : urlParams.get('poema');
+            const poemaIndex = parseInt(trackVal) || 0;
 
             const response = await fetch('posts.json');
             const posts = await response.json();
 
-            if (!posts || !posts[obraId]) return;
-            const obra = posts[obraId];
-            const poemas = obra.poemas || [];
-            const poema = poemas[poemaId] || poemas[0];
+            if (!posts || posts.length === 0) return;
 
+            // Búsqueda inteligente por ID, slug, nombre o índice
+            let obra = null;
+            if (obraParam !== null) {
+                obra = posts.find(p => 
+                    (p.id && p.id === obraParam) || 
+                    (p.slug && p.slug === obraParam) || 
+                    (p.nombre && p.nombre === obraParam) || 
+                    (p.titulo && p.titulo === obraParam)
+                );
+
+                if (!obra && !isNaN(obraParam)) {
+                    obra = posts[parseInt(obraParam)];
+                }
+            }
+
+            if (!obra) obra = posts[0];
+            if (!obra) return;
+
+            const idObra = obra.id || obra.slug || obraParam || 0;
+            const tituloObra = obra.titulo || obra.nombre || 'Sin título';
+            const portadaObra = obra.portada || obra.imagen || 'portada.png';
+
+            const poemas = obra.poemas || [];
+            const poema = poemas[poemaIndex] || poemas[0];
             if (!poema) return;
 
-            // Extraer nombre y textos del poema
-            const nombrePoema = typeof poema === 'string' ? poema : (poema.titulo || 'Sin título');
+            // Extraer título del poema
+            const nombrePoema = typeof poema === 'string' ? poema : (poema.titulo || poema.originalTitle || 'Sin título');
+
+            // Formatear fecha
+            let fechaTexto = '';
+            if (obra.fecha) {
+                if (typeof obra.fecha === 'object' && obra.fecha.dia) {
+                    fechaTexto = `${obra.fecha.dia}/${obra.fecha.mes}/${obra.fecha.año}`;
+                } else {
+                    fechaTexto = obra.fecha;
+                }
+            }
             
-            // Actualizar título de la pestaña del navegador
-            document.getElementById('page-title').textContent = `${nombrePoema} — ${obra.titulo} — Lonermorejourney`;
+            // Actualizar título de la pestaña
+            document.getElementById('page-title').textContent = `${nombrePoema} — ${tituloObra} — Lonermorejourney`;
 
-            // Enlace de vuelta al índice de la obra correcta
-            document.getElementById('back-link').href = `obra.html?id=${obraId}`;
+            // Enlace de vuelta al índice de la obra correspondiente
+            document.getElementById('back-link').href = `obra.html?id=${encodeURIComponent(idObra)}`;
 
-            // Portada dinámica (prioriza la del poema individual si la tiene, si no usa la del álbum)
+            // Portada dinámica
             const coverImg = document.getElementById('player-cover');
-            coverImg.src = (typeof poema === 'object' && poema.imagen) ? poema.imagen : (obra.imagen || 'portada.png');
+            coverImg.src = (typeof poema === 'object' && poema.imagen) ? poema.imagen : portadaObra;
             coverImg.alt = nombrePoema;
 
             // Título con disco giratorio
             document.getElementById('poem-title-text').textContent = nombrePoema;
 
-            // Metadatos y fecha de publicación
-            document.getElementById('player-meta').innerHTML = `Poema <span class="dot">•</span> ${obra.fecha}`;
+            // Metadatos
+            document.getElementById('player-meta').innerHTML = `Poema <span class="dot">•</span> ${fechaTexto}`;
 
             // Etiqueta de origen (Álbum o Título)
             const originTag = document.getElementById('poem-origin-tag');
@@ -145,49 +179,56 @@
             // Título grande de lectura
             document.getElementById('poem-title-reading').textContent = nombrePoema;
 
-            // Cuerpo del texto del poema dinámico
+            // Cuerpo del poema
             const bodyContainer = document.getElementById('poem-body');
             bodyContainer.innerHTML = '';
 
-            let lineasTexto = [];
-            if (typeof poema === 'object' && poema.texto) {
-                lineasTexto = Array.isArray(poema.texto) ? poema.texto : [poema.texto];
+            let contenidoTexto = (typeof poema === 'object' && poema.texto) ? poema.texto : '';
+
+            if (Array.isArray(contenidoTexto)) {
+                contenidoTexto.forEach(parrafo => {
+                    const p = document.createElement('p');
+                    p.innerHTML = parrafo;
+                    bodyContainer.appendChild(p);
+                });
+            } else if (typeof contenidoTexto === 'string' && contenidoTexto.trim() !== '') {
+                contenidoTexto.split('\n').forEach(linea => {
+                    const p = document.createElement('p');
+                    p.innerHTML = linea || '&nbsp;';
+                    bodyContainer.appendChild(p);
+                });
             } else {
-                lineasTexto = ["El contenido de este poema se actualizará próximamente."];
+                const p = document.createElement('p');
+                p.textContent = "El contenido de este poema estará disponible próximamente.";
+                bodyContainer.appendChild(p);
             }
 
-            lineasTexto.forEach(parrafo => {
-                const p = document.createElement('p');
-                p.innerHTML = parrafo; // Soporta saltos de línea y etiquetas HTML si se requiere
-                bodyContainer.appendChild(p);
-            });
-
-            // Funcionalidad de los botones de navegación entre poemas
+            // Botones de navegación entre poemas (mantiene la obra actual)
             const btnPrev = document.getElementById('btn-prev');
             const btnNext = document.getElementById('btn-next');
 
             btnPrev.onclick = () => {
-                const prevIndex = poemaId > 0 ? poemaId - 1 : poemas.length - 1;
-                window.location.href = `reproductor.html?id=${obraId}&poema=${prevIndex}`;
+                const prevIndex = poemaIndex > 0 ? poemaIndex - 1 : poemas.length - 1;
+                window.location.href = `reproductor.html?id=${encodeURIComponent(idObra)}&track=${prevIndex}`;
             };
 
             btnNext.onclick = () => {
-                const nextIndex = poemaId < poemas.length - 1 ? poemaId + 1 : 0;
-                window.location.href = `reproductor.html?id=${obraId}&poema=${nextIndex}`;
+                const nextIndex = poemaIndex < poemas.length - 1 ? poemaIndex + 1 : 0;
+                window.location.href = `reproductor.html?id=${encodeURIComponent(idObra)}&track=${nextIndex}`;
             };
 
-            // Funcionalidad del botón de compartir
+            // Compartir
             const btnShare = document.getElementById('btn-share');
             btnShare.onclick = () => {
                 if (navigator.share) {
                     navigator.share({
                         title: nombrePoema,
-                        text: `Lee "${nombrePoema}" de ${obra.titulo} en Lonermorejourney`,
+                        text: `Lee "${nombrePoema}" de ${tituloObra} en Lonermorejourney`,
                         url: window.location.href,
                     }).catch(console.error);
                 } else {
                     navigator.clipboard.writeText(window.location.href);
-                    alert('¡Enlace del poema copiado al portapapeles!');
+                    alert('¡Enlace copiado al portapapeles!');
                 }
             };
 
