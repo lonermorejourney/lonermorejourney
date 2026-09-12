@@ -1600,39 +1600,6 @@
       }
     }
 
-    function previsualizarAlbumPreparado(nombre) {
-      const album = albumesPreparadosNube[nombre];
-      if (!album) return;
-
-      const modalBody = document.getElementById('preview-modal-body');
-      let htmlContent = `
-        <div style="text-align: center; margin-bottom: 20px;">
-          ${album.portada ? `<img src="${album.portada}" style="width: 180px; height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">` : ''}
-          <h2 style="font-family: var(--fuente-heavy); font-size: 24px; margin: 0 0 6px 0;">${album.nombre}</h2>
-          <p style="font-size: 13px; color: #666; margin: 0;">Lanzamiento: ${album.fecha.dia}/${album.fecha.mes}/${album.fecha.año}</p>
-        </div>
-        <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
-        <div style="display: flex; flex-direction: column; gap: 30px;">
-      `;
-
-      album.poemas.forEach((p, idx) => {
-        htmlContent += `
-          <div>
-            <h3 style="font-family: var(--fuente-heavy); font-size: 18px; margin-bottom: 8px;">${idx + 1}. ${p.titulo}</h3>
-            <div style="font-family: 'Times New Roman', Times, serif; font-size: 16px; line-height: 1.6; white-space: pre-wrap; color: #333;">${p.texto}</div>
-          </div>
-        `;
-      });
-
-      htmlContent += `</div>`;
-      modalBody.innerHTML = htmlContent;
-      document.getElementById('preview-modal').style.display = 'flex';
-    }
-
-    function cerrarPreviewModal() {
-      document.getElementById('preview-modal').style.display = 'none';
-    }
-
     function editarAlbumPreparado(nombre) {
       const album = albumesPreparadosNube[nombre];
       if (!album) return;
