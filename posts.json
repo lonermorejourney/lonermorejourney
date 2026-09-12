@@ -43,5 +43,50 @@
       "mes": "12",
       "año": "2025"
     }
+  },
+  {
+    "id": "solo-esta-lejos-a-donde-no-queremos-ir",
+    "slug": "solo-esta-lejos-a-donde-no-queremos-ir",
+    "nombre": "SOLO ESTA LEJOS A DONDE NO QUEREMOS IR",
+    "titulo": "SOLO ESTA LEJOS A DONDE NO QUEREMOS IR",
+    "publicado": false,
+    "poemas": [
+      {
+        "originalTitle": "ALCOHOL E ISMO",
+        "titulo": "ALCOHOL E ISMO",
+        "texto": "SDSDSDSDWADWDW"
+      },
+      {
+        "originalTitle": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "titulo": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "texto": "sdsdsdsdsdsdsd"
+      },
+      {
+        "originalTitle": "LA METAFORA DEL BENEVOLENTE",
+        "titulo": "LA METAFORA DEL BENEVOLENTE",
+        "texto": "SDSDSDSD"
+      },
+      {
+        "originalTitle": "UNA MELODÍA FELIZ",
+        "titulo": "UNA MELODÍA FELIZ",
+        "texto": "SDSDSDSDS"
+      },
+      {
+        "originalTitle": "FUGA EN EL ESCENARIO",
+        "titulo": "FUGA EN EL ESCENARIO",
+        "texto": "SDSDSDSDS"
+      },
+      {
+        "originalTitle": "ENTELEQUIAS",
+        "titulo": "ENTELEQUIAS",
+        "texto": "SDSDSDS"
+      }
+    ],
+    "portada": "portadas/portada_1789246441240_RENDER_ESCENARIO_2.png",
+    "fecha": {
+      "dia": "31",
+      "mes": "11",
+      "año": "2025"
+    }
   }
 ]
