@@ -996,6 +996,7 @@
 
       document.getElementById('sync-status').textContent = "Guardando...";
       try {
+        const repoInfo = { owner: 'familiaortegareyes16-prog', repo: 'lonermorejourney' };
         let sha = null;
         let remoteDrafts = {};
         const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
