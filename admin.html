@@ -889,7 +889,7 @@
     }
 
     async function cargarPreparadosDeNube() {
-      if (!repoInfo) return;
+      const repoInfo = { owner: 'familiaortegareyes16-prog', repo: 'lonermorejourney' };
       try {
         const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
           headers: { 'Authorization': `Bearer ${tokenGitHub}` }
