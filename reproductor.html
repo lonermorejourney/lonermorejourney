@@ -107,16 +107,16 @@
             const urlParams = new URLSearchParams(window.location.search);
             const obraParam = urlParams.get('id');
             
-            // Permite leer el índice de track o de poema indistintamente
             const trackVal = urlParams.get('track') !== null ? urlParams.get('track') : urlParams.get('poema');
             const poemaIndex = parseInt(trackVal) || 0;
 
             const response = await fetch('posts.json');
-            const posts = await response.json();
+            const rawPosts = await response.json();
 
-            if (!posts || posts.length === 0) return;
+            if (!rawPosts) return;
+            const posts = Array.isArray(rawPosts) ? rawPosts : Object.values(rawPosts);
+            if (posts.length === 0) return;
 
-            // Búsqueda inteligente por ID, slug, nombre o índice
             let obra = null;
             if (obraParam !== null) {
                 obra = posts.find(p => 
@@ -142,44 +142,50 @@
             const poema = poemas[poemaIndex] || poemas[0];
             if (!poema) return;
 
-            // Extraer título del poema
             const nombrePoema = typeof poema === 'string' ? poema : (poema.titulo || poema.originalTitle || 'Sin título');
 
-            // Formatear fecha
+            // Procesar fecha limpia sin barras y con mes traducido
             let fechaTexto = '';
             if (obra.fecha) {
-                if (typeof obra.fecha === 'object' && obra.fecha.dia) {
-                    fechaTexto = `${obra.fecha.dia}/${obra.fecha.mes}/${obra.fecha.año}`;
+                if (typeof obra.fecha === 'object') {
+                    const dia = obra.fecha.dia || '';
+                    let mes = obra.fecha.mes || '';
+                    const anio = obra.fecha.año || obra.fecha.anio || '';
+
+                    const mesesMap = {
+                        "1": "Ene", "01": "Ene", "2": "Feb", "02": "Feb",
+                        "3": "Mar", "03": "Mar", "4": "Abr", "04": "Abr",
+                        "5": "May", "05": "May", "6": "Jun", "06": "Jun",
+                        "7": "Jul", "07": "Jul", "8": "Ago", "08": "Ago",
+                        "9": "Sep", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dic"
+                    };
+
+                    const mesLower = String(mes).toLowerCase().trim();
+                    if (mesesMap[mesLower]) {
+                        mes = mesesMap[mesLower];
+                    }
+
+                    fechaTexto = `${dia} ${mes} ${anio}`.trim();
                 } else {
-                    fechaTexto = obra.fecha;
+                    fechaTexto = String(obra.fecha).replace(/\//g, ' ');
                 }
             }
             
-            // Actualizar título de la pestaña
             document.getElementById('page-title').textContent = `${nombrePoema} — ${tituloObra} — Lonermorejourney`;
-
-            // Enlace de vuelta al índice de la obra correspondiente
             document.getElementById('back-link').href = `obra.html?id=${encodeURIComponent(idObra)}`;
 
-            // Portada dinámica
             const coverImg = document.getElementById('player-cover');
             coverImg.src = (typeof poema === 'object' && poema.imagen) ? poema.imagen : portadaObra;
             coverImg.alt = nombrePoema;
 
-            // Título con disco giratorio
             document.getElementById('poem-title-text').textContent = nombrePoema;
-
-            // Metadatos
             document.getElementById('player-meta').innerHTML = `Poema <span class="dot">•</span> ${fechaTexto}`;
 
-            // Etiqueta de origen (Álbum o Título)
             const originTag = document.getElementById('poem-origin-tag');
             originTag.textContent = obra.tipo === 'individual' ? `de Título` : `de Álbum`;
 
-            // Título grande de lectura
             document.getElementById('poem-title-reading').textContent = nombrePoema;
 
-            // Cuerpo del poema
             const bodyContainer = document.getElementById('poem-body');
             bodyContainer.innerHTML = '';
 
@@ -203,7 +209,6 @@
                 bodyContainer.appendChild(p);
             }
 
-            // Botones de navegación entre poemas (mantiene la obra actual)
             const btnPrev = document.getElementById('btn-prev');
             const btnNext = document.getElementById('btn-next');
 
@@ -217,7 +222,6 @@
                 window.location.href = `reproductor.html?id=${encodeURIComponent(idObra)}&track=${nextIndex}`;
             };
 
-            // Compartir
             const btnShare = document.getElementById('btn-share');
             btnShare.onclick = () => {
                 if (navigator.share) {
