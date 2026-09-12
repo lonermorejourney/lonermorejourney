@@ -597,7 +597,29 @@
     .modal-btn-danger:hover { background: #c9302c; }
     .modal-btn-secondary { background: #e0e0e0; color: #1a1a1a; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
     .modal-btn-secondary:hover { background: #d0d0d0; }
+/* Animación de apertura para pantallas y ventanas emergentes */
+    @keyframes efectoEntrada {
+      from {
+        opacity: 0;
+        transform: scale(0.98) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
 
+    /* Aplicar entrada suave al alternar vistas */
+    #main-admin-layout,
+    #album-studio-layout {
+      animation: efectoEntrada 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Animación de entrada para modales */
+    #unsaved-modal .modal-content,
+    #preview-modal .preview-modal-content {
+      animation: efectoEntrada 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
     @media (max-width: 1050px) {
       .admin-layout, #album-studio-layout { flex-direction: column; }
       .drafts-sidebar, .sidebar-actions, .album-col { width: 100%; max-height: none; }
@@ -1184,34 +1206,50 @@
     /* --- LÓGICA DE MONTAR ÁLBUM Y GESTIÓN DE PREPARADOS --- */
 
     function abrirMontarAlbum() {
-      document.getElementById('main-admin-layout').style.display = 'none';
-      document.getElementById('album-studio-layout').style.display = 'flex';
-      document.getElementById('header-actions-normal').style.display = 'none';
-      document.getElementById('header-actions-album').style.display = 'flex';
-      
-      albumPoemas = [];
-      albumPortadaBase64 = null;
-      editingPreparedAlbumKey = null;
-      document.getElementById('album-name-input').value = "";
-      document.getElementById('btn-guardar-cambios').style.display = 'none';
-      document.getElementById('album-cover-dropzone').innerHTML = `
-        <span id="cover-placeholder-text" style="font-size: 12px; color: #666; text-align: center; padding: 10px;">Subir o arrastrar portada</span>
-        <input type="file" id="cover-file-input" accept="image/*" style="display: none;" onchange="cargarPortadaAlbum(event)">
-        <div class="cover-overlay" id="cover-overlay" style="display: none;">Cambiar o reemplazar portada</div>
-      `;
-      document.getElementById('album-day').value = "";
-      document.getElementById('album-month').value = "";
-      document.getElementById('album-year').value = "";
+  const albumLayout = document.getElementById('album-studio-layout');
+  
+  document.getElementById('main-admin-layout').style.display = 'none';
+  albumLayout.style.display = 'flex';
 
-      renderizarListasMontarAlbum();
-    }
+  // Forzar el reinicio de la animación al abrir
+  albumLayout.style.animation = 'none';
+  albumLayout.offsetHeight;
+  albumLayout.style.animation = '';
+
+  document.getElementById('header-actions-normal').style.display = 'none';
+  document.getElementById('header-actions-album').style.display = 'flex';
+
+  albumPoemas = [];
+  albumPortadaBase64 = null;
+  editingPreparedAlbumKey = null;
+  document.getElementById('album-name-input').value = "";
+  document.getElementById('btn-guardar-cambios').style.display = 'none';
+  document.getElementById('album-cover-dropzone').innerHTML = `
+    <span id="cover-placeholder-text" style="font-size: 12px; color: #666; text-align: center; padding: 10px;">Subir o arrastrar portada</span>
+    <input type="file" id="cover-file-input" accept="image/*" style="display: none;" onchange="cargarPortadaAlbum(event)">
+    <div class="cover-overlay" id="cover-overlay" style="display: none;">Cambiar o reemplazar portada</div>
+  `;
+  document.getElementById('album-day').value = "";
+  document.getElementById('album-month').value = "";
+  document.getElementById('album-year').value = "";
+
+  renderizarListasMontarAlbum();
+}
 
     function volverAlEstudioNormal() {
-      document.getElementById('album-studio-layout').style.display = 'none';
-      document.getElementById('main-admin-layout').style.display = 'flex';
-      document.getElementById('header-actions-album').style.display = 'none';
-      document.getElementById('header-actions-normal').style.display = 'flex';
-    }
+  const mainLayout = document.getElementById('main-admin-layout');
+
+  document.getElementById('album-studio-layout').style.display = 'none';
+  mainLayout.style.display = 'flex';
+
+  // Forzar el reinicio de la animación al volver
+  mainLayout.style.animation = 'none';
+  mainLayout.offsetHeight;
+  mainLayout.style.animation = '';
+
+  document.getElementById('header-actions-album').style.display = 'none';
+  document.getElementById('header-actions-normal').style.display = 'flex';
+}
 
     function renderizarListasMontarAlbum() {
       const sourceList = document.getElementById('album-source-list');
