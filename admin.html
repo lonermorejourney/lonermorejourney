@@ -1000,52 +1000,81 @@
     }
 
     async function guardarObra() {
-      const titulo = document.getElementById('doc-title').value.trim();
-      const contenido = document.getElementById('doc-editor').innerHTML;
-      if (!titulo) { alert("Escribe un título para la obra."); return; }
-      
-      const token = getToken();
-      if (!token) { alert("No hay token guardado."); return; }
+  const titulo = document.getElementById('doc-title').value.trim();
+  const contenido = document.getElementById('doc-editor').innerHTML;
+  if (!titulo) { alert("Escribe un título para la obra."); return; }
+  
+  const token = getToken();
+  if (!token) { alert("No hay token guardado. Por favor inicia sesión de nuevo."); return; }
 
-      document.getElementById('sync-status').textContent = "Guardando...";
+  document.getElementById('sync-status').textContent = "Guardando...";
+  try {
+    let sha = null;
+    let remoteDrafts = {};
+    
+    // 1. Consultar estado del archivo en GitHub
+    const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (check.ok) {
+      const fileData = await check.json();
+      sha = fileData.sha;
       try {
-        let sha = null;
-        let remoteDrafts = {};
-        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (check.ok) {
-          const fileData = await check.json();
-          sha = fileData.sha;
-          remoteDrafts = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
-        }
-        if (obraActualKey && obraActualKey !== titulo && remoteDrafts[obraActualKey]) { delete remoteDrafts[obraActualKey]; }
-        remoteDrafts[titulo] = contenido;
-
-        const reorderedDrafts = {};
-        reorderedDrafts[titulo] = contenido;
-        for (let k in remoteDrafts) { if (k !== titulo) { reorderedDrafts[k] = remoteDrafts[k]; } }
-        borradoresNube = reorderedDrafts;
-        obraActualKey = titulo;
-        if (cambiosLocales[titulo]) delete cambiosLocales[titulo];
-
-        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(borradoresNube, null, 2))));
-        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
-          method: 'PUT',
-          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: `Guardar obra: ${titulo}`, content: encodedContent, sha: sha })
-        });
-
-        if (res.ok) {
-          document.getElementById('sync-status').textContent = "Sincronizado";
-          renderizarBorradores();
-        } else {
-          document.getElementById('sync-status').textContent = "Error al guardar";
-        }
-      } catch (e) {
-        document.getElementById('sync-status').textContent = "Error de red";
+        remoteDrafts = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+      } catch(e) {
+        remoteDrafts = {};
       }
     }
+
+    // 2. Preparar el mapa de borradores
+    if (obraActualKey && obraActualKey !== titulo && remoteDrafts[obraActualKey]) { 
+      delete remoteDrafts[obraActualKey]; 
+    }
+    remoteDrafts[titulo] = contenido;
+
+    const reorderedDrafts = {};
+    reorderedDrafts[titulo] = contenido;
+    for (let k in remoteDrafts) { 
+      if (k !== titulo) { reorderedDrafts[k] = remoteDrafts[k]; } 
+    }
+    borradoresNube = reorderedDrafts;
+    obraActualKey = titulo;
+    if (cambiosLocales[titulo]) delete cambiosLocales[titulo];
+
+    // 3. Crear el cuerpo de la petición (solo incluye sha si existe)
+    const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(borradoresNube, null, 2))));
+    
+    const payload = {
+      message: `Guardar obra: ${titulo}`,
+      content: encodedContent
+    };
+    if (sha) payload.sha = sha;
+
+    // 4. Enviar a GitHub
+    const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
+      method: 'PUT',
+      headers: { 
+        'Authorization': `Bearer ${token}`, 
+        'Content-Type': 'application/json' 
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+      document.getElementById('sync-status').textContent = "Sincronizado";
+      renderizarBorradores();
+    } else {
+      const errData = await res.json().catch(() => ({}));
+      console.error("Error API GitHub:", res.status, errData);
+      document.getElementById('sync-status').textContent = `Error ${res.status}`;
+      alert(`GitHub rechazó el guardado (Código ${res.status}): ${errData.message || 'Verifica los permisos del token'}`);
+    }
+  } catch (e) {
+    console.error("Error JS:", e);
+    document.getElementById('sync-status').textContent = "Error de red";
+  }
+}
 
     async function eliminarBorrador(titulo, event) {
       event.stopPropagation();
