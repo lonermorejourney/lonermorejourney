@@ -773,7 +773,7 @@
 
   <script>
     let tokenGitHub = localStorage.getItem("github_token");
-    let repoInfo = null;
+    let repoInfo = { owner: 'familiaortegareyes16-prog', repo: 'lonermorejourney' };
     let borradoresNube = {};
     let albumesPreparadosNube = {};
     let cambiosLocales = {};
@@ -868,7 +868,7 @@
     }
 
     async function cargarBorradoresDeNube() {
-      const repoInfo = { owner: 'familiaortegareyes16-prog', repo: 'lonermorejourney' };
+      if (!repoInfo) return;
       document.getElementById('sync-status').textContent = "Sincronizando...";
       try {
         const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
@@ -889,7 +889,7 @@
     }
 
     async function cargarPreparadosDeNube() {
-      const repoInfo = { owner: 'familiaortegareyes16-prog', repo: 'lonermorejourney' };
+      if (!repoInfo) return;
       try {
         const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
           headers: { 'Authorization': `Bearer ${tokenGitHub}` }
