@@ -31,25 +31,36 @@
 
             if (!posts || posts.length === 0) return;
 
-            posts.forEach((post, index) => {
+            // 1. Ocultar del feed lo que esté en borrador / preparado (publicado: false)
+            const postsPublicados = posts.filter(post => post.publicado !== false);
+
+            postsPublicados.forEach((post, index) => {
                 const card = document.createElement('a');
-                card.href = `obra.html?id=${index}`;
+                
+                // 2. Enlazar por ID/slug dinámico en lugar de índice numérico
+                const postId = post.id || post.slug || index;
+                card.href = `obra.html?id=${postId}`;
                 card.className = 'post-card';
 
-                const portada = post.imagen ? post.imagen : 'portada.png';
+                const titulo = post.titulo || post.nombre || 'Sin título';
+                const portada = post.portada || post.imagen || 'portada.png';
                 const tipoTexto = post.tipo === 'individual' ? 'Título' : 'Álbum';
                 
-                // Extraer el año de la fecha registrada
+                // 3. Soporte de fecha para formato objeto {dia, mes, año} o cadena de texto
                 let anio = new Date().getFullYear();
                 if (post.fecha) {
-                    const partesFecha = post.fecha.split(' ');
-                    anio = partesFecha[partesFecha.length - 1] || anio;
+                    if (typeof post.fecha === 'object' && post.fecha.año) {
+                        anio = post.fecha.año;
+                    } else if (typeof post.fecha === 'string') {
+                        const partesFecha = post.fecha.split(' ');
+                        anio = partesFecha[partesFecha.length - 1] || anio;
+                    }
                 }
 
                 card.innerHTML = `
-                    <img class="post-cover" src="${portada}" alt="${post.titulo}">
+                    <img class="post-cover" src="${portada}" alt="${titulo}">
                     <div class="post-info">
-                        <h3 class="post-title">${post.titulo}</h3>
+                        <h3 class="post-title">${titulo}</h3>
                         <p class="post-meta">${anio} <span class="dot">•</span> ${tipoTexto}</p>
                     </div>
                 `;
