@@ -799,10 +799,6 @@
       }
       
       inicializarSelectoresFecha();
-
-      if (tokenGuardado && localStorage.getItem("admin_logueado") === "true") {
-        mostrarEstudio();
-      }
     });
 
     function inicializarSelectoresFecha() {
@@ -862,7 +858,7 @@
 
     async function detectarRepositorio() {
       repoInfo = { 
-        owner: "familiaortegareyes16-prog", 
+        owner: "lonermorejourney", 
         repo: "lonermorejourney" 
       };
       
@@ -1000,81 +996,77 @@
     }
 
     async function guardarObra() {
-  const titulo = document.getElementById('doc-title').value.trim();
-  const contenido = document.getElementById('doc-editor').innerHTML;
-  if (!titulo) { alert("Escribe un título para la obra."); return; }
-  
-  const token = getToken();
-  if (!token) { alert("No hay token guardado. Por favor inicia sesión de nuevo."); return; }
+      const titulo = document.getElementById('doc-title').value.trim();
+      const contenido = document.getElementById('doc-editor').innerHTML;
+      if (!titulo) { alert("Escribe un título para la obra."); return; }
+      
+      const token = getToken();
+      if (!token) { alert("No hay token guardado. Por favor inicia sesión de nuevo."); return; }
 
-  document.getElementById('sync-status').textContent = "Guardando...";
-  try {
-    let sha = null;
-    let remoteDrafts = {};
-    
-    // 1. Consultar estado del archivo en GitHub
-    const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-
-    if (check.ok) {
-      const fileData = await check.json();
-      sha = fileData.sha;
+      document.getElementById('sync-status').textContent = "Guardando...";
       try {
-        remoteDrafts = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
-      } catch(e) {
-        remoteDrafts = {};
+        let sha = null;
+        let remoteDrafts = {};
+        
+        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (check.ok) {
+          const fileData = await check.json();
+          sha = fileData.sha;
+          try {
+            remoteDrafts = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+          } catch(e) {
+            remoteDrafts = {};
+          }
+        }
+
+        if (obraActualKey && obraActualKey !== titulo && remoteDrafts[obraActualKey]) { 
+          delete remoteDrafts[obraActualKey]; 
+        }
+        remoteDrafts[titulo] = contenido;
+
+        const reorderedDrafts = {};
+        reorderedDrafts[titulo] = contenido;
+        for (let k in remoteDrafts) { 
+          if (k !== titulo) { reorderedDrafts[k] = remoteDrafts[k]; } 
+        }
+        borradoresNube = reorderedDrafts;
+        obraActualKey = titulo;
+        if (cambiosLocales[titulo]) delete cambiosLocales[titulo];
+
+        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(borradoresNube, null, 2))));
+        
+        const payload = {
+          message: `Guardar obra: ${titulo}`,
+          content: encodedContent
+        };
+        if (sha) payload.sha = sha;
+
+        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
+          method: 'PUT',
+          headers: { 
+            'Authorization': `Bearer ${token}`, 
+            'Content-Type': 'application/json' 
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          document.getElementById('sync-status').textContent = "Sincronizado";
+          renderizarBorradores();
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          console.error("Error API GitHub:", res.status, errData);
+          document.getElementById('sync-status').textContent = `Error ${res.status}`;
+          alert(`GitHub rechazó el guardado (Código ${res.status}): ${errData.message || 'Verifica los permisos del token'}`);
+        }
+      } catch (e) {
+        console.error("Error JS:", e);
+        document.getElementById('sync-status').textContent = "Error de red";
       }
     }
-
-    // 2. Preparar el mapa de borradores
-    if (obraActualKey && obraActualKey !== titulo && remoteDrafts[obraActualKey]) { 
-      delete remoteDrafts[obraActualKey]; 
-    }
-    remoteDrafts[titulo] = contenido;
-
-    const reorderedDrafts = {};
-    reorderedDrafts[titulo] = contenido;
-    for (let k in remoteDrafts) { 
-      if (k !== titulo) { reorderedDrafts[k] = remoteDrafts[k]; } 
-    }
-    borradoresNube = reorderedDrafts;
-    obraActualKey = titulo;
-    if (cambiosLocales[titulo]) delete cambiosLocales[titulo];
-
-    // 3. Crear el cuerpo de la petición (solo incluye sha si existe)
-    const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(borradoresNube, null, 2))));
-    
-    const payload = {
-      message: `Guardar obra: ${titulo}`,
-      content: encodedContent
-    };
-    if (sha) payload.sha = sha;
-
-    // 4. Enviar a GitHub
-    const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
-      method: 'PUT',
-      headers: { 
-        'Authorization': `Bearer ${token}`, 
-        'Content-Type': 'application/json' 
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (res.ok) {
-      document.getElementById('sync-status').textContent = "Sincronizado";
-      renderizarBorradores();
-    } else {
-      const errData = await res.json().catch(() => ({}));
-      console.error("Error API GitHub:", res.status, errData);
-      document.getElementById('sync-status').textContent = `Error ${res.status}`;
-      alert(`GitHub rechazó el guardado (Código ${res.status}): ${errData.message || 'Verifica los permisos del token'}`);
-    }
-  } catch (e) {
-    console.error("Error JS:", e);
-    document.getElementById('sync-status').textContent = "Error de red";
-  }
-}
 
     async function eliminarBorrador(titulo, event) {
       event.stopPropagation();
@@ -1141,6 +1133,13 @@
       }
     }
 
+    function ejecutarNuevaIdea() {
+      document.getElementById('doc-title').value = "";
+      document.getElementById('doc-editor').innerHTML = "";
+      obraActualKey = null;
+      renderizarBorradores();
+    }
+
     async function modalGuardarYCambiar() {
       const target = pendingTargetTitle;
       cerrarModalUnsaved();
@@ -1179,11 +1178,10 @@
     }
     function cerrarSesion() {
       localStorage.removeItem("admin_logueado");
-      localStorage.removeItem("github_token");
       location.reload();
     }
 
-    // --- LÓGICA DE MONTAR ÁLBUM Y GESTIÓN DE PREPARADOS ---
+    /* --- LÓGICA DE MONTAR ÁLBUM Y GESTIÓN DE PREPARADOS --- */
 
     function abrirMontarAlbum() {
       document.getElementById('main-admin-layout').style.display = 'none';
@@ -1517,10 +1515,6 @@
       if (!token) { alert("No hay token guardado."); return; }
 
       const nombreAlbum = document.getElementById('album-name-input').value.trim();
-      
-      if (editingPreparedAlbumKey && editingPreparedAlbumKey !== nombreAlbum) {
-        delete albumesPreparadosNube[editingPreparedAlbumKey];
-      }
 
       const albumData = {
         nombre: nombreAlbum,
@@ -1602,6 +1596,40 @@
         `;
         lista.appendChild(item);
       });
+    }
+
+    function previsualizarAlbumPreparado(nombre) {
+      const album = albumesPreparadosNube[nombre];
+      if (!album) return;
+      const modal = document.getElementById('preview-modal');
+      const body = document.getElementById('preview-modal-body');
+      
+      let html = `<h2 style="font-family: var(--fuente-heavy); font-size: 22px; margin-bottom: 15px;">${album.nombre}</h2>`;
+      if (album.portada) {
+        const src = album.portada.startsWith('data:') || album.portada.startsWith('http') 
+          ? album.portada 
+          : `https://raw.githubusercontent.com/${repoInfo.owner}/${repoInfo.repo}/main/${album.portada}`;
+        html += `<img src="${src}" style="width: 100%; max-height: 250px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">`;
+      }
+      html += `<p style="font-size: 13px; color: #666; margin-bottom: 15px;"><b>Fecha:</b> ${album.fecha.dia}/${album.fecha.mes}/${album.fecha.año}</p>`;
+      html += `<h4 style="font-family: var(--fuente-heavy); margin-bottom: 10px;">Poemas del álbum:</h4>`;
+      if (album.poemas && album.poemas.length > 0) {
+        album.poemas.forEach((p, i) => {
+          html += `
+            <div style="background: #f9f9f9; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #eee;">
+              <h5 style="font-family: var(--fuente-heavy); font-size: 15px; margin-bottom: 5px;">${i + 1}. ${p.titulo}</h5>
+              <div style="font-family: 'Times New Roman', serif; font-size: 15px; white-space: pre-wrap;">${p.texto}</div>
+            </div>
+          `;
+        });
+      }
+
+      body.innerHTML = html;
+      modal.style.display = 'flex';
+    }
+
+    function cerrarPreviewModal() {
+      document.getElementById('preview-modal').style.display = 'none';
     }
 
     async function eliminarAlbumPreparado(nombre, event) {
