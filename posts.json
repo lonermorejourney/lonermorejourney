@@ -1,1 +1,42 @@
-[]
+[
+  {
+    "id": "el-disco-de-las-estrellas",
+    "slug": "el-disco-de-las-estrellas",
+    "nombre": "EL DISCO DE LAS ESTRELLAS",
+    "titulo": "EL DISCO DE LAS ESTRELLAS",
+    "publicado": false,
+    "poemas": [
+      {
+        "originalTitle": "ENTELEQUIAS",
+        "titulo": "ENTELEQUIAS",
+        "texto": "SDSDSDSDSDS"
+      },
+      {
+        "originalTitle": "UNA MELODÍA FELIZ",
+        "titulo": "UNA MELODÍA FELIZ",
+        "texto": "SDSDSDSDSDSDS"
+      },
+      {
+        "originalTitle": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "titulo": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "texto": "SDSDSDSDSDS"
+      },
+      {
+        "originalTitle": "FUGA EN EL ESCENARIO",
+        "titulo": "FUGA EN EL ESCENARIO",
+        "texto": "SDSDSDSDSDSDSD"
+      },
+      {
+        "originalTitle": "LA METAFORA DEL BENEVOLENTE",
+        "titulo": "LA METAFORA DEL BENEVOLENTE",
+        "texto": "SDSDSDSDSDSDSDSDS"
+      }
+    ],
+    "portada": "portadas/portada_1789239814700_Captura_de_pantalla_(34222.jpg",
+    "fecha": {
+      "dia": "15",
+      "mes": "12",
+      "año": "2025"
+    }
+  }
+]
