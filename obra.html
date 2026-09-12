@@ -91,17 +91,39 @@ document.addEventListener("DOMContentLoaded", async () => {
         const idObra = obra.id || obra.slug || obraParam || 0;
 
         // Procesar fecha (objeto {dia, mes, año} o texto)
-        let fechaTexto = '';
-        if (obra.fecha) {
-            if (typeof obra.fecha === 'object') {
-                const dia = obra.fecha.dia || '';
-                const mes = obra.fecha.mes || '';
-                const anio = obra.fecha.año || obra.fecha.anio || '';
-                fechaTexto = `${dia} ${mes} ${anio}`.trim();
-            } else {
-                fechaTexto = obra.fecha;
-            }
+        function formatearFecha(fechaObj) {
+    if (!fechaObj) return '';
+    if (typeof fechaObj === 'object') {
+        const dia = fechaObj.dia || '';
+        let mes = fechaObj.mes || '';
+        const anio = fechaObj.año || fechaObj.anio || '';
+
+        // Diccionario para traducir números o formatos de mes a texto abreviado
+        const mesesMap = {
+            "1": "Ene", "01": "Ene", "2": "Feb", "02": "Feb",
+            "3": "Mar", "03": "Mar", "4": "Abr", "04": "Abr",
+            "5": "May", "05": "May", "6": "Jun", "06": "Jun",
+            "7": "Jul", "07": "Jul", "8": "Ago", "08": "Ago",
+            "9": "Sep", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dic",
+            "enero": "Ene", "febrero": "Feb", "marzo": "Mar", "abril": "Abr", 
+            "mayo": "May", "junio": "Jun", "julio": "Jul", "agosto": "Ago", 
+            "septiembre": "Sep", "octubre": "Oct", "noviembre": "Nov", "diciembre": "Dic"
+        };
+
+        const mesLower = String(mes).toLowerCase().trim();
+        if (mesesMap[mesLower]) {
+            mes = mesesMap[mesLower];
         }
+
+        return `${dia} ${mes} ${anio}`.trim();
+    }
+    
+    // Si viene como texto plano tipo "15/12/2025", lo limpiamos si es necesario
+    return String(fechaObj).replace(/\//g, ' ');
+}
+
+// Uso en obra.html y reproductor.html:
+let fechaTexto = formatearFecha(obra.fecha);
 
         // Asignar en la interfaz
         document.getElementById('page-title').textContent = `${tituloObra} — Lonermorejourney`;
