@@ -844,13 +844,11 @@
     }
 
     async function detectarRepositorio() {
-      // Forzamos directamente tu repositorio real para evitar que busque en otros por error
       repoInfo = { 
         owner: "familiaortegareyes16-prog", 
         repo: "lonermorejourney" 
       };
       
-      // Verificamos que el token tiene acceso a él
       try {
         const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/admin.html`, {
           headers: { 'Authorization': `token ${tokenGitHub}` }
@@ -862,31 +860,6 @@
         console.error(e);
       }
     }
-
-      if (!repoInfo) {
-        try {
-          const userRes = await fetch('https://api.github.com/user', {
-            headers: { 'Authorization': `token ${tokenGitHub}` }
-          });
-          const userData = await userRes.json();
-          const reposRes = await fetch(`https://api.github.com/user/repos?per_page=1,sort=updated`, {
-            headers: { 'Authorization': `token ${tokenGitHub}` }
-          });
-          if (reposRes.ok) {
-            const repos = await reposRes.json();
-            if (repos.length > 0) {
-              repoInfo = { owner: userData.login, repo: repos[0].name };
-            }
-          }
-        } catch (err) {}
-      }
-
-      if (!repoInfo) {
-        document.getElementById('sync-status').textContent = "Error: Repositorio no encontrado";
-        alert("No se pudo detectar automáticamente tu repositorio en GitHub. Asegúrate de que el token tenga permisos de 'repo'.");
-      }
-    }
-
     async function cargarBorradoresDeNube() {
       if (!repoInfo) return;
       document.getElementById('sync-status').textContent = "Sincronizando...";
