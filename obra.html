@@ -98,16 +98,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         let mes = fechaObj.mes || '';
         const anio = fechaObj.año || fechaObj.anio || '';
 
-        // Diccionario para traducir números o formatos de mes a texto abreviado
+        // Diccionario con las abreviaturas de los meses en minúscula
         const mesesMap = {
-            "1": "Ene", "01": "Ene", "2": "Feb", "02": "Feb",
-            "3": "Mar", "03": "Mar", "4": "Abr", "04": "Abr",
-            "5": "May", "05": "May", "6": "Jun", "06": "Jun",
-            "7": "Jul", "07": "Jul", "8": "Ago", "08": "Ago",
-            "9": "Sep", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dic",
-            "enero": "Ene", "febrero": "Feb", "marzo": "Mar", "abril": "Abr", 
-            "mayo": "May", "junio": "Jun", "julio": "Jul", "agosto": "Ago", 
-            "septiembre": "Sep", "octubre": "Oct", "noviembre": "Nov", "diciembre": "Dic"
+            "1": "ene", "01": "ene", "2": "feb", "02": "feb",
+            "3": "mar", "03": "mar", "4": "abr", "04": "abr",
+            "5": "may", "05": "may", "6": "jun", "06": "jun",
+            "7": "jul", "07": "jul", "8": "ago", "08": "ago",
+            "9": "sep", "09": "sep", "10": "oct", "11": "nov", "12": "dic",
+            "enero": "ene", "febrero": "feb", "marzo": "mar", "abril": "abr", 
+            "mayo": "may", "junio": "jun", "julio": "jul", "agosto": "ago", 
+            "septiembre": "sep", "octubre": "oct", "noviembre": "nov", "diciembre": "dic"
         };
 
         const mesLower = String(mes).toLowerCase().trim();
@@ -118,8 +118,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         return `${dia} ${mes} ${anio}`.trim();
     }
     
-    // Si viene como texto plano tipo "15/12/2025", lo limpiamos si es necesario
-    return String(fechaObj).replace(/\//g, ' ');
+    // Si viene como texto plano tipo "15/12/2025", lo limpiamos y pasamos a minúsculas
+    return String(fechaObj).replace(/\//g, ' ').toLowerCase();
 }
 
 // Uso en obra.html y reproductor.html:
