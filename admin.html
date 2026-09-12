@@ -1287,21 +1287,63 @@
       albumPoemas[index].text = nuevoTexto;
     }
 
-    function cargarPortadaAlbum(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        albumPortadaBase64 = e.target.result;
+    async function cargarPortadaAlbum(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  document.getElementById('sync-status').textContent = "Subiendo portada...";
+
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const base64Content = e.target.result.split(',')[1];
+    const fileName = `portada_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+    const filePath = `portadas/${fileName}`;
+
+    try {
+      let sha = null;
+      // Verificamos si ya existe por si acaso
+      const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/${filePath}`, {
+        headers: { 'Authorization': `token ${tokenGitHub}` }
+      });
+      if (check.ok) {
+        const fileData = await check.json();
+        sha = fileData.sha;
+      }
+
+      const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/${filePath}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${tokenGitHub}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: `Subir imagen de portada: ${fileName}`,
+          content: base64Content,
+          sha: sha
+        })
+      });
+
+      if (res.ok) {
+        albumPortadaBase64 = filePath;
+        document.getElementById('sync-status').textContent = "Sincronizado";
+
         const dropzone = document.getElementById('album-cover-dropzone');
         dropzone.innerHTML = `
-          <img src="${albumPortadaBase64}" alt="Portada">
+          <img src="${e.target.result}" alt="Portada">
           <input type="file" id="cover-file-input" accept="image/*" style="display: none;" onchange="cargarPortadaAlbum(event)">
           <div class="cover-overlay">Cambiar o reemplazar portada</div>
         `;
-      };
-      reader.readAsDataURL(file);
+      } else {
+        document.getElementById('sync-status').textContent = "Error al subir imagen";
+        alert("Hubo un error al subir la portada a GitHub.");
+      }
+    } catch (err) {
+      document.getElementById('sync-status').textContent = "Error de red";
+      console.error(err);
     }
+  };
+  reader.readAsDataURL(file);
+}
 
     function validarAlbumListo() {
       const nombreAlbum = document.getElementById('album-name-input').value.trim();
