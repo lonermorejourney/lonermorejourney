@@ -772,7 +772,7 @@
   </div>
 
   <script>
-    const getToken = () => localStorage.getItem("github_token") || "";
+    const getToken = () => localStorage.getItem("github_token")
     let repoInfo = { owner: 'familiaortegareyes16-prog', repo: 'lonermorejourney' };
     let borradoresNube = {};
     let albumesPreparadosNube = {};
@@ -989,51 +989,53 @@
     }
 
     async function guardarObra() {
-      const titulo = document.getElementById('doc-title').value.trim();
-      const contenido = document.getElementById('doc-editor').innerHTML;
-      if (!titulo) { alert("Escribe un título para la obra."); return; }
-      if (!repoInfo) { alert("Repositorio no detectado."); return; }
+    const titulo = document.getElementById('doc-title').value.trim();
+    const contenido = document.getElementById('doc-editor').innerHTML;
+    if (!titulo) { alert("Escribe un título para la obra."); return; }
+    
+    const tokenReal = localStorage.getItem("github_token");
+    if (!tokenReal) { alert("No hay token guardado."); return; }
 
-      document.getElementById('sync-status').textContent = "Guardando...";
-      try {
-        const repoInfo = { owner: 'familiaortegareyes16-prog', repo: 'lonermorejourney' };
-        let sha = null;
-        let remoteDrafts = {};
-        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
-          headers: { 'Authorization': `token ${tokenGitHub}` }
-        });
-        if (check.ok) {
-          const fileData = await check.json();
-          sha = fileData.sha;
-          remoteDrafts = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
-        }
-        if (obraActualKey && obraActualKey !== titulo && remoteDrafts[obraActualKey]) { delete remoteDrafts[obraActualKey]; }
-        remoteDrafts[titulo] = contenido;
-
-        const reorderedDrafts = {};
-        reorderedDrafts[titulo] = contenido;
-        for (let k in remoteDrafts) { if (k !== titulo) { reorderedDrafts[k] = remoteDrafts[k]; } }
-        borradoresNube = reorderedDrafts;
-        obraActualKey = titulo;
-        if (cambiosLocales[titulo]) delete cambiosLocales[titulo];
-
-        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(borradoresNube, null, 2))));
-        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
-          method: 'PUT',
-          headers: { 'Authorization': `token ${tokenGitHub}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: `Guardar obra: ${titulo}`, content: encodedContent, sha: sha })
-        });
-
-        if (res.ok) {
-          document.getElementById('sync-status').textContent = "Sincronizado";
-          renderizarBorradores();
-        } else {
-          document.getElementById('sync-status').textContent = "Error al guardar";
-        }
-      } catch (e) {
-        document.getElementById('sync-status').textContent = "Error de red";
+    document.getElementById('sync-status').textContent = "Guardando...";
+    try {
+      const repoInfo = { owner: 'familiaortegareyes16-prog', repo: 'lonermorejourney' };
+      let sha = null;
+      let remoteDrafts = {};
+      const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
+        headers: { 'Authorization': `token ${tokenReal}` }
+      });
+      if (check.ok) {
+        const fileData = await check.json();
+        sha = fileData.sha;
+        remoteDrafts = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
       }
+      if (obraActualKey && obraActualKey !== titulo && remoteDrafts[obraActualKey]) { delete remoteDrafts[obraActualKey]; }
+      remoteDrafts[titulo] = contenido;
+
+      const reorderedDrafts = {};
+      reorderedDrafts[titulo] = contenido;
+      for (let k in remoteDrafts) { if (k !== titulo) { reorderedDrafts[k] = remoteDrafts[k]; } }
+      borradoresNube = reorderedDrafts;
+      obraActualKey = titulo;
+      if (cambiosLocales[titulo]) delete cambiosLocales[titulo];
+
+      const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(borradoresNube, null, 2))));
+      const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/drafts.json`, {
+        method: 'PUT',
+        headers: { 'Authorization': `token ${tokenReal}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: `Guardar obra: ${titulo}`, content: encodedContent, sha: sha })
+      });
+
+      if (res.ok) {
+        document.getElementById('sync-status').textContent = "Sincronizado";
+        renderizarBorradores();
+      } else {
+        document.getElementById('sync-status').textContent = "Error al guardar";
+      }
+    } catch (e) {
+      document.getElementById('sync-status').textContent = "Error de red";
     }
+}
 
     async function eliminarBorrador(titulo, event) {
       event.stopPropagation();
