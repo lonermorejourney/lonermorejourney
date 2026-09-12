@@ -23,7 +23,7 @@
           <p class="album-tag" id="album-tag">Álbum</p>
           <h1 class="album-title"><span id="album-title-text"></span><span class="reg">®</span></h1>
 
-          <!-- Metadatos MÓVIL (3 líneas separadas) -->
+          <!-- Metadatos MÓVIL -->
           <div class="album-meta-mobile">
             <p class="album-genre-count">Poesía <span class="dot">•</span> <span id="mobile-count-text">0 Títulos</span></p>
             <p class="album-indicator-date" id="mobile-indicator-date">Álbum</p>
@@ -33,7 +33,7 @@
             </div>
           </div>
 
-          <!-- Metadatos PC (1 línea combinada) -->
+          <!-- Metadatos PC -->
           <div class="album-meta-desktop">
             <img class="album-avatar" src="avatar.jpeg" alt="">
             <p class="album-meta-desktop-text">de felipeortegareyes <span class="dot">•</span> <span id="desktop-date-text"></span> <span class="dot">•</span> <span id="desktop-count-text">0 Títulos</span></p>
@@ -56,61 +56,95 @@
     document.addEventListener("DOMContentLoaded", async () => {
         try {
             const urlParams = new URLSearchParams(window.location.search);
-            const obraIndex = urlParams.get('id');
+            const obraParam = urlParams.get('id');
 
             const response = await fetch('posts.json');
             const posts = await response.json();
 
             if (!posts || posts.length === 0) return;
 
-            // Selecciona la obra concreta por ID en la URL o carga la última publicada por defecto
-            const obra = obraIndex !== null ? posts[obraIndex] : posts[posts.length - 1];
+            // 1. Búsqueda inteligente por ID, slug, nombre, título o índice numérico
+            let obra = null;
+            if (obraParam !== null) {
+                obra = posts.find(p => 
+                    (p.id && p.id === obraParam) || 
+                    (p.slug && p.slug === obraParam) || 
+                    (p.nombre && p.nombre === obraParam) || 
+                    (p.titulo && p.titulo === obraParam)
+                );
+
+                if (!obra && !isNaN(obraParam)) {
+                    obra = posts[parseInt(obraParam)];
+                }
+            }
+
+            // Si no se especifica o no existe, carga la última obra disponible
+            if (!obra) {
+                obra = posts.find(p => p.publicado !== false) || posts[posts.length - 1];
+            }
+
             if (!obra) return;
 
+            const tituloObra = obra.titulo || obra.nombre || 'Sin título';
+            const portadaObra = obra.portada || obra.imagen || 'portada.png';
+            const idObra = obra.id || obra.slug || obraParam || 0;
+
+            // Formatear fecha (soporta objeto {dia, mes, año} o cadena)
+            let fechaTexto = '';
+            if (obra.fecha) {
+                if (typeof obra.fecha === 'object' && obra.fecha.dia) {
+                    fechaTexto = `${obra.fecha.dia}/${obra.fecha.mes}/${obra.fecha.año}`;
+                } else {
+                    fechaTexto = obra.fecha;
+                }
+            }
+
             // Actualizar título de la pestaña del navegador
-            document.getElementById('page-title').textContent = `${obra.titulo} — Lonermorejourney`;
+            document.getElementById('page-title').textContent = `${tituloObra} — Lonermorejourney`;
 
             // Rellenar portada principal
             const coverImg = document.getElementById('album-cover');
-            coverImg.src = obra.imagen ? obra.imagen : 'portada.png';
-            coverImg.alt = obra.titulo;
+            coverImg.src = portadaObra;
+            coverImg.alt = tituloObra;
 
             // Título principal
-            document.getElementById('album-title-text').textContent = obra.titulo;
+            document.getElementById('album-title-text').textContent = tituloObra;
 
-            // Calcular cantidad total de títulos/poemas dinámicamente
+            // Conteo de poemas
             const totalPoemas = obra.poemas ? obra.poemas.length : 0;
             const textoConteo = totalPoemas === 1 ? '1 Título' : `${totalPoemas} Títulos`;
 
-            // Configuración visual según el tipo explícito definido en el panel
+            // Configuración visual según tipo de obra
             const tagEl = document.getElementById('album-tag');
             const mobileDateEl = document.getElementById('mobile-indicator-date');
 
             if (obra.tipo === 'individual') {
                 tagEl.textContent = "Título";
-                mobileDateEl.textContent = obra.fecha; 
+                mobileDateEl.textContent = fechaTexto; 
             } else {
                 tagEl.textContent = "Álbum";
-                mobileDateEl.textContent = `Álbum ${obra.fecha}`;
+                mobileDateEl.textContent = `Álbum ${fechaTexto}`;
             }
 
-            // Inyectar contadores y fechas en móvil y escritorio
+            // Inyectar contadores y fechas
             document.getElementById('mobile-count-text').textContent = textoConteo;
-            document.getElementById('desktop-date-text').textContent = obra.fecha;
+            document.getElementById('desktop-date-text').textContent = fechaTexto;
             document.getElementById('desktop-count-text').textContent = textoConteo;
 
-            // Renderizar la lista de poemas limpia y dinámica
+            // Renderizar la lista de poemas y enlazar al reproductor
             const poemsListContainer = document.getElementById('poems-list');
             poemsListContainer.innerHTML = '';
 
             if (obra.poemas && obra.poemas.length > 0) {
-                obra.poemas.forEach(poema => {
+                obra.poemas.forEach((poema, index) => {
                     const poemItem = document.createElement('a');
-                    poemItem.href = '#';
+                    
+                    // Enlace hacia la vista del lector/reproductor pasando la obra y el número de poema
+                    poemItem.href = `reproductor.html?id=${encodeURIComponent(idObra)}&track=${index}`;
                     poemItem.className = 'poem-item';
 
-                    const nombrePoema = typeof poema === 'string' ? poema : (poema.titulo || poema);
-                    const miniatura = (typeof poema === 'object' && poema.imagen) ? poema.imagen : (obra.imagen || 'portada.png');
+                    const nombrePoema = typeof poema === 'string' ? poema : (poema.titulo || poema.originalTitle || 'Poema sin título');
+                    const miniatura = (typeof poema === 'object' && poema.imagen) ? poema.imagen : portadaObra;
 
                     poemItem.innerHTML = `
                         <img class="poem-cover" src="${miniatura}" alt="">
