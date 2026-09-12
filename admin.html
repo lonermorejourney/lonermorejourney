@@ -844,31 +844,24 @@
     }
 
     async function detectarRepositorio() {
-      if (repoInfo) return;
+      // Forzamos directamente tu repositorio real para evitar que busque en otros por error
+      repoInfo = { 
+        owner: "familiaortegareyes16-prog", 
+        repo: "lonermorejourney" 
+      };
+      
+      // Verificamos que el token tiene acceso a él
       try {
-        const userRes = await fetch('https://api.github.com/user', {
+        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/admin.html`, {
           headers: { 'Authorization': `token ${tokenGitHub}` }
         });
-        if (!userRes.ok) throw new Error("Token inválido");
-        const userData = await userRes.json();
-        const username = userData.login;
-
-        const res = await fetch(`https://api.github.com/users/${username}/repos?per_page=100`, {
-          headers: { 'Authorization': `token ${tokenGitHub}` }
-        });
-        if (res.ok) {
-          const repos = await res.json();
-          for (let repo of repos) {
-            const check = await fetch(`https://api.github.com/repos/${repo.owner.login}/${repo.name}/contents/admin.html`, {
-              headers: { 'Authorization': `token ${tokenGitHub}` }
-            });
-            if (check.ok) {
-              repoInfo = { owner: repo.owner.login, repo: repo.name };
-              break;
-            }
-          }
+        if (!check.ok) {
+          console.warn("No se pudo verificar el repositorio principal automáticamente.");
         }
-      } catch (e) { console.error(e); }
+      } catch (e) {
+        console.error(e);
+      }
+    }
 
       if (!repoInfo) {
         try {
