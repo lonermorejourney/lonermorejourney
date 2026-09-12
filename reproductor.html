@@ -153,11 +153,14 @@
                     const anio = obra.fecha.año || obra.fecha.anio || '';
 
                     const mesesMap = {
-                        "1": "Ene", "01": "Ene", "2": "Feb", "02": "Feb",
-                        "3": "Mar", "03": "Mar", "4": "Abr", "04": "Abr",
-                        "5": "May", "05": "May", "6": "Jun", "06": "Jun",
-                        "7": "Jul", "07": "Jul", "8": "Ago", "08": "Ago",
-                        "9": "Sep", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dic"
+                        "1": "ene", "01": "ene", "2": "feb", "02": "feb",
+                        "3": "mar", "03": "mar", "4": "abr", "04": "abr",
+                        "5": "may", "05": "may", "6": "jun", "06": "jun",
+                        "7": "jul", "07": "jul", "8": "ago", "08": "ago",
+                        "9": "sep", "09": "sep", "10": "oct", "11": "nov", "12": "dic",
+                        "enero": "ene", "febrero": "feb", "marzo": "mar", "abril": "abr", 
+                        "mayo": "may", "junio": "jun", "julio": "jul", "agosto": "ago", 
+                        "septiembre": "sep", "octubre": "oct", "noviembre": "nov", "diciembre": "dic"
                     };
 
                     const mesLower = String(mes).toLowerCase().trim();
@@ -167,7 +170,7 @@
 
                     fechaTexto = `${dia} ${mes} ${anio}`.trim();
                 } else {
-                    fechaTexto = String(obra.fecha).replace(/\//g, ' ');
+                    fechaTexto = String(obra.fecha).replace(/\//g, ' ').toLowerCase();
                 }
             }
             
