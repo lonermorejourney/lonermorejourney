@@ -1,5 +1,51 @@
 [
   {
+    "id": "luchas-internas",
+    "slug": "luchas-internas",
+    "tipo": "album",
+    "nombre": "LUCHAS INTERNAS",
+    "titulo": "LUCHAS INTERNAS",
+    "publicado": true,
+    "poemas": [
+      {
+        "originalTitle": "ALCOHOL E ISMO",
+        "titulo": "ALCOHOL E ISMO",
+        "texto": "SDSDSDSDWADWDW"
+      },
+      {
+        "originalTitle": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "titulo": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "texto": "sdsdsdsdsdsdsd"
+      },
+      {
+        "originalTitle": "LA METAFORA DEL BENEVOLENTE",
+        "titulo": "LA METAFORA DEL BENEVOLENTE",
+        "texto": ""
+      },
+      {
+        "originalTitle": "FUGA EN EL ESCENARIO",
+        "titulo": "FUGA EN EL ESCENARIO",
+        "texto": ""
+      },
+      {
+        "originalTitle": "UNA MELODÍA FELIZ",
+        "titulo": "UNA MELODÍA FELIZ",
+        "texto": ""
+      },
+      {
+        "originalTitle": "ENTELEQUIAS",
+        "titulo": "ENTELEQUIAS",
+        "texto": ""
+      }
+    ],
+    "portada": "portadas/portada_1789311766753_CASA_RENDER_1.jpg",
+    "fecha": {
+      "dia": "5",
+      "mes": "8",
+      "año": "2025"
+    }
+  },
+  {
     "id": "el-disco-de-las-estrellas",
     "slug": "el-disco-de-las-estrellas",
     "tipo": "album",
