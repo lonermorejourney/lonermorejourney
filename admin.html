@@ -925,16 +925,16 @@
     });
     if (res.ok) {
       const data = await res.json();
-      window.postsSha = data.sha; // Guardamos el SHA para poder actualizar posts.json después
+      window.postsSha = data.sha;
       const todosLosPosts = JSON.parse(decodeURIComponent(escape(atob(data.content))));
       
       window.postsNube = Array.isArray(todosLosPosts) ? todosLosPosts : [];
       albumesPreparadosNube = {};
 
-      // Convertimos las obras con publicado: false en el objeto para la barra lateral
+      // Cargamos todos los álbumes (tanto publicados como no publicados) para que no desaparezcan del panel
       window.postsNube.forEach(item => {
-        if (item.publicado === false) {
-          const key = item.id || item.slug || item.titulo || item.nombre;
+        const key = item.id || item.slug || item.titulo || item.nombre;
+        if (key) {
           albumesPreparadosNube[key] = item;
         }
       });
@@ -1507,8 +1507,9 @@
     if (res.ok) {
       document.getElementById('sync-status').textContent = "Sincronizado";
       window.postsNube = postsData;
-      delete albumesPreparadosNube[slug];
-      delete albumesPreparadosNube[nombreAlbum];
+      // Actualizamos en memoria sin hacer delete
+      albumesPreparadosNube[slug] = albumData;
+      albumesPreparadosNube[nombreAlbum] = albumData;
       renderizarPreparadosSidebar();
       alert("¡Álbum lanzado y publicado exitosamente!");
       volverAlEstudioNormal();
@@ -1666,37 +1667,46 @@ async function desplegarAlbumPreparado() {
     }
 
     function renderizarPreparadosSidebar() {
-      const container = document.getElementById('prepared-sidebar-container');
-      const lista = document.getElementById('prepared-side-list');
-      lista.innerHTML = "";
+  const container = document.getElementById('prepared-sidebar-container');
+  const lista = document.getElementById('prepared-side-list');
+  lista.innerHTML = "";
 
-      const keys = Object.keys(albumesPreparadosNube);
-      if (keys.length === 0) {
-        container.style.display = 'none';
-        return;
-      }
+  const keys = Object.keys(albumesPreparadosNube);
+  if (keys.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
 
-      container.style.display = 'block';
-      keys.forEach(nombre => {
-        const item = document.createElement('div');
-        item.className = 'prepared-side-item';
-        item.innerHTML = `
-          <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;"><b>${nombre}</b></span>
-          <div class="icon-btn-group">
-            <button class="icon-btn" title="Previsualizar" onclick="previsualizarAlbumPreparado('${nombre}')">
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-            </button>
-            <button class="icon-btn" title="Editar" onclick="editarAlbumPreparado('${nombre}')">
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-            </button>
-            <button class="icon-btn" title="Eliminar" onclick="eliminarAlbumPreparado('${nombre}', event)">
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-            </button>
-          </div>
-        `;
-        lista.appendChild(item);
-      });
-    }
+  container.style.display = 'block';
+  keys.forEach(nombre => {
+    const album = albumesPreparadosNube[nombre];
+    const esPublicado = album && album.publicado === true;
+    const badgeHtml = esPublicado 
+      ? `<span style="font-size: 10px; background: #e8f5e9; color: #2e7d32; padding: 2px 6px; border-radius: 4px; margin-right: 6px; font-weight: bold;">Publicado</span>`
+      : `<span style="font-size: 10px; background: #fff3e0; color: #f57c00; padding: 2px 6px; border-radius: 4px; margin-right: 6px; font-weight: bold;">Preparado</span>`;
+
+    const item = document.createElement('div');
+    item.className = 'prepared-side-item';
+    item.innerHTML = `
+      <div style="display: flex; align-items: center; overflow: hidden; flex: 1; min-width: 0;">
+        ${badgeHtml}
+        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><b>${album.nombre || nombre}</b></span>
+      </div>
+      <div class="icon-btn-group">
+        <button class="icon-btn" title="Previsualizar" onclick="previsualizarAlbumPreparado('${nombre}')">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </button>
+        <button class="icon-btn" title="Editar" onclick="editarAlbumPreparado('${nombre}')">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+        </button>
+        <button class="icon-btn" title="Eliminar" onclick="eliminarAlbumPreparado('${nombre}', event)">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        </button>
+      </div>
+    `;
+    lista.appendChild(item);
+  });
+}
 
     function previsualizarAlbumPreparado(nombre) {
   const album = albumesPreparadosNube[nombre];
