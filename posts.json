@@ -103,7 +103,7 @@
     "tipo": "album",
     "nombre": "ORFEBRE DE LA INTECIÓN",
     "titulo": "ORFEBRE DE LA INTECIÓN",
-    "publicado": false,
+    "publicado": true,
     "poemas": [
       {
         "originalTitle": "LA METAFORA\nDEL BENEVOLENTE",
