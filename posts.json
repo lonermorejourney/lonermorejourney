@@ -56,32 +56,38 @@
       {
         "originalTitle": "ENTELEQUIAS",
         "titulo": "ENTELEQUIAS",
-        "texto": "SDSDSDSDSDS"
+        "texto": "SDSDSDSDSDS",
+        "oculto": false
       },
       {
         "originalTitle": "UNA MELODÍA FELIZ",
         "titulo": "UNA MELODÍA FELIZ",
-        "texto": "SDSDSDSDSDSDS"
+        "texto": "SDSDSDSDSDSDS",
+        "oculto": false
       },
       {
         "originalTitle": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
         "titulo": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
-        "texto": "SDSDSDSDSDS"
+        "texto": "SDSDSDSDSDS DICHA ES",
+        "oculto": false
       },
       {
         "originalTitle": "FUGA EN EL ESCENARIO",
         "titulo": "FUGA EN EL ESCENARIO",
-        "texto": "SDSDSDSDSDSDSD"
+        "texto": "SDSDSDSDSDSDSD",
+        "oculto": false
       },
       {
         "originalTitle": "LA METAFORA DEL BENEVOLENTE",
         "titulo": "LA METAFORA DEL BENEVOLENTE",
-        "texto": "SDSDSDSDSDSDSDSDS"
+        "texto": "SDSDSDSDSDSDSDSDS",
+        "oculto": false
       },
       {
         "originalTitle": "ALCOHOL E ISMO",
         "titulo": "ALCOHOL E ISMO",
-        "texto": "SDSDSDSDWADWDW"
+        "texto": "SDSDSDSDWADWDW",
+        "oculto": false
       }
     ],
     "portada": "portadas/portada_1789239814700_Captura_de_pantalla_(34222.jpg",
