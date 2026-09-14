@@ -193,10 +193,14 @@
     .draft-item:hover, .draft-item.active { background: #1a1a1a; color: #fff; }
 
     .draft-title-text {
-      white-space: nowrap;
+      white-space: pre-line;
       overflow: hidden;
       text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
       flex: 1;
+      line-height: 1.2;
     }
 
     .delete-draft-btn {
@@ -247,6 +251,7 @@
     }
     .tool-btn:hover { background: #eaeaea; }
 
+    /* FASE 2: Título multilínea con libertad para pulsar ENTER */
     .doc-title-input {
       font-family: var(--fuente-heavy);
       font-size: 26px;
@@ -257,6 +262,12 @@
       padding-bottom: 8px;
       margin-bottom: 20px;
       color: #1a1a1a;
+      resize: none;
+      overflow: hidden;
+      background: transparent;
+      line-height: 1.3;
+      white-space: pre-wrap;
+      box-sizing: border-box;
     }
 
     .doc-editor {
@@ -305,7 +316,6 @@
     .action-info h3 { font-family: var(--fuente-cuerpo); font-size: 15px; font-weight: 700; margin: 0 0 2px 0; }
     .action-info p { font-family: var(--fuente-cuerpo); font-size: 12px; color: #666; margin: 0; }
 
-    /* REDISEÑO FASE 1: Sección de Álbumes Preparados más espaciosa y presente */
     #prepared-sidebar-container {
       background: rgba(255, 255, 255, 0.95);
       border-radius: 14px;
@@ -370,9 +380,12 @@
     }
 
     .prepared-item-title {
-      white-space: nowrap;
+      white-space: pre-line;
       overflow: hidden;
       text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
       font-family: var(--fuente-cuerpo);
       font-weight: 700;
       font-size: 13px;
@@ -434,7 +447,6 @@
       border-color: #d9534f;
     }
 
-    /* Modal independiente para Ocultar/Mostrar (Seguridad sin tocar unsaved-modal) */
     #toggle-visibility-modal {
       display: none;
       position: fixed;
@@ -447,28 +459,42 @@
       -webkit-backdrop-filter: blur(4px);
     }
 
-    /* Estilos del layout de tres columnas para Montar Álbum (INTACTO) */
+    /* REDISEÑO FASE 2: Proporciones equilibradas de Montar Álbum */
     #album-studio-layout {
       display: none;
       width: 100%;
-      gap: 20px;
+      gap: 24px;
       position: relative;
     }
 
     .album-col {
       background: rgba(255, 255, 255, 0.95);
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: 14px;
+      padding: 24px;
       box-shadow: 0 15px 35px rgba(0,0,0,0.2);
       display: flex;
       flex-direction: column;
       max-height: 800px;
-      overflow-y: auto;
     }
 
-    .album-col-left { width: 300px; gap: 15px; }
-    .album-col-center { flex: 1; gap: 15px; background: #fff; }
-    .album-col-right { width: 300px; gap: 16px; }
+    .album-col-left { 
+      width: 340px; 
+      gap: 16px; 
+      flex-shrink: 0;
+    }
+
+    .album-col-center { 
+      flex: 1; 
+      gap: 16px; 
+      background: #ffffff; 
+      min-width: 0;
+    }
+
+    .album-col-right { 
+      width: 320px; 
+      gap: 16px; 
+      flex-shrink: 0;
+    }
 
     .album-col h3 {
       font-family: var(--fuente-heavy);
@@ -476,45 +502,115 @@
       color: #1a1a1a;
       border-bottom: 1px solid #e0e0e0;
       padding-bottom: 8px;
-      margin-bottom: 5px;
-    }
-
-    .sublist-container {
-      background: #f9f9f9;
-      border: 1px dashed #ccc;
-      border-radius: 8px;
-      padding: 10px;
-      min-height: 120px;
-      max-height: 200px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .sublist-item {
-      background: #1a1a1a;
-      color: #fff;
-      padding: 8px 10px;
-      border-radius: 6px;
-      font-size: 13px;
+      margin: 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      cursor: grab;
     }
-    .sublist-item:active { cursor: grabbing; }
-    .sublist-item.dragging { opacity: 0.4; }
 
-    .sublist-item button {
-      background: none;
-      border: none;
-      color: #fff;
-      cursor: pointer;
-      font-size: 14px;
-      opacity: 0.7;
+    .album-source-container {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #fbfbfb;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 10px;
+      min-height: 350px;
     }
-    .sublist-item button:hover { opacity: 1; }
+
+    /* Tracklist del Álbum en el centro */
+    .tracklist-wrapper {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 4px;
+    }
+
+    .tracklist-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #f9f9f9;
+      border: 1px solid #e8e8e8;
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: grab;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+      user-select: none;
+    }
+
+    .tracklist-item:hover {
+      background: #ffffff;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+      transform: translateY(-1px);
+    }
+
+    .tracklist-item:active { cursor: grabbing; }
+    .tracklist-item.dragging { opacity: 0.4; }
+
+    .track-number {
+      font-family: var(--fuente-heavy);
+      font-size: 12px;
+      color: #888;
+      background: #eee;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    .track-details {
+      flex: 1;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .track-title {
+      font-family: var(--fuente-cuerpo);
+      font-weight: 700;
+      font-size: 14px;
+      color: #1a1a1a;
+      white-space: pre-line;
+      line-height: 1.3;
+      margin: 0;
+    }
+
+    .track-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .track-btn {
+      background: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .track-btn:hover {
+      background: #1a1a1a;
+      color: #fff;
+      border-color: #1a1a1a;
+    }
+
+    .track-btn.danger:hover {
+      background: #d9534f;
+      color: #fff;
+      border-color: #d9534f;
+    }
 
     .cover-dropzone {
       width: 100%;
@@ -564,39 +660,7 @@
       border: 1px solid #ccc;
       font-family: var(--fuente-cuerpo);
       font-size: 13px;
-    }
-
-    .album-editor-item {
-      background: #fafafa;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 10px;
-    }
-    .album-poem-title-input {
-      font-family: var(--fuente-heavy);
-      font-size: 15px;
-      width: 100%;
-      border: none;
-      border-bottom: 1px solid #ccc;
-      background: transparent;
-      outline: none;
-      margin-bottom: 8px;
-      padding-bottom: 4px;
-      color: #1a1a1a;
-    }
-    .album-editor-textarea {
-      width: 100%;
-      min-height: 90px;
-      font-family: 'Times New Roman', Times, serif;
-      font-size: 16px;
-      padding: 8px;
-      border: 1px solid #dcdcdc;
-      border-radius: 6px;
-      resize: vertical;
-      outline: none;
       background: #fff;
-      color: #1a1a1a;
     }
 
     .album-actions-bottom {
@@ -620,6 +684,7 @@
       font-weight: 600;
       cursor: pointer;
       font-size: 13px;
+      transition: background 0.2s;
     }
     .btn-lanzar:hover { background: #333; }
 
@@ -633,6 +698,7 @@
       font-weight: 600;
       cursor: pointer;
       font-size: 13px;
+      transition: background 0.2s;
     }
     .btn-preparar:hover { background: #d0d0d0; }
 
@@ -647,8 +713,123 @@
       cursor: pointer;
       font-size: 13px;
       display: none;
+      transition: background 0.2s;
     }
     .btn-guardar-cambios:hover { background: #218838; }
+
+    /* FASE 2: Modal Inmersivo de Edición Amplia con Fondo Difuminado */
+    #poem-edit-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 1300;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .poem-edit-content {
+      background: #ffffff;
+      color: #1a1a1a;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 820px;
+      height: 88vh;
+      display: flex;
+      flex-direction: column;
+      padding: 30px 40px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    .poem-edit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 20px;
+    }
+
+    .poem-edit-badge {
+      font-family: var(--fuente-heavy);
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: #f0f0f0;
+      color: #555;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 4px;
+      display: inline-block;
+    }
+
+    .poem-edit-title-input {
+      font-family: var(--fuente-heavy);
+      font-size: 24px;
+      width: 100%;
+      border: none;
+      border-bottom: 2px dashed #e0e0e0;
+      outline: none;
+      color: #1a1a1a;
+      resize: none;
+      overflow: hidden;
+      background: transparent;
+      padding-bottom: 6px;
+      margin-bottom: 15px;
+      line-height: 1.3;
+      white-space: pre-wrap;
+    }
+
+    .poem-edit-options {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f9f9f9;
+      border: 1px solid #eee;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .switch-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .poem-edit-textarea {
+      flex: 1;
+      width: 100%;
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 19px;
+      line-height: 1.7;
+      padding: 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      resize: none;
+      outline: none;
+      background: #fff;
+      color: #1a1a1a;
+      box-sizing: border-box;
+      white-space: pre-wrap;
+    }
+
+    .poem-edit-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+      margin-top: 15px;
+    }
 
     /* Modal de Previsualización Real */
     #preview-modal {
@@ -727,7 +908,8 @@
 
     #unsaved-modal .modal-content,
     #preview-modal .preview-modal-content,
-    #toggle-visibility-modal .modal-content {
+    #toggle-visibility-modal .modal-content,
+    #poem-edit-modal .poem-edit-content {
       animation: efectoEntrada 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
@@ -743,6 +925,37 @@
 </head>
 <body class="admin-body">
   <div class="fondo-oscuro"></div>
+
+  <!-- FASE 2: Modal Inmersivo de Edición Amplia de Poema con Fondo Desenfoque -->
+  <div id="poem-edit-modal">
+    <div class="poem-edit-content">
+      <div class="poem-edit-header">
+        <div>
+          <span class="poem-edit-badge" id="modal-track-num">Pista 01</span>
+          <p style="margin: 0; font-size: 13px; color: #666;">Edición focalizada de título y contenido</p>
+        </div>
+        <button class="preview-close-btn" onclick="cerrarPoemEditModal()">×</button>
+      </div>
+
+      <label style="font-size: 12px; color: #666; font-weight: 600; margin-bottom: 4px;">Título del poema (soporta ENTER):</label>
+      <textarea id="modal-poem-title" class="poem-edit-title-input" rows="1" placeholder="Título del poema..." oninput="autoResizeTextarea(this)"></textarea>
+
+      <div class="poem-edit-options">
+        <label class="switch-label">
+          <input type="checkbox" id="modal-poem-oculto" style="width: 16px; height: 16px; cursor: pointer;">
+          <span>Ocultar este título del álbum público (permanecerá guardado en tu panel)</span>
+        </label>
+      </div>
+
+      <label style="font-size: 12px; color: #666; font-weight: 600; margin-bottom: 6px;">Cuerpo del texto:</label>
+      <textarea id="modal-poem-text" class="poem-edit-textarea" placeholder="Escribe o edita los versos libremente..."></textarea>
+
+      <div class="poem-edit-footer">
+        <button class="action-top-btn secondary" onclick="cerrarPoemEditModal()">Cancelar</button>
+        <button class="action-top-btn" onclick="guardarPoemaDesdeModal()">Guardar en el álbum</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal independiente de Confirmación para Ocultar / Mostrar -->
   <div id="toggle-visibility-modal">
@@ -819,7 +1032,8 @@
           <button class="tool-btn" title="Justificar" onclick="aplicarFormato('justifyFull')">Justificar</button>
         </div>
 
-        <input type="text" id="doc-title" class="doc-title-input" placeholder="Título del poema...">
+        <!-- FASE 2: Título con libertad de pulsar ENTER y auto-ajuste de altura -->
+        <textarea id="doc-title" class="doc-title-input" rows="1" placeholder="Título del poema..." oninput="autoResizeTextarea(this)"></textarea>
         <div id="doc-editor" class="doc-editor" contenteditable="true" placeholder="Escribe o pega tu texto libremente..."></div>
       </div>
 
@@ -864,30 +1078,32 @@
       </div>
     </main>
 
-    <!-- Vista de Tres Columnas para Montar Álbum (INTACTO) -->
+    <!-- REDISEÑO FASE 2: Vista de Tres Columnas Equilibradas para Montar Álbum -->
     <div id="album-studio-layout">
-      <!-- Columna Izquierda: Obras Disponibles y Poemas Seleccionados ordenables -->
+      <!-- Columna Izquierda: Banco de Obras Disponibles -->
       <div class="album-col album-col-left">
-        <h3>Obras Disponibles</h3>
-        <div id="album-source-list" class="drafts-list" style="max-height: 200px;"></div>
-        
-        <h3>Poemas Seleccionados (<span id="selected-count">0</span>/2 mín)</h3>
-        <div id="album-selected-sublist" class="sublist-container">
-          <p style="font-size: 12px; color: #888; text-align: center; margin: auto;">Haz clic en las obras para añadirlas</p>
-        </div>
+        <h3>
+          <span>Obras Disponibles</span>
+          <span id="available-count" style="font-size: 11px; color: #888; font-weight: normal;">0</span>
+        </h3>
+        <p style="font-size: 12px; color: #666; margin: 0;">Haz clic en cualquier obra para añadirla al tracklist</p>
+        <div id="album-source-list" class="album-source-container"></div>
       </div>
 
-      <!-- Columna Central: Editor del Álbum -->
+      <!-- Columna Central: Tracklist Ordenable (Corazón del Álbum) -->
       <div class="album-col album-col-center">
-        <h3>Editor del Álbum</h3>
-        <input type="text" id="album-name-input" class="doc-title-input" placeholder="Nombre del álbum..." style="font-size: 20px; margin-bottom: 10px;">
+        <h3>
+          <span>Tracklist del Álbum</span>
+          <span id="selected-count" style="font-size: 11px; background: #1a1a1a; color: #fff; padding: 2px 8px; border-radius: 10px;">0 / 2 mín</span>
+        </h3>
+        <textarea id="album-name-input" class="doc-title-input" rows="1" placeholder="Nombre del álbum (soporta ENTER)..." style="font-size: 20px; margin-bottom: 12px;" oninput="autoResizeTextarea(this)"></textarea>
         
-        <div id="album-poems-editors" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
-          <p style="font-size: 13px; color: #888; text-align: center; margin-top: 40px;">Selecciona al menos dos poemas para editar sus títulos y textos aquí</p>
+        <div id="album-tracklist" class="tracklist-wrapper">
+          <!-- Los poemas seleccionados se inyectan dinámicamente como pistas aquí -->
         </div>
       </div>
 
-      <!-- Columna Derecha: Portada, Fecha, Acciones y Preparados Integrados -->
+      <!-- Columna Derecha: Portada, Fecha y Acciones -->
       <div class="album-col album-col-right">
         <h3>Portada del Álbum</h3>
         <div class="cover-dropzone" id="album-cover-dropzone" onclick="document.getElementById('cover-file-input').click()">
@@ -936,9 +1152,9 @@
     let albumPoemas = [];
     let albumPortadaBase64 = null;
     let editingPreparedAlbumKey = null;
-    let draggedSelectedIndex = null;
+    let draggedTrackIndex = null;
+    let editingPoemIndex = null; // Índice del poema en el modal focalizado
 
-    // Variable para la acción de Ocultar/Mostrar con confirmación
     let targetToggleKey = null;
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -952,6 +1168,13 @@
       
       inicializarSelectoresFecha();
     });
+
+    // Función universal para títulos multilínea expansibles
+    function autoResizeTextarea(el) {
+      if (!el) return;
+      el.style.height = 'auto';
+      el.style.height = (el.scrollHeight) + 'px';
+    }
 
     function inicializarSelectoresFecha() {
       const selectDay = document.getElementById('album-day');
@@ -1153,7 +1376,10 @@
         document.getElementById('unsaved-modal').style.display = 'flex';
       } else {
         if (obraActualKey) { cambiosLocales[obraActualKey] = document.getElementById('doc-editor').innerHTML; }
-        document.getElementById('doc-title').value = titulo;
+        const docTitleEl = document.getElementById('doc-title');
+        docTitleEl.value = titulo;
+        autoResizeTextarea(docTitleEl);
+
         const textoACargar = cambiosLocales[titulo] !== undefined ? cambiosLocales[titulo] : (borradoresNube[titulo] || "");
         document.getElementById('doc-editor').innerHTML = textoACargar;
         obraActualKey = titulo;
@@ -1258,7 +1484,9 @@
         borradoresNube = remoteDrafts;
         if (cambiosLocales[titulo]) delete cambiosLocales[titulo];
         if (obraActualKey === titulo) {
-          document.getElementById('doc-title').value = "";
+          const docTitleEl = document.getElementById('doc-title');
+          docTitleEl.value = "";
+          autoResizeTextarea(docTitleEl);
           document.getElementById('doc-editor').innerHTML = "";
           obraActualKey = null;
         }
@@ -1300,7 +1528,9 @@
     }
 
     function ejecutarNuevaIdea() {
-      document.getElementById('doc-title').value = "";
+      const docTitleEl = document.getElementById('doc-title');
+      docTitleEl.value = "";
+      autoResizeTextarea(docTitleEl);
       document.getElementById('doc-editor').innerHTML = "";
       obraActualKey = null;
       renderizarBorradores();
@@ -1319,7 +1549,10 @@
     }
     function ejecutarCargarBorradorDesdeModal(titulo) {
       if (obraActualKey && cambiosLocales[obraActualKey]) delete cambiosLocales[obraActualKey];
-      document.getElementById('doc-title').value = titulo;
+      const docTitleEl = document.getElementById('doc-title');
+      docTitleEl.value = titulo;
+      autoResizeTextarea(docTitleEl);
+
       const textoACargar = cambiosLocales[titulo] !== undefined ? cambiosLocales[titulo] : (borradoresNube[titulo] || "");
       document.getElementById('doc-editor').innerHTML = textoACargar;
       obraActualKey = titulo;
@@ -1347,7 +1580,7 @@
       location.reload();
     }
 
-    /* --- LÓGICA DE MONTAR ÁLBUM Y GESTIÓN DE PREPARADOS --- */
+    /* --- LÓGICA DE MONTAR ÁLBUM Y GESTIÓN DE PREPARADOS (FASE 2) --- */
 
     function abrirMontarAlbum() {
       const albumLayout = document.getElementById('album-studio-layout');
@@ -1365,7 +1598,11 @@
       albumPoemas = [];
       albumPortadaBase64 = null;
       editingPreparedAlbumKey = null;
-      document.getElementById('album-name-input').value = "";
+      
+      const albumNameInput = document.getElementById('album-name-input');
+      albumNameInput.value = "";
+      autoResizeTextarea(albumNameInput);
+
       document.getElementById('btn-guardar-cambios').style.display = 'none';
       document.getElementById('album-cover-dropzone').innerHTML = `
         <span id="cover-placeholder-text" style="font-size: 12px; color: #666; text-align: center; padding: 10px;">Subir o arrastrar portada</span>
@@ -1393,69 +1630,92 @@
       document.getElementById('header-actions-normal').style.display = 'flex';
     }
 
+    /* REDISEÑO FASE 2: Renderizado del Tracklist y del Banco de Obras */
     function renderizarListasMontarAlbum() {
       const sourceList = document.getElementById('album-source-list');
       sourceList.innerHTML = "";
       
       const titulosSeleccionados = albumPoemas.map(p => p.originalTitle);
+      const availableDrafts = Object.keys(borradoresNube).filter(t => !titulosSeleccionados.includes(t));
+      
+      document.getElementById('available-count').textContent = `${availableDrafts.length} disponibles`;
 
-      if (Object.keys(borradoresNube).length === 0) {
-        sourceList.innerHTML = '<p style="font-size: 13px; color: #888; text-align: center; padding: 10px;">Sin obras</p>';
+      if (availableDrafts.length === 0) {
+        sourceList.innerHTML = '<p style="font-size: 13px; color: #888; text-align: center; padding: 20px 10px;">No hay obras disponibles para añadir</p>';
       } else {
-        for (let titulo in borradoresNube) {
-          if (titulosSeleccionados.includes(titulo)) continue;
+        availableDrafts.forEach(titulo => {
           const item = document.createElement('div');
           item.className = 'draft-item';
-          item.textContent = titulo;
+          item.innerHTML = `<span class="draft-title-text">${titulo}</span><span style="font-size: 16px; color: #666; font-weight: bold;">+</span>`;
           item.onclick = () => seleccionarPoemaParaAlbum(titulo);
           sourceList.appendChild(item);
-        }
-      }
-
-      const sublistContainer = document.getElementById('album-selected-sublist');
-      sublistContainer.innerHTML = "";
-      document.getElementById('selected-count').textContent = albumPoemas.length;
-
-      if (albumPoemas.length === 0) {
-        sublistContainer.innerHTML = '<p style="font-size: 12px; color: #888; text-align: center; margin: auto;">Haz clic en las obras para añadirlas</p>';
-      } else {
-        albumPoemas.forEach((poema, idx) => {
-          const subItem = document.createElement('div');
-          subItem.className = 'sublist-item';
-          subItem.setAttribute('draggable', 'true');
-
-          subItem.addEventListener('dragstart', (e) => {
-            draggedSelectedIndex = idx;
-            e.dataTransfer.effectAllowed = 'move';
-            setTimeout(() => subItem.classList.add('dragging'), 0);
-          });
-          subItem.addEventListener('dragend', () => {
-            subItem.classList.remove('dragging');
-            draggedSelectedIndex = null;
-          });
-          subItem.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
-          subItem.addEventListener('drop', (e) => {
-            e.preventDefault();
-            if (draggedSelectedIndex === null || draggedSelectedIndex === idx) return;
-            const movedItem = albumPoemas.splice(draggedSelectedIndex, 1)[0];
-            albumPoemas.splice(idx, 0, movedItem);
-            draggedSelectedIndex = null;
-            renderizarListasMontarAlbum();
-          });
-
-          subItem.innerHTML = `<span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;">${idx + 1}. ${poema.title}</span><button onclick="removerPoemaDeAlbum('${poema.originalTitle}')">×</button>`;
-          sublistContainer.appendChild(subItem);
         });
       }
 
-      renderizarEditoresPoemasAlbum();
+      // Tracklist central ordenable
+      const tracklistContainer = document.getElementById('album-tracklist');
+      tracklistContainer.innerHTML = "";
+      document.getElementById('selected-count').textContent = `${albumPoemas.length} / 2 mín`;
+
+      if (albumPoemas.length === 0) {
+        tracklistContainer.innerHTML = `
+          <div style="text-align: center; padding: 60px 20px; color: #888;">
+            <p style="font-size: 14px; margin-bottom: 6px; font-weight: 600;">Tracklist vacío</p>
+            <p style="font-size: 12px; margin: 0;">Selecciona al menos dos obras de la izquierda para formar el álbum.</p>
+          </div>
+        `;
+      } else {
+        albumPoemas.forEach((poema, idx) => {
+          const trackRow = document.createElement('div');
+          trackRow.className = 'tracklist-item';
+          trackRow.setAttribute('draggable', 'true');
+
+          trackRow.addEventListener('dragstart', (e) => {
+            draggedTrackIndex = idx;
+            e.dataTransfer.effectAllowed = 'move';
+            setTimeout(() => trackRow.classList.add('dragging'), 0);
+          });
+          trackRow.addEventListener('dragend', () => {
+            trackRow.classList.remove('dragging');
+            draggedTrackIndex = null;
+          });
+          trackRow.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
+          trackRow.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (draggedTrackIndex === null || draggedTrackIndex === idx) return;
+            const movedItem = albumPoemas.splice(draggedTrackIndex, 1)[0];
+            albumPoemas.splice(idx, 0, movedItem);
+            draggedTrackIndex = null;
+            renderizarListasMontarAlbum();
+          });
+
+          const numFormat = (idx + 1) < 10 ? `0${idx + 1}` : `${idx + 1}`;
+          const ocultoBadge = poema.oculto ? `<span class="badge-status oculto" style="margin-left: 8px;">Oculto</span>` : '';
+
+          trackRow.innerHTML = `
+            <span class="track-number">${numFormat}</span>
+            <div class="track-details">
+              <p class="track-title">${poema.title} ${ocultoBadge}</p>
+            </div>
+            <div class="track-actions">
+              <button class="track-btn" onclick="abrirPoemEditModal(${idx})" title="Editar texto y título">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                Editar
+              </button>
+              <button class="track-btn danger" onclick="removerPoemaDeAlbum('${poema.originalTitle}')" title="Quitar del álbum">×</button>
+            </div>
+          `;
+          tracklistContainer.appendChild(trackRow);
+        });
+      }
     }
 
     function seleccionarPoemaParaAlbum(titulo) {
       albumPoemas.push({
         originalTitle: titulo,
         title: titulo,
-        text: borradoresNube[titulo] || ""
+        text: borradoresNube[titulo] || "",
+        oculto: false
       });
       renderizarListasMontarAlbum();
     }
@@ -1465,39 +1725,50 @@
       renderizarListasMontarAlbum();
     }
 
-    function renderizarEditoresPoemasAlbum() {
-      const container = document.getElementById('album-poems-editors');
-      container.innerHTML = "";
+    /* FASE 2: Funciones del Modal Inmersivo de Edición Amplia */
+    function abrirPoemEditModal(index) {
+      const poema = albumPoemas[index];
+      if (!poema) return;
 
-      if (albumPoemas.length === 0) {
-        container.innerHTML = '<p style="font-size: 13px; color: #888; text-align: center; margin-top: 40px;">Selecciona al menos dos poemas para editar sus títulos y textos aquí</p>';
+      editingPoemIndex = index;
+
+      const numFormat = (index + 1) < 10 ? `0${index + 1}` : `${index + 1}`;
+      document.getElementById('modal-track-num').textContent = `Pista ${numFormat}`;
+      
+      const titleInput = document.getElementById('modal-poem-title');
+      titleInput.value = poema.title || '';
+      autoResizeTextarea(titleInput);
+
+      document.getElementById('modal-poem-oculto').checked = (poema.oculto === true);
+      document.getElementById('modal-poem-text').value = poema.text || '';
+
+      const modal = document.getElementById('poem-edit-modal');
+      modal.style.display = 'flex';
+    }
+
+    function cerrarPoemEditModal() {
+      document.getElementById('poem-edit-modal').style.display = 'none';
+      editingPoemIndex = null;
+    }
+
+    function guardarPoemaDesdeModal() {
+      if (editingPoemIndex === null || !albumPoemas[editingPoemIndex]) return;
+
+      const nuevoTitulo = document.getElementById('modal-poem-title').value.trim();
+      const nuevoTexto = document.getElementById('modal-poem-text').value;
+      const estaOculto = document.getElementById('modal-poem-oculto').checked;
+
+      if (!nuevoTitulo) {
+        alert("El título del poema no puede estar vacío.");
         return;
       }
 
-      albumPoemas.forEach((poema, index) => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'album-editor-item';
-        wrapper.innerHTML = `
-          <label style="font-size: 12px; color: #666; font-family: var(--fuente-cuerpo);">Título del poema ${index + 1}:</label>
-          <input type="text" class="album-poem-title-input" value="${poema.title}" oninput="actualizarTituloPoema(${index}, this.value)">
-          <label style="font-size: 12px; color: #666; font-family: var(--fuente-cuerpo); margin-top: 6px; display: block;">Texto:</label>
-          <textarea class="album-editor-textarea" oninput="actualizarTextoPoema(${index}, this.value)">${poema.text}</textarea>
-        `;
-        container.appendChild(wrapper);
-      });
-    }
+      albumPoemas[editingPoemIndex].title = nuevoTitulo;
+      albumPoemas[editingPoemIndex].text = nuevoTexto;
+      albumPoemas[editingPoemIndex].oculto = estaOculto;
 
-    function actualizarTituloPoema(index, nuevoTitulo) {
-      albumPoemas[index].title = nuevoTitulo;
-      const sublistContainer = document.getElementById('album-selected-sublist');
-      const items = sublistContainer.getElementsByClassName('sublist-item');
-      if (items[index]) {
-        items[index].querySelector('span').textContent = `${index + 1}. ${nuevoTitulo}`;
-      }
-    }
-
-    function actualizarTextoPoema(index, nuevoTexto) {
-      albumPoemas[index].text = nuevoTexto;
+      cerrarPoemEditModal();
+      renderizarListasMontarAlbum();
     }
 
     async function cargarPortadaAlbum(event) {
@@ -1590,7 +1861,12 @@
         nombre: nombreAlbum,
         titulo: nombreAlbum,
         publicado: true,
-        poemas: albumPoemas.map(p => ({ originalTitle: p.originalTitle, titulo: p.title, texto: p.text })),
+        poemas: albumPoemas.map(p => ({ 
+          originalTitle: p.originalTitle, 
+          titulo: p.title, 
+          texto: p.text,
+          oculto: p.oculto === true
+        })),
         portada: albumPortadaBase64,
         fecha: {
           dia: document.getElementById('album-day').value,
@@ -1674,7 +1950,12 @@
         nombre: nombreAlbum,
         titulo: nombreAlbum,
         publicado: false,
-        poemas: albumPoemas.map(p => ({ originalTitle: p.originalTitle || p.title, titulo: p.title || p.titulo, texto: p.text || p.texto })),
+        poemas: albumPoemas.map(p => ({ 
+          originalTitle: p.originalTitle || p.title, 
+          titulo: p.title || p.titulo, 
+          texto: p.text || p.texto,
+          oculto: p.oculto === true
+        })),
         portada: albumPortadaBase64,
         fecha: {
           dia: document.getElementById('album-day').value,
@@ -1744,7 +2025,12 @@
 
       const albumData = {
         nombre: nombreAlbum,
-        poemas: albumPoemas.map(p => ({ originalTitle: p.originalTitle, titulo: p.title, texto: p.text })),
+        poemas: albumPoemas.map(p => ({ 
+          originalTitle: p.originalTitle, 
+          titulo: p.title, 
+          texto: p.text,
+          oculto: p.oculto === true
+        })),
         portada: albumPortadaBase64,
         fecha: {
           dia: document.getElementById('album-day').value,
@@ -1791,7 +2077,6 @@
       }
     }
 
-    /* REDISEÑO FASE 1: Renderizado espacioso de Álbumes Preparados y botón de Ocultar/Mostrar */
     function renderizarPreparadosSidebar() {
       const container = document.getElementById('prepared-sidebar-container');
       const lista = document.getElementById('prepared-side-list');
@@ -1814,7 +2099,6 @@
         const badgeClass = esPublicado ? 'publicado' : 'oculto';
         const badgeTexto = esPublicado ? 'Publicado' : 'Oculto';
 
-        // Icono para alternar: si está publicado muestra ojo abierto, si está oculto ojo tachado
         const toggleIconSvg = esPublicado 
           ? `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`
           : `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
@@ -1830,7 +2114,7 @@
           </div>
           <div class="prepared-item-toolbar">
             <button class="action-icon-btn" title="Previsualizar" onclick="previsualizarAlbumPreparado('${nombre}')">
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></polyline><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
             </button>
             <button class="action-icon-btn" title="${toggleTitle}" onclick="solicitarTogglePublicacion('${nombre}')">
               ${toggleIconSvg}
@@ -1847,7 +2131,6 @@
       });
     }
 
-    /* MODAL Y ACCIÓN DE CONFIRMACIÓN PARA OCULTAR/MOSTRAR */
     function solicitarTogglePublicacion(nombre) {
       const album = albumesPreparadosNube[nombre];
       if (!album) return;
@@ -1921,7 +2204,6 @@
           return;
         }
 
-        // Alternar el estado publicado
         const estadoActual = (postsData[indexTarget].publicado !== false);
         postsData[indexTarget].publicado = !estadoActual;
 
@@ -2028,13 +2310,18 @@
 
       abrirMontarAlbum();
       editingPreparedAlbumKey = nombre;
-      document.getElementById('album-name-input').value = album.nombre;
+      
+      const albumNameInput = document.getElementById('album-name-input');
+      albumNameInput.value = album.nombre;
+      autoResizeTextarea(albumNameInput);
+
       document.getElementById('btn-guardar-cambios').style.display = 'block';
 
-      albumPoemas = album.poemas.map(p => ({
+      albumPoemas = (album.poemas || []).map(p => ({
         originalTitle: p.originalTitle || p.titulo,
         title: p.titulo,
-        text: p.texto
+        text: p.texto,
+        oculto: p.oculto === true
       }));
 
       albumPortadaBase64 = album.portada;
