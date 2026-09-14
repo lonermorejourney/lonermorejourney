@@ -84,40 +84,59 @@
       z-index: 2;
     }
 
+    /* REDISEÑO FASE 1: Header flotante sin barra de punta a punta */
     .studio-header {
       width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 12px 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      box-shadow: none;
     }
 
     .header-actions-left {
       display: flex;
       gap: 10px;
       align-items: center;
+      background: rgba(255, 255, 255, 0.94);
+      padding: 6px 10px;
+      border-radius: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .header-actions-right {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.94);
+      padding: 6px 18px;
+      border-radius: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .action-top-btn {
       background: #1a1a1a;
       color: #fff;
       border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
+      padding: 8px 18px;
+      border-radius: 20px;
       font-family: var(--fuente-cuerpo);
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.1s;
     }
 
-    .action-top-btn:hover { background: #333; }
-    .action-top-btn.secondary { background: #e0e0e0; color: #1a1a1a; }
-    .action-top-btn.secondary:hover { background: #d0d0d0; }
+    .action-top-btn:hover { background: #333; transform: translateY(-1px); }
+    .action-top-btn.secondary { background: #e8e8e8; color: #1a1a1a; }
+    .action-top-btn.secondary:hover { background: #dcdcdc; }
 
     .admin-layout {
       display: flex;
@@ -254,7 +273,7 @@
     }
 
     .sidebar-actions {
-      width: 240px;
+      width: 260px;
       display: flex;
       flex-direction: column;
       gap: 14px;
@@ -286,7 +305,149 @@
     .action-info h3 { font-family: var(--fuente-cuerpo); font-size: 15px; font-weight: 700; margin: 0 0 2px 0; }
     .action-info p { font-family: var(--fuente-cuerpo); font-size: 12px; color: #666; margin: 0; }
 
-    /* Estilos del layout de tres columnas para Montar Álbum */
+    /* REDISEÑO FASE 1: Sección de Álbumes Preparados más espaciosa y presente */
+    #prepared-sidebar-container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .prepared-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #e8e8e8;
+      padding-bottom: 8px;
+    }
+
+    .prepared-title-row h3 {
+      font-family: var(--fuente-heavy);
+      font-size: 14px;
+      color: #1a1a1a;
+      margin: 0;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .prepared-side-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 260px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .prepared-side-item {
+      display: flex;
+      flex-direction: column;
+      background: #f8f8f8;
+      border: 1px solid #e9e9e9;
+      color: #1a1a1a;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      gap: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    }
+
+    .prepared-side-item:hover {
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transform: translateY(-1px);
+    }
+
+    .prepared-item-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .prepared-item-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: var(--fuente-cuerpo);
+      font-weight: 700;
+      font-size: 13px;
+      color: #1a1a1a;
+      flex: 1;
+    }
+
+    .badge-status {
+      font-size: 9px;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      padding: 3px 6px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .badge-status.publicado {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .badge-status.oculto {
+      background: #fff3e0;
+      color: #e65100;
+    }
+
+    .prepared-item-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      border-top: 1px solid #f0f0f0;
+      padding-top: 6px;
+    }
+
+    .action-icon-btn {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #444;
+      transition: all 0.2s;
+    }
+
+    .action-icon-btn:hover {
+      background: #1a1a1a;
+      color: #fff;
+      border-color: #1a1a1a;
+    }
+
+    .action-icon-btn.danger:hover {
+      background: #d9534f;
+      color: #fff;
+      border-color: #d9534f;
+    }
+
+    /* Modal independiente para Ocultar/Mostrar (Seguridad sin tocar unsaved-modal) */
+    #toggle-visibility-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 1200;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    /* Estilos del layout de tres columnas para Montar Álbum (INTACTO) */
     #album-studio-layout {
       display: none;
       width: 100%;
@@ -489,50 +650,6 @@
     }
     .btn-guardar-cambios:hover { background: #218838; }
 
-    /* Lista integrada de Preparados en la Columna Derecha */
-    .prepared-sidebar-section {
-      margin-top: 10px;
-      border-top: 1px solid #e0e0e0;
-      padding-top: 12px;
-    }
-    .prepared-sidebar-section h4 {
-      font-family: var(--fuente-heavy);
-      font-size: 13px;
-      color: #333;
-      margin-bottom: 8px;
-    }
-    .prepared-side-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      max-height: 160px;
-      overflow-y: auto;
-    }
-    .prepared-side-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #f4f4f4;
-      color: #1a1a1a;
-      padding: 8px 10px;
-      border-radius: 6px;
-      font-size: 12px;
-    }
-    .icon-btn-group {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-    .icon-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #1a1a1a;
-      opacity: 0.7;
-      transition: opacity 0.2s;
-    }
-    .icon-btn:hover { opacity: 1; }
-
     /* Modal de Previsualización Real */
     #preview-modal {
       display: none;
@@ -569,7 +686,7 @@
     }
     .preview-close-btn:hover { background: #e0e0e0; }
 
-    /* Modal de Advertencia Cambios Sin Guardar */
+    /* Modal de Advertencia Cambios Sin Guardar (INTACTO) */
     #unsaved-modal {
       display: none;
       position: fixed;
@@ -597,39 +714,47 @@
     .modal-btn-danger:hover { background: #c9302c; }
     .modal-btn-secondary { background: #e0e0e0; color: #1a1a1a; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
     .modal-btn-secondary:hover { background: #d0d0d0; }
-/* Animación de apertura para pantallas y ventanas emergentes */
+
     @keyframes efectoEntrada {
-      from {
-        opacity: 0;
-        transform: scale(0.98) translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
+      from { opacity: 0; transform: scale(0.98) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
     }
 
-    /* Aplicar entrada suave al alternar vistas */
     #main-admin-layout,
     #album-studio-layout {
       animation: efectoEntrada 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* Animación de entrada para modales */
     #unsaved-modal .modal-content,
-    #preview-modal .preview-modal-content {
+    #preview-modal .preview-modal-content,
+    #toggle-visibility-modal .modal-content {
       animation: efectoEntrada 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+
     @media (max-width: 1050px) {
       .admin-layout, #album-studio-layout { flex-direction: column; }
       .drafts-sidebar, .sidebar-actions, .album-col { width: 100%; max-height: none; }
-      .sidebar-actions { flex-direction: row; overflow-x: auto; }
-      .action-card { min-width: 210px; }
+      .sidebar-actions { flex-direction: column; }
+      .action-card { min-width: auto; }
+      .studio-header { flex-direction: column; gap: 10px; align-items: stretch; }
+      .header-actions-left, .header-actions-right { justify-content: center; }
     }
   </style>
 </head>
 <body class="admin-body">
   <div class="fondo-oscuro"></div>
+
+  <!-- Modal independiente de Confirmación para Ocultar / Mostrar -->
+  <div id="toggle-visibility-modal">
+    <div class="modal-content">
+      <h3 id="toggle-modal-title">Confirmar acción</h3>
+      <p id="toggle-modal-desc">¿Deseas cambiar la visibilidad de esta obra en el feed público?</p>
+      <div class="modal-buttons">
+        <button class="modal-btn-primary" id="toggle-modal-confirm-btn">Confirmar</button>
+        <button class="modal-btn-secondary" onclick="cerrarModalToggle()">Cancelar</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal de Previsualización Real -->
   <div id="preview-modal">
@@ -639,7 +764,7 @@
     </div>
   </div>
 
-  <!-- Modal de cambios sin guardar -->
+  <!-- Modal de cambios sin guardar (INTACTO) -->
   <div id="unsaved-modal">
     <div class="modal-content">
       <h3 id="modal-title">¿Qué deseas hacer con esta obra?</h3>
@@ -661,6 +786,7 @@
   </div>
 
   <div id="studio-screen">
+    <!-- Header flotante sin barra blanca completa -->
     <header class="studio-header">
       <div class="header-actions-left" id="header-actions-normal">
         <button class="action-top-btn" onclick="guardarObra()">Guardar obra</button>
@@ -669,10 +795,11 @@
       <div class="header-actions-left" id="header-actions-album" style="display: none;">
         <button class="action-top-btn secondary" onclick="volverAlEstudioNormal()">← Volver al estudio</button>
       </div>
-      <div style="display: flex; gap: 15px; align-items: center;">
+
+      <div class="header-actions-right">
         <span id="sync-status" style="font-family: var(--fuente-cuerpo); font-size: 12px; color: #666;">Sincronizado</span>
-        <a href="index.html" style="color: #1a1a1a; font-family: var(--fuente-cuerpo); text-decoration: none; font-size: 14px; font-weight: 600;">Ver sitio ↗</a>
-        <button onclick="cerrarSesion()" style="background: #d9534f; border: none; color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;">Salir</button>
+        <a href="index.html" target="_blank" style="color: #1a1a1a; font-family: var(--fuente-cuerpo); text-decoration: none; font-size: 13px; font-weight: 600;">Ver sitio ↗</a>
+        <button onclick="cerrarSesion()" style="background: #d9534f; border: none; color: #fff; padding: 5px 12px; border-radius: 14px; cursor: pointer; font-size: 12px; font-weight: 600;">Salir</button>
       </div>
     </header>
 
@@ -726,17 +853,18 @@
           <div class="action-info"><h3>Sucesivo</h3><p>Programar / Secuencia</p></div>
         </div>
 
-        <!-- Álbumes Preparados acoplados en la barra lateral principal -->
-        <div class="action-card" id="prepared-sidebar-container" style="display: none; flex-direction: column; align-items: stretch; cursor: default;">
-          <div class="action-info" style="width: 100%;">
-            <h3 style="margin-bottom: 8px; border-bottom: 1px solid #e0e0e0; padding-bottom: 6px;">Álbumes Preparados</h3>
-            <div id="prepared-side-list" class="prepared-side-list"></div>
+        <!-- Álbumes Preparados rediseñado y espacioso -->
+        <div id="prepared-sidebar-container" style="display: none;">
+          <div class="prepared-title-row">
+            <h3>Álbumes Preparados</h3>
+            <span id="prepared-counter" style="font-size: 11px; background: #e0e0e0; padding: 2px 7px; border-radius: 10px; font-weight: 700;">0</span>
           </div>
+          <div id="prepared-side-list" class="prepared-side-list"></div>
         </div>
       </div>
     </main>
 
-    <!-- Vista de Tres Columnas para Montar Álbum -->
+    <!-- Vista de Tres Columnas para Montar Álbum (INTACTO) -->
     <div id="album-studio-layout">
       <!-- Columna Izquierda: Obras Disponibles y Poemas Seleccionados ordenables -->
       <div class="album-col album-col-left">
@@ -788,8 +916,7 @@
             <button class="btn-preparar" onclick="desplegarAlbumPreparado()">Desplegar</button>
           </div>
         </div>
-
-        
+      </div>
     </div>
   </div>
 
@@ -810,6 +937,9 @@
     let albumPortadaBase64 = null;
     let editingPreparedAlbumKey = null;
     let draggedSelectedIndex = null;
+
+    // Variable para la acción de Ocultar/Mostrar con confirmación
+    let targetToggleKey = null;
 
     window.addEventListener('DOMContentLoaded', () => {
       const tokenGuardado = getToken();
@@ -918,37 +1048,36 @@
     }
 
     async function cargarPreparadosDeNube() {
-  if (!repoInfo) return;
-  try {
-    const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
-    });
-    if (res.ok) {
-      const data = await res.json();
-      window.postsSha = data.sha;
-      const todosLosPosts = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-      
-      window.postsNube = Array.isArray(todosLosPosts) ? todosLosPosts : [];
-      albumesPreparadosNube = {};
+      if (!repoInfo) return;
+      try {
+        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+          headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          window.postsSha = data.sha;
+          const todosLosPosts = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+          
+          window.postsNube = Array.isArray(todosLosPosts) ? todosLosPosts : [];
+          albumesPreparadosNube = {};
 
-      // Cargamos todos los álbumes (tanto publicados como no publicados) para que no desaparezcan del panel
-      window.postsNube.forEach(item => {
-        const key = item.id || item.slug || item.titulo || item.nombre;
-        if (key) {
-          albumesPreparadosNube[key] = item;
+          window.postsNube.forEach(item => {
+            const key = item.id || item.slug || item.titulo || item.nombre;
+            if (key) {
+              albumesPreparadosNube[key] = item;
+            }
+          });
+
+          renderizarPreparadosSidebar();
+        } else {
+          window.postsNube = [];
+          albumesPreparadosNube = {};
         }
-      });
-
-      renderizarPreparadosSidebar();
-    } else {
-      window.postsNube = [];
-      albumesPreparadosNube = {};
+      } catch (e) {
+        window.postsNube = [];
+        albumesPreparadosNube = {};
+      }
     }
-  } catch (e) {
-    window.postsNube = [];
-    albumesPreparadosNube = {};
-  }
-}
 
     function renderizarBorradores() {
       const lista = document.getElementById('drafts-list');
@@ -1221,50 +1350,48 @@
     /* --- LÓGICA DE MONTAR ÁLBUM Y GESTIÓN DE PREPARADOS --- */
 
     function abrirMontarAlbum() {
-  const albumLayout = document.getElementById('album-studio-layout');
-  
-  document.getElementById('main-admin-layout').style.display = 'none';
-  albumLayout.style.display = 'flex';
+      const albumLayout = document.getElementById('album-studio-layout');
+      
+      document.getElementById('main-admin-layout').style.display = 'none';
+      albumLayout.style.display = 'flex';
 
-  // Forzar el reinicio de la animación al abrir
-  albumLayout.style.animation = 'none';
-  albumLayout.offsetHeight;
-  albumLayout.style.animation = '';
+      albumLayout.style.animation = 'none';
+      albumLayout.offsetHeight;
+      albumLayout.style.animation = '';
 
-  document.getElementById('header-actions-normal').style.display = 'none';
-  document.getElementById('header-actions-album').style.display = 'flex';
+      document.getElementById('header-actions-normal').style.display = 'none';
+      document.getElementById('header-actions-album').style.display = 'flex';
 
-  albumPoemas = [];
-  albumPortadaBase64 = null;
-  editingPreparedAlbumKey = null;
-  document.getElementById('album-name-input').value = "";
-  document.getElementById('btn-guardar-cambios').style.display = 'none';
-  document.getElementById('album-cover-dropzone').innerHTML = `
-    <span id="cover-placeholder-text" style="font-size: 12px; color: #666; text-align: center; padding: 10px;">Subir o arrastrar portada</span>
-    <input type="file" id="cover-file-input" accept="image/*" style="display: none;" onchange="cargarPortadaAlbum(event)">
-    <div class="cover-overlay" id="cover-overlay" style="display: none;">Cambiar o reemplazar portada</div>
-  `;
-  document.getElementById('album-day').value = "";
-  document.getElementById('album-month').value = "";
-  document.getElementById('album-year').value = "";
+      albumPoemas = [];
+      albumPortadaBase64 = null;
+      editingPreparedAlbumKey = null;
+      document.getElementById('album-name-input').value = "";
+      document.getElementById('btn-guardar-cambios').style.display = 'none';
+      document.getElementById('album-cover-dropzone').innerHTML = `
+        <span id="cover-placeholder-text" style="font-size: 12px; color: #666; text-align: center; padding: 10px;">Subir o arrastrar portada</span>
+        <input type="file" id="cover-file-input" accept="image/*" style="display: none;" onchange="cargarPortadaAlbum(event)">
+        <div class="cover-overlay" id="cover-overlay" style="display: none;">Cambiar o reemplazar portada</div>
+      `;
+      document.getElementById('album-day').value = "";
+      document.getElementById('album-month').value = "";
+      document.getElementById('album-year').value = "";
 
-  renderizarListasMontarAlbum();
-}
+      renderizarListasMontarAlbum();
+    }
 
     function volverAlEstudioNormal() {
-  const mainLayout = document.getElementById('main-admin-layout');
+      const mainLayout = document.getElementById('main-admin-layout');
 
-  document.getElementById('album-studio-layout').style.display = 'none';
-  mainLayout.style.display = 'flex';
+      document.getElementById('album-studio-layout').style.display = 'none';
+      mainLayout.style.display = 'flex';
 
-  // Forzar el reinicio de la animación al volver
-  mainLayout.style.animation = 'none';
-  mainLayout.offsetHeight;
-  mainLayout.style.animation = '';
+      mainLayout.style.animation = 'none';
+      mainLayout.offsetHeight;
+      mainLayout.style.animation = '';
 
-  document.getElementById('header-actions-album').style.display = 'none';
-  document.getElementById('header-actions-normal').style.display = 'flex';
-}
+      document.getElementById('header-actions-album').style.display = 'none';
+      document.getElementById('header-actions-normal').style.display = 'flex';
+    }
 
     function renderizarListasMontarAlbum() {
       const sourceList = document.getElementById('album-source-list');
@@ -1446,167 +1573,165 @@
     }
 
     async function lanzarAlbumDirecto() {
-  if (!validarAlbumListo()) return;
-  if (!confirm("¿Deseas publicar este álbum directamente en el feed público?")) return;
-  if (!repoInfo) { alert("Repositorio no detectado."); return; }
+      if (!validarAlbumListo()) return;
+      if (!confirm("¿Deseas publicar este álbum directamente en el feed público?")) return;
+      if (!repoInfo) { alert("Repositorio no detectado."); return; }
 
-  const token = getToken();
-  if (!token) { alert("No hay token guardado."); return; }
+      const token = getToken();
+      if (!token) { alert("No hay token guardado."); return; }
 
-  const nombreAlbum = document.getElementById('album-name-input').value.trim();
-  const slug = nombreAlbum.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+      const nombreAlbum = document.getElementById('album-name-input').value.trim();
+      const slug = nombreAlbum.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
-  const albumData = {
-    id: slug,
-    slug: slug,
-    tipo: "album",
-    nombre: nombreAlbum,
-    titulo: nombreAlbum,
-    publicado: true,
-    poemas: albumPoemas.map(p => ({ originalTitle: p.originalTitle, titulo: p.title, texto: p.text })),
-    portada: albumPortadaBase64,
-    fecha: {
-      dia: document.getElementById('album-day').value,
-      mes: document.getElementById('album-month').value,
-      año: document.getElementById('album-year').value
-    }
-  };
+      const albumData = {
+        id: slug,
+        slug: slug,
+        tipo: "album",
+        nombre: nombreAlbum,
+        titulo: nombreAlbum,
+        publicado: true,
+        poemas: albumPoemas.map(p => ({ originalTitle: p.originalTitle, titulo: p.title, texto: p.text })),
+        portada: albumPortadaBase64,
+        fecha: {
+          dia: document.getElementById('album-day').value,
+          mes: document.getElementById('album-month').value,
+          año: document.getElementById('album-year').value
+        }
+      };
 
-  document.getElementById('sync-status').textContent = "Publicando álbum...";
-  try {
-    let sha = null;
-    let postsData = [];
-    const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (check.ok) {
-      const fileData = await check.json();
-      sha = fileData.sha;
+      document.getElementById('sync-status').textContent = "Publicando álbum...";
       try {
-        const parsed = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
-        postsData = Array.isArray(parsed) ? parsed : [];
+        let sha = null;
+        let postsData = [];
+        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (check.ok) {
+          const fileData = await check.json();
+          sha = fileData.sha;
+          try {
+            const parsed = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+            postsData = Array.isArray(parsed) ? parsed : [];
+          } catch (e) {
+            postsData = [];
+          }
+        }
+
+        const indexExistente = postsData.findIndex(item => (item.id === slug || item.slug === slug || item.nombre === nombreAlbum));
+        if (indexExistente !== -1) {
+          postsData[indexExistente] = albumData;
+        } else {
+          postsData.unshift(albumData);
+        }
+
+        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsData, null, 2))));
+        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+          method: 'PUT',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: `Publicar álbum en el feed: ${nombreAlbum}`, content: encodedContent, sha: sha })
+        });
+
+        if (res.ok) {
+          document.getElementById('sync-status').textContent = "Sincronizado";
+          window.postsNube = postsData;
+          albumesPreparadosNube[slug] = albumData;
+          albumesPreparadosNube[nombreAlbum] = albumData;
+          renderizarPreparadosSidebar();
+          alert("¡Álbum lanzado y publicado exitosamente!");
+          volverAlEstudioNormal();
+        } else {
+          document.getElementById('sync-status').textContent = "Error al publicar";
+          alert("Hubo un error al guardar en posts.json.");
+        }
       } catch (e) {
-        postsData = [];
+        document.getElementById('sync-status').textContent = "Error de red";
+        alert("Error de red al intentar publicar.");
       }
     }
 
-    const indexExistente = postsData.findIndex(item => (item.id === slug || item.slug === slug || item.nombre === nombreAlbum));
-    if (indexExistente !== -1) {
-      postsData[indexExistente] = albumData;
-    } else {
-      postsData.unshift(albumData);
+    function utf8ToBase64(str) {
+      return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)));
     }
 
-    const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsData, null, 2))));
-    const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
-      method: 'PUT',
-      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: `Publicar álbum en el feed: ${nombreAlbum}`, content: encodedContent, sha: sha })
-    });
-
-    if (res.ok) {
-      document.getElementById('sync-status').textContent = "Sincronizado";
-      window.postsNube = postsData;
-      // Actualizamos en memoria sin hacer delete
-      albumesPreparadosNube[slug] = albumData;
-      albumesPreparadosNube[nombreAlbum] = albumData;
-      renderizarPreparadosSidebar();
-      alert("¡Álbum lanzado y publicado exitosamente!");
-      volverAlEstudioNormal();
-    } else {
-      document.getElementById('sync-status').textContent = "Error al publicar";
-      alert("Hubo un error al guardar en posts.json.");
-    }
-  } catch (e) {
-    document.getElementById('sync-status').textContent = "Error de red";
-    alert("Error de red al intentar publicar.");
-  }
-}
-
-    // Funciones de codificación/decodificación blindadas para tildes y saltos de línea de GitHub
-function utf8ToBase64(str) {
-  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)));
-}
-
-function base64ToUtf8(str) {
-  const cleanStr = str.replace(/[\r\n\s]/g, '');
-  return decodeURIComponent(Array.prototype.map.call(atob(cleanStr), c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-}
-
-async function desplegarAlbumPreparado() {
-  if (!validarAlbumListo()) return;
-  if (!repoInfo) { alert("Repositorio no detectado."); return; }
-
-  const token = getToken();
-  if (!token) { alert("No hay token guardado."); return; }
-
-  const nombreAlbum = document.getElementById('album-name-input').value.trim();
-  const slug = nombreAlbum.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-
-  const nuevoAlbum = {
-    id: slug,
-    slug: slug,
-    nombre: nombreAlbum,
-    titulo: nombreAlbum,
-    publicado: false,
-    poemas: albumPoemas.map(p => ({ originalTitle: p.originalTitle || p.title, titulo: p.title || p.titulo, texto: p.text || p.texto })),
-    portada: albumPortadaBase64,
-    fecha: {
-      dia: document.getElementById('album-day').value,
-      mes: document.getElementById('album-month').value,
-      año: document.getElementById('album-year').value
-    }
-  };
-
-  document.getElementById('sync-status').textContent = "Guardando preparado...";
-
-  try {
-    const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-
-    let postsArray = [];
-    let sha = null;
-
-    if (check.ok) {
-      const fileData = await check.json();
-      sha = fileData.sha;
-      const jsonTexto = base64ToUtf8(fileData.content);
-      postsArray = JSON.parse(jsonTexto);
-      if (!Array.isArray(postsArray)) postsArray = [];
+    function base64ToUtf8(str) {
+      const cleanStr = str.replace(/[\r\n\s]/g, '');
+      return decodeURIComponent(Array.prototype.map.call(atob(cleanStr), c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
     }
 
-    const indexExistente = postsArray.findIndex(item => (item.id === slug || item.slug === slug || item.nombre === nombreAlbum || item.titulo === nombreAlbum));
-    if (indexExistente !== -1) {
-      postsArray[indexExistente] = nuevoAlbum;
-    } else {
-      postsArray.push(nuevoAlbum);
+    async function desplegarAlbumPreparado() {
+      if (!validarAlbumListo()) return;
+      if (!repoInfo) { alert("Repositorio no detectado."); return; }
+
+      const token = getToken();
+      if (!token) { alert("No hay token guardado."); return; }
+
+      const nombreAlbum = document.getElementById('album-name-input').value.trim();
+      const slug = nombreAlbum.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+
+      const nuevoAlbum = {
+        id: slug,
+        slug: slug,
+        nombre: nombreAlbum,
+        titulo: nombreAlbum,
+        publicado: false,
+        poemas: albumPoemas.map(p => ({ originalTitle: p.originalTitle || p.title, titulo: p.title || p.titulo, texto: p.text || p.texto })),
+        portada: albumPortadaBase64,
+        fecha: {
+          dia: document.getElementById('album-day').value,
+          mes: document.getElementById('album-month').value,
+          año: document.getElementById('album-year').value
+        }
+      };
+
+      document.getElementById('sync-status').textContent = "Guardando preparado...";
+
+      try {
+        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        let postsArray = [];
+        let sha = null;
+
+        if (check.ok) {
+          const fileData = await check.json();
+          sha = fileData.sha;
+          const jsonTexto = base64ToUtf8(fileData.content);
+          postsArray = JSON.parse(jsonTexto);
+          if (!Array.isArray(postsArray)) postsArray = [];
+        }
+
+        const indexExistente = postsArray.findIndex(item => (item.id === slug || item.slug === slug || item.nombre === nombreAlbum || item.titulo === nombreAlbum));
+        if (indexExistente !== -1) {
+          postsArray[indexExistente] = nuevoAlbum;
+        } else {
+          postsArray.push(nuevoAlbum);
+        }
+
+        const jsonString = JSON.stringify(postsArray, null, 2);
+        const encodedContent = utf8ToBase64(jsonString);
+
+        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+          method: 'PUT',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: `Guardar álbum preparado: ${nombreAlbum}`, content: encodedContent, sha: sha })
+        });
+
+        if (res.ok) {
+          document.getElementById('sync-status').textContent = "Sincronizado";
+          window.postsNube = postsArray;
+          albumesPreparadosNube[slug] = nuevoAlbum;
+          renderizarPreparadosSidebar();
+          alert("Álbum guardado en la sección de preparados.");
+          volverAlEstudioNormal();
+        } else {
+          document.getElementById('sync-status').textContent = "Error en GitHub";
+        }
+      } catch (e) {
+        console.error("Error al desplegar:", e);
+        document.getElementById('sync-status').textContent = "Error al procesar";
+      }
     }
-
-    const jsonString = JSON.stringify(postsArray, null, 2);
-    const encodedContent = utf8ToBase64(jsonString);
-
-    const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
-      method: 'PUT',
-      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: `Guardar álbum preparado: ${nombreAlbum}`, content: encodedContent, sha: sha })
-    });
-
-    if (res.ok) {
-      document.getElementById('sync-status').textContent = "Sincronizado";
-      window.postsNube = postsArray;
-      albumesPreparadosNube[slug] = nuevoAlbum;
-      renderizarPreparadosSidebar();
-      alert("Álbum guardado en la sección de preparados.");
-      volverAlEstudioNormal();
-    } else {
-      document.getElementById('sync-status').textContent = "Error en GitHub";
-    }
-  } catch (e) {
-    console.error("Error al desplegar:", e);
-    document.getElementById('sync-status').textContent = "Error al procesar";
-  }
-}
 
     async function guardarCambiosAlbumPreparado() {
       if (!validarAlbumListo()) return;
@@ -1666,123 +1791,236 @@ async function desplegarAlbumPreparado() {
       }
     }
 
+    /* REDISEÑO FASE 1: Renderizado espacioso de Álbumes Preparados y botón de Ocultar/Mostrar */
     function renderizarPreparadosSidebar() {
-  const container = document.getElementById('prepared-sidebar-container');
-  const lista = document.getElementById('prepared-side-list');
-  lista.innerHTML = "";
+      const container = document.getElementById('prepared-sidebar-container');
+      const lista = document.getElementById('prepared-side-list');
+      const counterEl = document.getElementById('prepared-counter');
+      lista.innerHTML = "";
 
-  const keys = Object.keys(albumesPreparadosNube);
-  if (keys.length === 0) {
-    container.style.display = 'none';
-    return;
-  }
+      const keys = Object.keys(albumesPreparadosNube);
+      if (keys.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
 
-  container.style.display = 'block';
-  keys.forEach(nombre => {
-    const album = albumesPreparadosNube[nombre];
-    const esPublicado = album && album.publicado === true;
-    const badgeHtml = esPublicado 
-      ? `<span style="font-size: 10px; background: #e8f5e9; color: #2e7d32; padding: 2px 6px; border-radius: 4px; margin-right: 6px; font-weight: bold;">Publicado</span>`
-      : `<span style="font-size: 10px; background: #fff3e0; color: #f57c00; padding: 2px 6px; border-radius: 4px; margin-right: 6px; font-weight: bold;">Preparado</span>`;
+      container.style.display = 'block';
+      if (counterEl) counterEl.textContent = keys.length;
 
-    const item = document.createElement('div');
-    item.className = 'prepared-side-item';
-    item.innerHTML = `
-      <div style="display: flex; align-items: center; overflow: hidden; flex: 1; min-width: 0;">
-        ${badgeHtml}
-        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><b>${album.nombre || nombre}</b></span>
-      </div>
-      <div class="icon-btn-group">
-        <button class="icon-btn" title="Previsualizar" onclick="previsualizarAlbumPreparado('${nombre}')">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-        </button>
-        <button class="icon-btn" title="Editar" onclick="editarAlbumPreparado('${nombre}')">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-        </button>
-        <button class="icon-btn" title="Eliminar" onclick="eliminarAlbumPreparado('${nombre}', event)">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-        </button>
-      </div>
-    `;
-    lista.appendChild(item);
-  });
-}
+      keys.forEach(nombre => {
+        const album = albumesPreparadosNube[nombre];
+        const esPublicado = album && album.publicado !== false;
+        
+        const badgeClass = esPublicado ? 'publicado' : 'oculto';
+        const badgeTexto = esPublicado ? 'Publicado' : 'Oculto';
+
+        // Icono para alternar: si está publicado muestra ojo abierto, si está oculto ojo tachado
+        const toggleIconSvg = esPublicado 
+          ? `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`
+          : `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
+
+        const toggleTitle = esPublicado ? 'Ocultar del feed' : 'Mostrar en el feed';
+
+        const item = document.createElement('div');
+        item.className = 'prepared-side-item';
+        item.innerHTML = `
+          <div class="prepared-item-header">
+            <span class="badge-status ${badgeClass}">${badgeTexto}</span>
+            <span class="prepared-item-title" title="${album.nombre || nombre}">${album.nombre || nombre}</span>
+          </div>
+          <div class="prepared-item-toolbar">
+            <button class="action-icon-btn" title="Previsualizar" onclick="previsualizarAlbumPreparado('${nombre}')">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </button>
+            <button class="action-icon-btn" title="${toggleTitle}" onclick="solicitarTogglePublicacion('${nombre}')">
+              ${toggleIconSvg}
+            </button>
+            <button class="action-icon-btn" title="Editar" onclick="editarAlbumPreparado('${nombre}')">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            </button>
+            <button class="action-icon-btn danger" title="Eliminar" onclick="eliminarAlbumPreparado('${nombre}', event)">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+          </div>
+        `;
+        lista.appendChild(item);
+      });
+    }
+
+    /* MODAL Y ACCIÓN DE CONFIRMACIÓN PARA OCULTAR/MOSTRAR */
+    function solicitarTogglePublicacion(nombre) {
+      const album = albumesPreparadosNube[nombre];
+      if (!album) return;
+
+      targetToggleKey = nombre;
+      const esPublicadoActual = (album.publicado !== false);
+
+      const modal = document.getElementById('toggle-visibility-modal');
+      const titleEl = document.getElementById('toggle-modal-title');
+      const descEl = document.getElementById('toggle-modal-desc');
+      const confirmBtn = document.getElementById('toggle-modal-confirm-btn');
+
+      if (esPublicadoActual) {
+        titleEl.textContent = "¿Ocultar obra?";
+        descEl.textContent = `"${album.nombre || nombre}" dejará de ser visible en el feed público pero seguirá guardada aquí.`;
+        confirmBtn.textContent = "Ocultar obra";
+        confirmBtn.style.background = "#d9534f";
+      } else {
+        titleEl.textContent = "¿Mostrar obra?";
+        descEl.textContent = `"${album.nombre || nombre}" volverá a publicarse en el feed principal.`;
+        confirmBtn.textContent = "Mostrar en feed";
+        confirmBtn.style.background = "#28a745";
+      }
+
+      confirmBtn.onclick = () => ejecutarTogglePublicacion();
+      modal.style.display = 'flex';
+    }
+
+    function cerrarModalToggle() {
+      document.getElementById('toggle-visibility-modal').style.display = 'none';
+      targetToggleKey = null;
+    }
+
+    async function ejecutarTogglePublicacion() {
+      if (!targetToggleKey) return;
+      const nombre = targetToggleKey;
+      cerrarModalToggle();
+
+      const token = getToken();
+      if (!token) { alert("No hay token guardado."); return; }
+
+      document.getElementById('sync-status').textContent = "Cambiando visibilidad...";
+
+      try {
+        let sha = null;
+        let postsData = [];
+
+        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (check.ok) {
+          const fileData = await check.json();
+          sha = fileData.sha;
+          try {
+            const parsed = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+            postsData = Array.isArray(parsed) ? parsed : [];
+          } catch (e) {
+            postsData = [];
+          }
+        }
+
+        const indexTarget = postsData.findIndex(item => {
+          const key = item.id || item.slug || item.nombre || item.titulo;
+          return key === nombre || item.nombre === nombre || item.titulo === nombre;
+        });
+
+        if (indexTarget === -1) {
+          alert("No se encontró la obra en posts.json.");
+          document.getElementById('sync-status').textContent = "Sincronizado";
+          return;
+        }
+
+        // Alternar el estado publicado
+        const estadoActual = (postsData[indexTarget].publicado !== false);
+        postsData[indexTarget].publicado = !estadoActual;
+
+        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsData, null, 2))));
+        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+          method: 'PUT',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            message: `${postsData[indexTarget].publicado ? 'Mostrar' : 'Ocultar'} obra en feed: ${nombre}`, 
+            content: encodedContent, 
+            sha: sha 
+          })
+        });
+
+        if (res.ok) {
+          document.getElementById('sync-status').textContent = "Sincronizado";
+          window.postsNube = postsData;
+          if (albumesPreparadosNube[nombre]) {
+            albumesPreparadosNube[nombre].publicado = postsData[indexTarget].publicado;
+          }
+          renderizarPreparadosSidebar();
+        } else {
+          document.getElementById('sync-status').textContent = "Error al actualizar";
+          alert("GitHub rechazó la actualización de visibilidad.");
+        }
+      } catch (err) {
+        console.error("Error al alternar visibilidad:", err);
+        document.getElementById('sync-status').textContent = "Error de red";
+      }
+    }
 
     function previsualizarAlbumPreparado(nombre) {
-  const album = albumesPreparadosNube[nombre];
-  if (!album) return;
+      const album = albumesPreparadosNube[nombre];
+      if (!album) return;
 
-  const slug = album.slug || album.id || album.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-  
-  // Abre la plantilla real del sitio web
-  window.open(`obra.html?id=${slug}`, '_blank');
-}
-
-function cerrarPreviewModal() {
-  const modal = document.getElementById('preview-modal');
-  if (modal) modal.style.display = 'none';
-}
+      const slug = album.slug || album.id || album.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+      window.open(`obra.html?id=${slug}`, '_blank');
+    }
 
     function cerrarPreviewModal() {
-      document.getElementById('preview-modal').style.display = 'none';
+      const modal = document.getElementById('preview-modal');
+      if (modal) modal.style.display = 'none';
     }
 
     async function eliminarAlbumPreparado(nombre, event) {
-  if (event) event.stopPropagation();
-  if (!confirm(`¿Estás seguro de que deseas eliminar el álbum preparado "${nombre}"?`)) return;
-  if (!repoInfo) { alert("Repositorio no detectado."); return; }
+      if (event) event.stopPropagation();
+      if (!confirm(`¿Estás seguro de que deseas eliminar el álbum preparado "${nombre}"?`)) return;
+      if (!repoInfo) { alert("Repositorio no detectado."); return; }
 
-  const token = getToken();
-  if (!token) { alert("No hay token guardado."); return; }
+      const token = getToken();
+      if (!token) { alert("No hay token guardado."); return; }
 
-  document.getElementById('sync-status').textContent = "Eliminando preparado...";
-  try {
-    let sha = null;
-    let postsData = [];
-    const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-
-    if (check.ok) {
-      const fileData = await check.json();
-      sha = fileData.sha;
+      document.getElementById('sync-status').textContent = "Eliminando preparado...";
       try {
-        const parsed = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
-        postsData = Array.isArray(parsed) ? parsed : [];
+        let sha = null;
+        let postsData = [];
+        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (check.ok) {
+          const fileData = await check.json();
+          sha = fileData.sha;
+          try {
+            const parsed = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+            postsData = Array.isArray(parsed) ? parsed : [];
+          } catch (e) {
+            postsData = [];
+          }
+        }
+
+        const postsFiltrados = postsData.filter(item => {
+          const itemKey = item.id || item.slug || item.nombre || item.titulo;
+          return itemKey !== nombre && item.nombre !== nombre && item.titulo !== nombre;
+        });
+
+        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsFiltrados, null, 2))));
+        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+          method: 'PUT',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: `Eliminar álbum preparado: ${nombre}`, content: encodedContent, sha: sha })
+        });
+
+        if (res.ok) {
+          document.getElementById('sync-status').textContent = "Sincronizado";
+          window.postsNube = postsFiltrados;
+          delete albumesPreparadosNube[nombre];
+          renderizarPreparadosSidebar();
+
+          if (editingPreparedAlbumKey === nombre) {
+            volverAlEstudioNormal();
+          }
+        } else {
+          document.getElementById('sync-status').textContent = "Error al eliminar";
+        }
       } catch (e) {
-        postsData = [];
+        document.getElementById('sync-status').textContent = "Error de red";
       }
     }
-
-    // Filtrar para remover el elemento del array
-    const postsFiltrados = postsData.filter(item => {
-      const itemKey = item.id || item.slug || item.nombre || item.titulo;
-      return itemKey !== nombre && item.nombre !== nombre && item.titulo !== nombre;
-    });
-
-    const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsFiltrados, null, 2))));
-    const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
-      method: 'PUT',
-      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: `Eliminar álbum preparado: ${nombre}`, content: encodedContent, sha: sha })
-    });
-
-    if (res.ok) {
-      document.getElementById('sync-status').textContent = "Sincronizado";
-      window.postsNube = postsFiltrados;
-      delete albumesPreparadosNube[nombre];
-      renderizarPreparadosSidebar();
-
-      if (editingPreparedAlbumKey === nombre) {
-        volverAlEstudioNormal();
-      }
-    } else {
-      document.getElementById('sync-status').textContent = "Error al eliminar";
-    }
-  } catch (e) {
-    document.getElementById('sync-status').textContent = "Error de red";
-  }
-}
 
     function editarAlbumPreparado(nombre) {
       const album = albumesPreparadosNube[nombre];
