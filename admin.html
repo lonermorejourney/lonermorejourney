@@ -360,8 +360,13 @@
       font-size: 13px;
       gap: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s, opacity 0.2s;
+      cursor: grab;
+      user-select: none;
     }
+
+    .prepared-side-item:active { cursor: grabbing; }
+    .prepared-side-item.dragging { opacity: 0.4; }
 
     .prepared-side-item:hover {
       background: #ffffff;
@@ -445,7 +450,8 @@
       border-color: #d9534f;
     }
 
-    #toggle-visibility-modal {
+    #toggle-visibility-modal,
+    #reorder-confirm-modal {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -902,6 +908,7 @@
     #unsaved-modal .modal-content,
     #preview-modal .preview-modal-content,
     #toggle-visibility-modal .modal-content,
+    #reorder-confirm-modal .modal-content,
     #poem-edit-modal .poem-edit-content {
       animation: efectoEntrada 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
@@ -918,6 +925,18 @@
 </head>
 <body class="admin-body">
   <div class="fondo-oscuro"></div>
+
+  <!-- Modal de Confirmación para Guardar Nuevo Orden Reordenado -->
+  <div id="reorder-confirm-modal">
+    <div class="modal-content">
+      <h3>¿Guardar nuevo orden?</h3>
+      <p>Has cambiado el orden de las obras en la lista. ¿Deseas actualizar el feed público con esta nueva posición?</p>
+      <div class="modal-buttons">
+        <button class="modal-btn-primary" onclick="confirmarReordenPublicaciones()">Guardar nuevo orden</button>
+        <button class="modal-btn-secondary" onclick="cancelarReordenPublicaciones()">Cancelar</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal Inmersivo de Edición Amplia de Poema con Fondo Desenfoque -->
   <div id="poem-edit-modal">
@@ -1142,6 +1161,10 @@
 
     let targetToggleKey = null;
 
+    // Variables para el Reordenamiento de Publicaciones con Drag & Drop
+    let draggedPreparedIndex = null;
+    let pendingReorderedPosts = null;
+
     window.addEventListener('DOMContentLoaded', () => {
       const tokenGuardado = getToken();
       if (tokenGuardado) {
@@ -1160,7 +1183,6 @@
       el.style.height = (el.scrollHeight) + 'px';
     }
 
-    // Helper para generar slug canónico
     function generarSlug(texto) {
       return String(texto || '')
         .toLowerCase()
@@ -1170,7 +1192,6 @@
         .replace(/(^-|-$)+/g, '');
     }
 
-    // Limpiador automático de duplicados en el array de posts
     function deduplicarPosts(postsArray) {
       if (!Array.isArray(postsArray)) return [];
       const vistos = new Set();
@@ -1288,12 +1309,10 @@
           window.postsSha = data.sha;
           const rawPosts = JSON.parse(decodeURIComponent(escape(atob(data.content))));
           
-          // Deduplicar automáticamente la lista que viene del servidor
           window.postsNube = deduplicarPosts(rawPosts);
           albumesPreparadosNube = {};
 
           window.postsNube.forEach(item => {
-            // Se indexa exclusivamente bajo una única clave canónica
             const key = item.id || item.slug || generarSlug(item.nombre || item.titulo);
             if (key) {
               albumesPreparadosNube[key] = item;
@@ -1591,7 +1610,6 @@
 
     /* --- LÓGICA DE MONTAR ÁLBUM Y GESTIÓN DE PREPARADOS --- */
 
-    // Al abrir "Montar Álbum" para crear uno NUEVO:
     function abrirMontarAlbum() {
       const albumLayout = document.getElementById('album-studio-layout');
       
@@ -1607,13 +1625,12 @@
 
       albumPoemas = [];
       albumPortadaBase64 = null;
-      editingPreparedAlbumKey = null; // Indicamos que es un álbum NUEVO
+      editingPreparedAlbumKey = null;
       
       const albumNameInput = document.getElementById('album-name-input');
       albumNameInput.value = "";
       autoResizeTextarea(albumNameInput);
 
-      // En Álbum Nuevo: Mostramos Lanzamiento y Desplegar, ocultamos Guardar cambios
       document.getElementById('btn-guardar-cambios').style.display = 'none';
       document.getElementById('btn-preparar').style.display = 'block';
       document.getElementById('btn-lanzar').style.display = 'block';
@@ -1666,7 +1683,6 @@
         });
       }
 
-      // Tracklist central ordenable
       const tracklistContainer = document.getElementById('album-tracklist');
       tracklistContainer.innerHTML = "";
       document.getElementById('selected-count').textContent = `${albumPoemas.length} / 2 mín`;
@@ -1859,7 +1875,7 @@
       return true;
     }
 
-    /* LANZAMIENTO: Si es nuevo lo crea publicado; si ya existía lo actualiza a publicado */
+    /* LANZAMIENTO: Se posiciona SIEMPRE en la cima ([0] unshift) */
     async function lanzarAlbumDirecto() {
       if (!validarAlbumListo()) return;
       if (!confirm("¿Deseas publicar este álbum directamente en el feed público?")) return;
@@ -1910,7 +1926,7 @@
           }
         }
 
-        // Buscar coincidencia exacta
+        // Si ya existía, lo quitamos de su posición antigua
         const indexExistente = postsData.findIndex(item => {
           const itemKey = item.id || item.slug || generarSlug(item.nombre || item.titulo);
           return (editingPreparedAlbumKey && (itemKey === editingPreparedAlbumKey || item.nombre === editingPreparedAlbumKey || item.titulo === editingPreparedAlbumKey)) ||
@@ -1918,12 +1934,11 @@
         });
 
         if (indexExistente !== -1) {
-          postsData[indexExistente] = albumData;
-        } else {
-          postsData.unshift(albumData);
+          postsData.splice(indexExistente, 1);
         }
 
-        // Deduplicar rigurosamente antes de enviar a GitHub
+        // ASCENSO A LA CIMA: Se inserta siempre en la posición [0]
+        postsData.unshift(albumData);
         postsData = deduplicarPosts(postsData);
 
         const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsData, null, 2))));
@@ -1937,26 +1952,26 @@
           document.getElementById('sync-status').textContent = "Sincronizado";
           window.postsNube = postsData;
 
-          // Limpiar claves antiguas y asignar exclusivamente la clave canónica
           if (editingPreparedAlbumKey && editingPreparedAlbumKey !== slug) {
             delete albumesPreparadosNube[editingPreparedAlbumKey];
           }
           albumesPreparadosNube[slug] = albumData;
 
           renderizarPreparadosSidebar();
-          alert("¡Álbum lanzado y publicado exitosamente!");
+          alert("¡Álbum lanzado y posicionado en la cima del feed!");
           volverAlEstudioNormal();
         } else {
           document.getElementById('sync-status').textContent = "Error al publicar";
           alert("Hubo un error al guardar en posts.json.");
         }
       } catch (e) {
+        console.error("Error al lanzar álbum:", e);
         document.getElementById('sync-status').textContent = "Error de red";
         alert("Error de red al intentar publicar.");
       }
     }
 
-    /* DESPLEGAR: Solo disponible para álbumes NUEVOS (los guarda como oculto/preparado) */
+    /* DESPLEGAR: Para álbumes NUEVOS, se inserta también al principio de la lista */
     async function desplegarAlbumPreparado() {
       if (!validarAlbumListo()) return;
       if (!repoInfo) { alert("Repositorio no detectado."); return; }
@@ -2015,12 +2030,11 @@
         });
 
         if (indexExistente !== -1) {
-          postsArray[indexExistente] = nuevoAlbum;
-        } else {
-          postsArray.push(nuevoAlbum);
+          postsArray.splice(indexExistente, 1);
         }
 
-        // Deduplicar antes de subir
+        // Se inserta arriba del todo
+        postsArray.unshift(nuevoAlbum);
         postsArray = deduplicarPosts(postsArray);
 
         const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsArray, null, 2))));
@@ -2034,7 +2048,6 @@
         if (res.ok) {
           document.getElementById('sync-status').textContent = "Sincronizado";
           window.postsNube = postsArray;
-
           albumesPreparadosNube[slug] = nuevoAlbum;
 
           renderizarPreparadosSidebar();
@@ -2049,7 +2062,7 @@
       }
     }
 
-    /* GUARDAR CAMBIOS: Exclusivo para álbumes existentes. Respeta su visibilidad exacta (publicado u oculto) sin duplicar */
+    /* GUARDAR CAMBIOS: Mantiene posición y visibilidad exacta (publicado u oculto) */
     async function guardarCambiosAlbumPreparado() {
       if (!validarAlbumListo()) return;
       if (!repoInfo) { alert("Repositorio no detectado."); return; }
@@ -2060,7 +2073,6 @@
       const nombreAlbum = document.getElementById('album-name-input').value.trim();
       const slug = generarSlug(nombreAlbum);
 
-      // Respetar con precisión si el álbum ya estaba publicado u oculto
       let estadoPublicadoOriginal = false;
       if (editingPreparedAlbumKey && albumesPreparadosNube[editingPreparedAlbumKey]) {
         estadoPublicadoOriginal = (albumesPreparadosNube[editingPreparedAlbumKey].publicado !== false);
@@ -2072,7 +2084,7 @@
         tipo: "album",
         nombre: nombreAlbum,
         titulo: nombreAlbum,
-        publicado: estadoPublicadoOriginal, // NUNCA cambia su estado de publicación
+        publicado: estadoPublicadoOriginal,
         poemas: albumPoemas.map(p => ({ 
           originalTitle: p.originalTitle, 
           titulo: p.title, 
@@ -2106,7 +2118,6 @@
           }
         }
 
-        // Localizar la obra en edición por su identificador único para sobreescribir
         const indexExistente = postsData.findIndex(item => {
           const itemKey = item.id || item.slug || generarSlug(item.nombre || item.titulo);
           return (editingPreparedAlbumKey && (itemKey === editingPreparedAlbumKey || item.nombre === editingPreparedAlbumKey || item.titulo === editingPreparedAlbumKey)) ||
@@ -2116,10 +2127,9 @@
         if (indexExistente !== -1) {
           postsData[indexExistente] = albumData;
         } else {
-          postsData.push(albumData);
+          postsData.unshift(albumData);
         }
 
-        // Limpiar duplicados residuales antes de enviar
         postsData = deduplicarPosts(postsData);
 
         const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsData, null, 2))));
@@ -2133,7 +2143,6 @@
           document.getElementById('sync-status').textContent = "Sincronizado";
           window.postsNube = postsData;
 
-          // Eliminar clave antigua si el slug cambió al editar el título
           if (editingPreparedAlbumKey && editingPreparedAlbumKey !== slug) {
             delete albumesPreparadosNube[editingPreparedAlbumKey];
           }
@@ -2152,23 +2161,24 @@
       }
     }
 
+    /* RENDERIZADO DEL SIDEBAR CON DRAG & DROP Y ORDEN 1:1 CON EL FEED */
     function renderizarPreparadosSidebar() {
       const container = document.getElementById('prepared-sidebar-container');
       const lista = document.getElementById('prepared-side-list');
       const counterEl = document.getElementById('prepared-counter');
       lista.innerHTML = "";
 
-      const keys = Object.keys(albumesPreparadosNube);
-      if (keys.length === 0) {
+      const posts = window.postsNube || [];
+      if (posts.length === 0) {
         container.style.display = 'none';
         return;
       }
 
       container.style.display = 'block';
-      if (counterEl) counterEl.textContent = keys.length;
+      if (counterEl) counterEl.textContent = posts.length;
 
-      keys.forEach(key => {
-        const album = albumesPreparadosNube[key];
+      posts.forEach((album, idx) => {
+        const key = album.id || album.slug || generarSlug(album.nombre || album.titulo);
         const esPublicado = album && album.publicado !== false;
         
         const badgeClass = esPublicado ? 'publicado' : 'oculto';
@@ -2182,6 +2192,33 @@
 
         const item = document.createElement('div');
         item.className = 'prepared-side-item';
+        item.setAttribute('draggable', 'true');
+
+        // Drag and Drop para reordenar las publicaciones
+        item.addEventListener('dragstart', (e) => {
+          draggedPreparedIndex = idx;
+          e.dataTransfer.effectAllowed = 'move';
+          setTimeout(() => item.classList.add('dragging'), 0);
+        });
+        item.addEventListener('dragend', () => {
+          item.classList.remove('dragging');
+          draggedPreparedIndex = null;
+        });
+        item.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+        });
+        item.addEventListener('drop', (e) => {
+          e.preventDefault();
+          if (draggedPreparedIndex === null || draggedPreparedIndex === idx) return;
+
+          pendingReorderedPosts = [...window.postsNube];
+          const [moved] = pendingReorderedPosts.splice(draggedPreparedIndex, 1);
+          pendingReorderedPosts.splice(idx, 0, moved);
+
+          solicitarConfirmacionReorden();
+        });
+
         item.innerHTML = `
           <div class="prepared-item-header">
             <span class="badge-status ${badgeClass}">${badgeTexto}</span>
@@ -2204,6 +2241,75 @@
         `;
         lista.appendChild(item);
       });
+    }
+
+    /* MODAL DE CONFIRMACIÓN DE REORDENAMIENTO */
+    function solicitarConfirmacionReorden() {
+      const modal = document.getElementById('reorder-confirm-modal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function cerrarModalReorden() {
+      const modal = document.getElementById('reorder-confirm-modal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function cancelarReordenPublicaciones() {
+      cerrarModalReorden();
+      pendingReorderedPosts = null;
+      renderizarPreparadosSidebar(); // Vuelve al orden anterior
+    }
+
+    async function confirmarReordenPublicaciones() {
+      cerrarModalReorden();
+      if (!pendingReorderedPosts) return;
+
+      const token = getToken();
+      if (!token) { alert("No hay token guardado."); return; }
+
+      document.getElementById('sync-status').textContent = "Guardando nuevo orden...";
+      try {
+        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        let sha = null;
+        if (check.ok) {
+          const fileData = await check.json();
+          sha = fileData.sha;
+        }
+
+        const postsFinales = deduplicarPosts(pendingReorderedPosts);
+        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsFinales, null, 2))));
+
+        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
+          method: 'PUT',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: "Reordenar publicaciones en el feed", content: encodedContent, sha: sha })
+        });
+
+        if (res.ok) {
+          window.postsNube = postsFinales;
+          albumesPreparadosNube = {};
+          window.postsNube.forEach(item => {
+            const k = item.id || item.slug || generarSlug(item.nombre || item.titulo);
+            if (k) albumesPreparadosNube[k] = item;
+          });
+
+          renderizarPreparadosSidebar();
+          document.getElementById('sync-status').textContent = "Sincronizado";
+          alert("¡Orden actualizado con éxito en el feed público!");
+        } else {
+          alert("GitHub rechazó la actualización del orden.");
+          document.getElementById('sync-status').textContent = "Error al guardar";
+          renderizarPreparadosSidebar();
+        }
+      } catch (e) {
+        console.error("Error al reordenar publicaciones:", e);
+        document.getElementById('sync-status').textContent = "Error de red";
+        renderizarPreparadosSidebar();
+      } finally {
+        pendingReorderedPosts = null;
+      }
     }
 
     function solicitarTogglePublicacion(key) {
@@ -2383,19 +2489,17 @@
       }
     }
 
-    // Al pulsar Editar en un álbum existente:
     function editarAlbumPreparado(key) {
       const album = albumesPreparadosNube[key];
       if (!album) return;
 
       abrirMontarAlbum();
-      editingPreparedAlbumKey = key; // Guardamos la clave exacta del que estamos editando
+      editingPreparedAlbumKey = key;
       
       const albumNameInput = document.getElementById('album-name-input');
       albumNameInput.value = album.nombre;
       autoResizeTextarea(albumNameInput);
 
-      // En Álbum Existente: Mostramos Guardar cambios y Lanzar, OCULTAMOS Desplegar
       document.getElementById('btn-guardar-cambios').style.display = 'block';
       document.getElementById('btn-preparar').style.display = 'none';
       document.getElementById('btn-lanzar').style.display = 'block';
