@@ -80,5 +80,50 @@
       "mes": "11",
       "año": "2025"
     }
+  },
+  "TE PERDÍ PARA NAVIDAD": {
+    "nombre": "TE PERDÍ PARA NAVIDAD",
+    "poemas": [
+      {
+        "originalTitle": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
+        "titulo": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
+        "texto": "sdsdsdsdsdsdsdsdsdsdsds",
+        "oculto": false
+      },
+      {
+        "originalTitle": "LA METAFORA\nDEL BENEVOLENTE",
+        "titulo": "LA METAFORA\nDEL BENEVOLENTE",
+        "texto": "SDADADADASDASDASDASD",
+        "oculto": true
+      },
+      {
+        "originalTitle": "ALCOHOL E ISMO",
+        "titulo": "ALCOHOL E ISMO",
+        "texto": "SDSDSDSDWADWDW",
+        "oculto": false
+      },
+      {
+        "originalTitle": "ENTELEQUIAS",
+        "titulo": "ENTELEQUIAS",
+        "texto": "SDSDSD",
+        "oculto": false
+      },
+      {
+        "originalTitle": "FUGA EN EL ESCENARIO",
+        "titulo": "FUGA EN EL ESCENARIO",
+        "oculto": false
+      },
+      {
+        "originalTitle": "UNA MELODÍA FELIZ",
+        "titulo": "UNA MELODÍA FELIZ",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1789398794319_TE_PERDÍ_PARA_NAVIDAD.png",
+    "fecha": {
+      "dia": "15",
+      "mes": "12",
+      "año": "2026"
+    }
   }
 }
