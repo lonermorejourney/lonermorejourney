@@ -90,5 +90,57 @@
       "mes": "12",
       "año": "2025"
     }
+  },
+  {
+    "id": "te-perdi-para-navidad",
+    "slug": "te-perdi-para-navidad",
+    "tipo": "album",
+    "nombre": "TE PERDÍ PARA NAVIDAD",
+    "titulo": "TE PERDÍ PARA NAVIDAD",
+    "publicado": false,
+    "poemas": [
+      {
+        "originalTitle": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
+        "titulo": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
+        "texto": "sdsdsdsdsdsdsdsdsdsdsds",
+        "oculto": false
+      },
+      {
+        "originalTitle": "LA METAFORA\nDEL BENEVOLENTE",
+        "titulo": "LA METAFORA\nDEL BENEVOLENTE",
+        "texto": "SDADADADASDASDASDASD",
+        "oculto": false
+      },
+      {
+        "originalTitle": "ALCOHOL E ISMO",
+        "titulo": "ALCOHOL E ISMO",
+        "texto": "Alguien que busca salidas, no soluciones.",
+        "oculto": false
+      },
+      {
+        "originalTitle": "ENTELEQUIAS",
+        "titulo": "ENTELEQUIAS",
+        "texto": "Siendo el clamor y la razón\nde esa fiel mano confusa.",
+        "oculto": false
+      },
+      {
+        "originalTitle": "FUGA EN EL ESCENARIO",
+        "titulo": "FUGA EN EL ESCENARIO",
+        "texto": "Y por lo mas de su añorar.",
+        "oculto": false
+      },
+      {
+        "originalTitle": "UNA MELODÍA FELIZ",
+        "titulo": "UNA MELODÍA FELIZ",
+        "texto": "asdasdasdadas",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1789398794319_TE_PERDÍ_PARA_NAVIDAD.png",
+    "fecha": {
+      "dia": "15",
+      "mes": "12",
+      "año": "2026"
+    }
   }
 ]
