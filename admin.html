@@ -84,7 +84,7 @@
       z-index: 2;
     }
 
-    /* REDISEÑO FASE 1: Header flotante sin barra de punta a punta */
+    /* REDISEÑO FASE 1: Header flotante */
     .studio-header {
       width: 100%;
       display: flex;
@@ -251,7 +251,6 @@
     }
     .tool-btn:hover { background: #eaeaea; }
 
-    /* FASE 2: Título multilínea con libertad para pulsar ENTER */
     .doc-title-input {
       font-family: var(--fuente-heavy);
       font-size: 26px;
@@ -521,7 +520,6 @@
       min-height: 350px;
     }
 
-    /* Tracklist del Álbum en el centro */
     .tracklist-wrapper {
       flex: 1;
       overflow-y: auto;
@@ -717,7 +715,7 @@
     }
     .btn-guardar-cambios:hover { background: #218838; }
 
-    /* FASE 2: Modal Inmersivo de Edición Amplia con Fondo Difuminado */
+    /* Modal Inmersivo de Edición Amplia con Fondo Difuminado */
     #poem-edit-modal {
       display: none;
       position: fixed;
@@ -926,7 +924,7 @@
 <body class="admin-body">
   <div class="fondo-oscuro"></div>
 
-  <!-- FASE 2: Modal Inmersivo de Edición Amplia de Poema con Fondo Desenfoque -->
+  <!-- Modal Inmersivo de Edición Amplia de Poema con Fondo Desenfoque -->
   <div id="poem-edit-modal">
     <div class="poem-edit-content">
       <div class="poem-edit-header">
@@ -999,7 +997,6 @@
   </div>
 
   <div id="studio-screen">
-    <!-- Header flotante sin barra blanca completa -->
     <header class="studio-header">
       <div class="header-actions-left" id="header-actions-normal">
         <button class="action-top-btn" onclick="guardarObra()">Guardar obra</button>
@@ -1032,7 +1029,6 @@
           <button class="tool-btn" title="Justificar" onclick="aplicarFormato('justifyFull')">Justificar</button>
         </div>
 
-        <!-- FASE 2: Título con libertad de pulsar ENTER y auto-ajuste de altura -->
         <textarea id="doc-title" class="doc-title-input" rows="1" placeholder="Título del poema..." oninput="autoResizeTextarea(this)"></textarea>
         <div id="doc-editor" class="doc-editor" contenteditable="true" placeholder="Escribe o pega tu texto libremente..."></div>
       </div>
@@ -1067,7 +1063,6 @@
           <div class="action-info"><h3>Sucesivo</h3><p>Programar / Secuencia</p></div>
         </div>
 
-        <!-- Álbumes Preparados rediseñado y espacioso -->
         <div id="prepared-sidebar-container" style="display: none;">
           <div class="prepared-title-row">
             <h3>Álbumes Preparados</h3>
@@ -1078,9 +1073,8 @@
       </div>
     </main>
 
-    <!-- REDISEÑO FASE 2: Vista de Tres Columnas Equilibradas para Montar Álbum -->
+    <!-- Vista de Tres Columnas Equilibradas para Montar Álbum -->
     <div id="album-studio-layout">
-      <!-- Columna Izquierda: Banco de Obras Disponibles -->
       <div class="album-col album-col-left">
         <h3>
           <span>Obras Disponibles</span>
@@ -1090,7 +1084,6 @@
         <div id="album-source-list" class="album-source-container"></div>
       </div>
 
-      <!-- Columna Central: Tracklist Ordenable (Corazón del Álbum) -->
       <div class="album-col album-col-center">
         <h3>
           <span>Tracklist del Álbum</span>
@@ -1098,12 +1091,9 @@
         </h3>
         <textarea id="album-name-input" class="doc-title-input" rows="1" placeholder="Nombre del álbum (soporta ENTER)..." style="font-size: 20px; margin-bottom: 12px;" oninput="autoResizeTextarea(this)"></textarea>
         
-        <div id="album-tracklist" class="tracklist-wrapper">
-          <!-- Los poemas seleccionados se inyectan dinámicamente como pistas aquí -->
-        </div>
+        <div id="album-tracklist" class="tracklist-wrapper"></div>
       </div>
 
-      <!-- Columna Derecha: Portada, Fecha y Acciones -->
       <div class="album-col album-col-right">
         <h3>Portada del Álbum</h3>
         <div class="cover-dropzone" id="album-cover-dropzone" onclick="document.getElementById('cover-file-input').click()">
@@ -1153,7 +1143,7 @@
     let albumPortadaBase64 = null;
     let editingPreparedAlbumKey = null;
     let draggedTrackIndex = null;
-    let editingPoemIndex = null; // Índice del poema en el modal focalizado
+    let editingPoemIndex = null;
 
     let targetToggleKey = null;
 
@@ -1169,7 +1159,6 @@
       inicializarSelectoresFecha();
     });
 
-    // Función universal para títulos multilínea expansibles
     function autoResizeTextarea(el) {
       if (!el) return;
       el.style.height = 'auto';
@@ -1580,7 +1569,7 @@
       location.reload();
     }
 
-    /* --- LÓGICA DE MONTAR ÁLBUM Y GESTIÓN DE PREPARADOS (FASE 2) --- */
+    /* --- LÓGICA DE MONTAR ÁLBUM Y GESTIÓN DE PREPARADOS --- */
 
     function abrirMontarAlbum() {
       const albumLayout = document.getElementById('album-studio-layout');
@@ -1630,7 +1619,6 @@
       document.getElementById('header-actions-normal').style.display = 'flex';
     }
 
-    /* REDISEÑO FASE 2: Renderizado del Tracklist y del Banco de Obras */
     function renderizarListasMontarAlbum() {
       const sourceList = document.getElementById('album-source-list');
       sourceList.innerHTML = "";
@@ -1725,7 +1713,7 @@
       renderizarListasMontarAlbum();
     }
 
-    /* FASE 2: Funciones del Modal Inmersivo de Edición Amplia */
+    /* CORRECCIÓN: Apertura del modal con cálculo exacto de altura post-display */
     function abrirPoemEditModal(index) {
       const poema = albumPoemas[index];
       if (!poema) return;
@@ -1737,13 +1725,17 @@
       
       const titleInput = document.getElementById('modal-poem-title');
       titleInput.value = poema.title || '';
-      autoResizeTextarea(titleInput);
 
       document.getElementById('modal-poem-oculto').checked = (poema.oculto === true);
       document.getElementById('modal-poem-text').value = poema.text || '';
 
       const modal = document.getElementById('poem-edit-modal');
       modal.style.display = 'flex';
+
+      // Garantizar que el elemento ya es visible en el DOM antes de recalcular altura
+      setTimeout(() => {
+        autoResizeTextarea(titleInput);
+      }, 10);
     }
 
     function cerrarPoemEditModal() {
@@ -1893,7 +1885,13 @@
           }
         }
 
-        const indexExistente = postsData.findIndex(item => (item.id === slug || item.slug === slug || item.nombre === nombreAlbum));
+        // Buscar coincidencia exacta por clave de edición previa o slug/nombre
+        const indexExistente = postsData.findIndex(item => {
+          const itemKey = item.id || item.slug || item.nombre || item.titulo;
+          return (editingPreparedAlbumKey && (itemKey === editingPreparedAlbumKey || item.nombre === editingPreparedAlbumKey || item.titulo === editingPreparedAlbumKey)) ||
+                 (item.id === slug || item.slug === slug || item.nombre === nombreAlbum || item.titulo === nombreAlbum);
+        });
+
         if (indexExistente !== -1) {
           postsData[indexExistente] = albumData;
         } else {
@@ -1910,8 +1908,13 @@
         if (res.ok) {
           document.getElementById('sync-status').textContent = "Sincronizado";
           window.postsNube = postsData;
+
+          if (editingPreparedAlbumKey && editingPreparedAlbumKey !== slug && editingPreparedAlbumKey !== nombreAlbum) {
+            delete albumesPreparadosNube[editingPreparedAlbumKey];
+          }
           albumesPreparadosNube[slug] = albumData;
           albumesPreparadosNube[nombreAlbum] = albumData;
+
           renderizarPreparadosSidebar();
           alert("¡Álbum lanzado y publicado exitosamente!");
           volverAlEstudioNormal();
@@ -1934,6 +1937,7 @@
       return decodeURIComponent(Array.prototype.map.call(atob(cleanStr), c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
     }
 
+    /* CORRECCIÓN: Desplegar sobreescribe el álbum en posts.json sin duplicarlo */
     async function desplegarAlbumPreparado() {
       if (!validarAlbumListo()) return;
       if (!repoInfo) { alert("Repositorio no detectado."); return; }
@@ -1947,6 +1951,7 @@
       const nuevoAlbum = {
         id: slug,
         slug: slug,
+        tipo: "album",
         nombre: nombreAlbum,
         titulo: nombreAlbum,
         publicado: false,
@@ -1977,20 +1982,28 @@
         if (check.ok) {
           const fileData = await check.json();
           sha = fileData.sha;
-          const jsonTexto = base64ToUtf8(fileData.content);
-          postsArray = JSON.parse(jsonTexto);
-          if (!Array.isArray(postsArray)) postsArray = [];
+          try {
+            const parsed = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+            postsArray = Array.isArray(parsed) ? parsed : [];
+          } catch (e) {
+            postsArray = [];
+          }
         }
 
-        const indexExistente = postsArray.findIndex(item => (item.id === slug || item.slug === slug || item.nombre === nombreAlbum || item.titulo === nombreAlbum));
+        // Buscar coincidencia para sobreescribir sin crear copias duplicadas
+        const indexExistente = postsArray.findIndex(item => {
+          const itemKey = item.id || item.slug || item.nombre || item.titulo;
+          return (editingPreparedAlbumKey && (itemKey === editingPreparedAlbumKey || item.nombre === editingPreparedAlbumKey || item.titulo === editingPreparedAlbumKey)) ||
+                 (item.id === slug || item.slug === slug || item.nombre === nombreAlbum || item.titulo === nombreAlbum);
+        });
+
         if (indexExistente !== -1) {
           postsArray[indexExistente] = nuevoAlbum;
         } else {
           postsArray.push(nuevoAlbum);
         }
 
-        const jsonString = JSON.stringify(postsArray, null, 2);
-        const encodedContent = utf8ToBase64(jsonString);
+        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsArray, null, 2))));
 
         const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
           method: 'PUT',
@@ -2001,7 +2014,13 @@
         if (res.ok) {
           document.getElementById('sync-status').textContent = "Sincronizado";
           window.postsNube = postsArray;
+
+          if (editingPreparedAlbumKey && editingPreparedAlbumKey !== slug && editingPreparedAlbumKey !== nombreAlbum) {
+            delete albumesPreparadosNube[editingPreparedAlbumKey];
+          }
           albumesPreparadosNube[slug] = nuevoAlbum;
+          albumesPreparadosNube[nombreAlbum] = nuevoAlbum;
+
           renderizarPreparadosSidebar();
           alert("Álbum guardado en la sección de preparados.");
           volverAlEstudioNormal();
@@ -2014,6 +2033,7 @@
       }
     }
 
+    /* CORRECCIÓN: Botón verde conectado a posts.json y respetando estrictamente si era Oculto o Publicado */
     async function guardarCambiosAlbumPreparado() {
       if (!validarAlbumListo()) return;
       if (!repoInfo) { alert("Repositorio no detectado."); return; }
@@ -2022,9 +2042,21 @@
       if (!token) { alert("No hay token guardado."); return; }
 
       const nombreAlbum = document.getElementById('album-name-input').value.trim();
+      const slug = nombreAlbum.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+
+      // Determinar si estaba publicado originalmente para NO publicar obras que estaban ocultas
+      let estadoPublicadoOriginal = false;
+      if (editingPreparedAlbumKey && albumesPreparadosNube[editingPreparedAlbumKey]) {
+        estadoPublicadoOriginal = (albumesPreparadosNube[editingPreparedAlbumKey].publicado !== false);
+      }
 
       const albumData = {
+        id: slug,
+        slug: slug,
+        tipo: "album",
         nombre: nombreAlbum,
+        titulo: nombreAlbum,
+        publicado: estadoPublicadoOriginal, // Mantiene rigurosamente su visibilidad actual
         poemas: albumPoemas.map(p => ({ 
           originalTitle: p.originalTitle, 
           titulo: p.title, 
@@ -2039,40 +2071,64 @@
         }
       };
 
-      document.getElementById('sync-status').textContent = "Actualizando preparado...";
+      document.getElementById('sync-status').textContent = "Actualizando álbum...";
       try {
         let sha = null;
-        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
+        let postsData = [];
+        const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
+
         if (check.ok) {
           const fileData = await check.json();
           sha = fileData.sha;
-          albumesPreparadosNube = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+          try {
+            const parsed = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+            postsData = Array.isArray(parsed) ? parsed : [];
+          } catch (e) {
+            postsData = [];
+          }
         }
 
-        if (editingPreparedAlbumKey && albumesPreparadosNube[editingPreparedAlbumKey]) {
-          delete albumesPreparadosNube[editingPreparedAlbumKey];
-        }
-        albumesPreparadosNube[nombreAlbum] = albumData;
+        // Buscar coincidencia exacta de la obra en edición para sobreescribir sin duplicar
+        const indexExistente = postsData.findIndex(item => {
+          const itemKey = item.id || item.slug || item.nombre || item.titulo;
+          return (editingPreparedAlbumKey && (itemKey === editingPreparedAlbumKey || item.nombre === editingPreparedAlbumKey || item.titulo === editingPreparedAlbumKey)) ||
+                 (item.id === slug || item.slug === slug || item.nombre === nombreAlbum || item.titulo === nombreAlbum);
+        });
 
-        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(albumesPreparadosNube, null, 2))));
-        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/prepared_albums.json`, {
+        if (indexExistente !== -1) {
+          postsData[indexExistente] = albumData;
+        } else {
+          postsData.push(albumData);
+        }
+
+        const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(postsData, null, 2))));
+        const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
           method: 'PUT',
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: `Actualizar álbum preparado: ${nombreAlbum}`, content: encodedContent, sha: sha })
+          body: JSON.stringify({ message: `Actualizar álbum: ${nombreAlbum}`, content: encodedContent, sha: sha })
         });
 
         if (res.ok) {
           document.getElementById('sync-status').textContent = "Sincronizado";
+          window.postsNube = postsData;
+
+          if (editingPreparedAlbumKey && editingPreparedAlbumKey !== slug && editingPreparedAlbumKey !== nombreAlbum) {
+            delete albumesPreparadosNube[editingPreparedAlbumKey];
+          }
+          albumesPreparadosNube[slug] = albumData;
+          albumesPreparadosNube[nombreAlbum] = albumData;
+          editingPreparedAlbumKey = slug;
+
           renderizarPreparadosSidebar();
-          alert("Cambios guardados correctamente en el álbum preparado.");
-          editingPreparedAlbumKey = nombreAlbum;
-          document.getElementById('btn-guardar-cambios').style.display = 'block';
+          alert("Cambios guardados correctamente en el álbum.");
         } else {
           document.getElementById('sync-status').textContent = "Error al actualizar";
+          alert("GitHub rechazó la actualización de cambios.");
         }
       } catch (e) {
+        console.error("Error al actualizar cambios:", e);
         document.getElementById('sync-status').textContent = "Error de red";
       }
     }
@@ -2114,7 +2170,7 @@
           </div>
           <div class="prepared-item-toolbar">
             <button class="action-icon-btn" title="Previsualizar" onclick="previsualizarAlbumPreparado('${nombre}')">
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></polyline><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
             </button>
             <button class="action-icon-btn" title="${toggleTitle}" onclick="solicitarTogglePublicacion('${nombre}')">
               ${toggleIconSvg}
