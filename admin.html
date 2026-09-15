@@ -462,9 +462,12 @@
       border-color: #d9534f;
     }
 
+    /* Modales Flotantes con Desenfoque */
     #toggle-visibility-modal,
     #reorder-confirm-modal,
-    #poem-unsaved-modal {
+    #poem-unsaved-modal,
+    #rights-notice-modal,
+    #rights-warning-modal {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -476,7 +479,9 @@
       -webkit-backdrop-filter: blur(4px);
     }
 
-    #poem-unsaved-modal {
+    #poem-unsaved-modal,
+    #rights-notice-modal,
+    #rights-warning-modal {
       z-index: 1400;
     }
 
@@ -680,6 +685,77 @@
       font-family: var(--fuente-cuerpo);
       font-size: 13px;
       background: #fff;
+    }
+
+    /* ESTILO MINIMALISTA PARA CASILLA DE RESERVAR DERECHOS */
+    .custom-checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      font-family: var(--fuente-cuerpo);
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-top: 6px;
+      margin-bottom: 8px;
+    }
+
+    .custom-checkbox-container input {
+      display: none;
+    }
+
+    .custom-checkbox-box {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid #1a1a1a;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      flex-shrink: 0;
+    }
+
+    .custom-checkbox-container input:checked + .custom-checkbox-box {
+      background: #1a1a1a;
+      border-color: #1a1a1a;
+    }
+
+    .custom-checkbox-box svg {
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      color: #ffffff;
+    }
+
+    .custom-checkbox-container input:checked + .custom-checkbox-box svg {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .custom-checkbox-container.disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .rights-year-select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-family: var(--fuente-cuerpo);
+      font-size: 13px;
+      background: #fff;
+      outline: none;
+    }
+
+    .rights-year-select:disabled {
+      background: #f0f0f0;
+      color: #777;
+      cursor: not-allowed;
     }
 
     .album-actions-bottom {
@@ -936,6 +1012,8 @@
     #toggle-visibility-modal .modal-content,
     #reorder-confirm-modal .modal-content,
     #poem-unsaved-modal .modal-content,
+    #rights-notice-modal .modal-content,
+    #rights-warning-modal .modal-content,
     #poem-edit-modal .poem-edit-content {
       animation: efectoEntrada 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
@@ -952,6 +1030,33 @@
 </head>
 <body class="admin-body">
   <div class="fondo-oscuro"></div>
+
+  <!-- Modal de Aviso: Los derechos quedan blindados para siempre -->
+  <div id="rights-notice-modal">
+    <div class="modal-content">
+      <div style="font-size: 26px; font-weight: 800; margin-bottom: 6px;">®</div>
+      <h3 style="font-size: 18px; margin-bottom: 12px;">Reserva de Derechos</h3>
+      <p style="font-size: 14px; line-height: 1.6; color: #444; margin-bottom: 22px;">
+        Los derechos de autor se reservan de forma obligatoria al crear la obra, y una vez sellados, quedan blindados para siempre.
+      </p>
+      <div class="modal-buttons">
+        <button class="modal-btn-primary" onclick="cerrarModalRightsNotice()">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Advertencia: Bloqueo por no marcar Reservar Derechos -->
+  <div id="rights-warning-modal">
+    <div class="modal-content">
+      <h3 style="font-size: 18px; margin-bottom: 10px; color: #d9534f;">Acción Obligatoria</h3>
+      <p style="font-size: 14px; line-height: 1.6; color: #444; margin-bottom: 22px;">
+        Debes marcar la casilla 'Reservar derechos' obligatoriamente por seguridad antes de continuar.
+      </p>
+      <div class="modal-buttons">
+        <button class="modal-btn-primary" onclick="cerrarModalRightsWarning()">Entendido</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal Independiente de Seguridad: Cambios sin guardar en el Poema en edición -->
   <div id="poem-unsaved-modal">
@@ -1173,7 +1278,20 @@
           <select id="album-year"><option value="">Año</option></select>
         </div>
 
-        <div class="album-actions-bottom">
+        <!-- SECCIÓN OBLIGATORIA: RESERVA DE DERECHOS DE AUTOR -->
+        <h3>Derechos de Autor</h3>
+        <label class="custom-checkbox-container" id="rights-checkbox-label">
+          <input type="checkbox" id="album-rights-check" onchange="gestionarCheckDerechos(this)">
+          <span class="custom-checkbox-box">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </span>
+          <span id="rights-checkbox-text">Reservar derechos</span>
+        </label>
+        <select id="album-rights-year" class="rights-year-select" title="Año oficial de reserva de derechos"></select>
+
+        <div class="album-actions-bottom" style="margin-top: 10px;">
           <button id="btn-guardar-cambios" class="btn-guardar-cambios" onclick="guardarCambiosAlbumPreparado()">Guardar cambios</button>
           <div class="album-actions-row">
             <button class="btn-lanzar" id="btn-lanzar" onclick="lanzarAlbumDirecto()">Lanzamiento</button>
@@ -1203,17 +1321,12 @@
     let draggedTrackIndex = null;
     let editingPoemIndex = null;
 
-    // Control de modo de estudio: 'album' o 'individual'
     let studioMode = 'album';
-
-    // Control de pestaña activa en la barra lateral: 'albumes' o 'titulos'
     let currentSidebarTab = 'albumes';
 
     let targetToggleKey = null;
     let draggedPreparedIndex = null;
     let pendingReorderedPosts = null;
-
-    // Estado inicial del poema al abrir el modal para detectar si hay cambios sin guardar
     let initialPoemState = null;
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -1275,6 +1388,35 @@
           selectYear.appendChild(opt);
         }
       }
+
+      const selectRightsYear = document.getElementById('album-rights-year');
+      if (selectRightsYear) {
+        selectRightsYear.innerHTML = '';
+        const currentYear = new Date().getFullYear();
+        for (let i = currentYear; i >= currentYear - 10; i--) {
+          let opt = document.createElement('option');
+          opt.value = i; opt.textContent = i;
+          selectRightsYear.appendChild(opt);
+        }
+      }
+    }
+
+    function gestionarCheckDerechos(checkbox) {
+      if (checkbox.checked) {
+        document.getElementById('rights-notice-modal').style.display = 'flex';
+      }
+    }
+
+    function cerrarModalRightsNotice() {
+      document.getElementById('rights-notice-modal').style.display = 'none';
+    }
+
+    function mostrarModalRightsWarning() {
+      document.getElementById('rights-warning-modal').style.display = 'flex';
+    }
+
+    function cerrarModalRightsWarning() {
+      document.getElementById('rights-warning-modal').style.display = 'none';
     }
 
     async function verificarLogin() {
@@ -1708,6 +1850,15 @@
       document.getElementById('btn-preparar').style.display = 'block';
       document.getElementById('btn-lanzar').style.display = 'block';
 
+      const rightsCheck = document.getElementById('album-rights-check');
+      rightsCheck.checked = false;
+      rightsCheck.disabled = false;
+      document.getElementById('rights-checkbox-label').classList.remove('disabled');
+
+      const rightsYearSelect = document.getElementById('album-rights-year');
+      rightsYearSelect.disabled = false;
+      rightsYearSelect.value = new Date().getFullYear();
+
       document.getElementById('album-cover-dropzone').innerHTML = `
         <span id="cover-placeholder-text" style="font-size: 12px; color: #666; text-align: center; padding: 10px;">Subir o arrastrar portada</span>
         <input type="file" id="cover-file-input" accept="image/*" style="display: none;" onchange="cargarPortadaAlbum(event)">
@@ -2035,6 +2186,14 @@
       const mes = document.getElementById('album-month').value;
       const año = document.getElementById('album-year').value;
       if (!dia || !mes || !año) { alert("Define la fecha completa de lanzamiento."); return false; }
+
+      // VALIDACIÓN OBLIGATORIA DE RESERVA DE DERECHOS
+      const rightsCheck = document.getElementById('album-rights-check');
+      if (!rightsCheck || !rightsCheck.checked) {
+        mostrarModalRightsWarning();
+        return false;
+      }
+
       return true;
     }
 
@@ -2049,6 +2208,7 @@
 
       const nombreAlbum = document.getElementById('album-name-input').value.trim();
       const slug = generarSlug(nombreAlbum);
+      const anioDerechosVal = document.getElementById('album-rights-year').value || String(new Date().getFullYear());
 
       const albumData = {
         id: slug,
@@ -2057,6 +2217,7 @@
         nombre: nombreAlbum,
         titulo: nombreAlbum,
         publicado: true,
+        anioDerechos: anioDerechosVal,
         poemas: albumPoemas.map(p => ({ 
           originalTitle: p.originalTitle, 
           titulo: p.title, 
@@ -2145,6 +2306,7 @@
       const isInd = (studioMode === 'individual');
       const nombreAlbum = document.getElementById('album-name-input').value.trim();
       const slug = generarSlug(nombreAlbum);
+      const anioDerechosVal = document.getElementById('album-rights-year').value || String(new Date().getFullYear());
 
       const nuevoAlbum = {
         id: slug,
@@ -2153,6 +2315,7 @@
         nombre: nombreAlbum,
         titulo: nombreAlbum,
         publicado: false,
+        anioDerechos: anioDerechosVal,
         poemas: albumPoemas.map(p => ({ 
           originalTitle: p.originalTitle || p.title, 
           titulo: p.title || p.titulo, 
@@ -2240,8 +2403,13 @@
       const slug = generarSlug(nombreAlbum);
 
       let estadoPublicadoOriginal = false;
+      let anioDerechosOriginal = document.getElementById('album-rights-year').value || String(new Date().getFullYear());
+
       if (editingPreparedAlbumKey && albumesPreparadosNube[editingPreparedAlbumKey]) {
         estadoPublicadoOriginal = (albumesPreparadosNube[editingPreparedAlbumKey].publicado !== false);
+        if (albumesPreparadosNube[editingPreparedAlbumKey].anioDerechos) {
+          anioDerechosOriginal = albumesPreparadosNube[editingPreparedAlbumKey].anioDerechos;
+        }
       }
 
       const albumData = {
@@ -2251,6 +2419,7 @@
         nombre: nombreAlbum,
         titulo: nombreAlbum,
         publicado: estadoPublicadoOriginal,
+        anioDerechos: anioDerechosOriginal,
         poemas: albumPoemas.map(p => ({ 
           originalTitle: p.originalTitle, 
           titulo: p.title, 
@@ -2327,7 +2496,6 @@
       }
     }
 
-    /* CONTROL DE PESTAÑAS SWITCH EN LA BARRA LATERAL */
     function cambiarTabSidebar(tab) {
       currentSidebarTab = tab;
       document.getElementById('tab-btn-albumes').classList.toggle('active', tab === 'albumes');
@@ -2695,6 +2863,15 @@
       document.getElementById('btn-guardar-cambios').style.display = 'block';
       document.getElementById('btn-preparar').style.display = 'none';
       document.getElementById('btn-lanzar').style.display = 'block';
+
+      const rightsCheck = document.getElementById('album-rights-check');
+      rightsCheck.checked = true;
+      rightsCheck.disabled = true;
+      document.getElementById('rights-checkbox-label').classList.add('disabled');
+
+      const rightsYearSelect = document.getElementById('album-rights-year');
+      rightsYearSelect.value = obra.anioDerechos || (obra.fecha ? obra.fecha.año : new Date().getFullYear());
+      rightsYearSelect.disabled = true;
 
       albumPoemas = (obra.poemas || []).map(p => ({
         originalTitle: p.originalTitle || p.titulo,
