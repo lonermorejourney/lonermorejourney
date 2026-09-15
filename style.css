@@ -442,8 +442,8 @@ body {
   }
 
   .album-title .reg {
-  font-size: 16px;
-}
+    font-size: 16px;
+  }
 
   .album-avatar {
     width: 35px; /* tamaño propio en PC, ajusta a tu gusto */
@@ -478,8 +478,8 @@ body {
   }
 
   .poem-title .reg {
-  font-size: 20px;
-}
+    font-size: 20px;
+  }
 
   .poems-list {
     margin-top: 55px; /* separación propia en PC */
@@ -537,7 +537,11 @@ body {
   font-weight: 700;
   margin: 0;
   display: inline; /* Permite que el texto fluya de forma natural */
-  white-space: pre-line; /* Permite saltos de línea con ENTER */
+}
+
+/* Solo el texto del título permite saltos sin expulsar al disco ni crear huecos */
+#poem-title-text {
+  white-space: pre-line;
 }
 
 /* El icono del disco se queda pegado a la última palabra sin alterar la línea */
