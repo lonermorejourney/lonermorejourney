@@ -97,6 +97,7 @@ body {
   font-size: 18px;
   margin-top: 20px; /* separación entre imagen y título del post */
   margin-left: 5px; /* separa el título de la portada */
+  white-space: pre-line;
 }
 
 .post-meta {
@@ -288,6 +289,7 @@ body {
   font-size: 27px;
   margin: 10px 0 5px;
   letter-spacing: -0.07em; /* junta las letras - valor de prueba */
+  white-space: pre-line; /* Permite saltos de línea con ENTER */
 }
 
 .album-title .reg {
@@ -341,6 +343,7 @@ body {
   font-weight: 500;
   font-size: 23px;
   letter-spacing: -0.06px; /* junta las letras - valor de prueba */
+  white-space: pre-line; /* Permite saltos de línea con ENTER */
 }
 
 .poem-title .reg {
@@ -534,6 +537,7 @@ body {
   font-weight: 700;
   margin: 0;
   display: inline; /* Permite que el texto fluya de forma natural */
+  white-space: pre-line; /* Permite saltos de línea con ENTER */
 }
 
 /* El icono del disco se queda pegado a la última palabra sin alterar la línea */
@@ -575,6 +579,7 @@ body {
 .poem-title-reading {
   font-family: 'Times New Roman', Times, serif;
   font-weight: 700;
+  white-space: pre-line; /* Permite saltos de línea con ENTER */
 }
 
 .poem-body {
@@ -858,4 +863,3 @@ body {
   animation: spin 8s linear infinite;
   transform-origin: center;
 }
-
