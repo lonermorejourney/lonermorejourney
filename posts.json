@@ -1,5 +1,50 @@
 [
   {
+    "id": "poemas-de-verano-vol-2",
+    "slug": "poemas-de-verano-vol-2",
+    "tipo": "album",
+    "nombre": "POEMAS DE VERANO VOL. 2",
+    "titulo": "POEMAS DE VERANO VOL. 2",
+    "publicado": false,
+    "anioDerechos": "2025",
+    "poemas": [
+      {
+        "originalTitle": "ÁRBOL DESDECORADO",
+        "titulo": "ÁRBOL DESDECORADO",
+        "texto": "SDSDSDSDSDSDS",
+        "oculto": false
+      },
+      {
+        "originalTitle": "LA METAFORA\nDEL BENEVOLENTE",
+        "titulo": "LA METAFORA\nDEL BENEVOLENTE",
+        "texto": "SDADADADASDASDASDASDsdsd",
+        "oculto": false
+      },
+      {
+        "originalTitle": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "titulo": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "texto": "sdsdsdsdsdsdsdSDSDS",
+        "oculto": false
+      },
+      {
+        "originalTitle": "FUGA EN EL ESCENARIO",
+        "titulo": "FUGA EN EL ESCENARIO",
+        "oculto": false
+      },
+      {
+        "originalTitle": "UNA MELODÍA FELIZ",
+        "titulo": "UNA MELODÍA FELIZ",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1789496677839_Captura_de_pantalla_(34222.jpg",
+    "fecha": {
+      "dia": "15",
+      "mes": "12",
+      "año": "2025"
+    }
+  },
+  {
     "id": "la-metafora-del-benevolente",
     "slug": "la-metafora-del-benevolente",
     "tipo": "individual",
