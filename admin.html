@@ -317,27 +317,39 @@
     #prepared-sidebar-container {
       background: rgba(255, 255, 255, 0.95);
       border-radius: 14px;
-      padding: 18px;
+      padding: 16px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
       border: 1px solid rgba(255, 255, 255, 0.6);
     }
 
-    .prepared-title-row {
+    /* Switch de Pestañas en la Barra Lateral */
+    .sidebar-tab-switch {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      background: #ebebeb;
+      padding: 3px;
+      border-radius: 20px;
+      gap: 3px;
       margin-bottom: 12px;
-      border-bottom: 1px solid #e8e8e8;
-      padding-bottom: 8px;
     }
 
-    .prepared-title-row h3 {
-      font-family: var(--fuente-heavy);
-      font-size: 14px;
+    .sidebar-tab-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 6px 10px;
+      border-radius: 16px;
+      font-family: var(--fuente-cuerpo);
+      font-size: 12px;
+      font-weight: 700;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .sidebar-tab-btn.active {
+      background: #ffffff;
       color: #1a1a1a;
-      margin: 0;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
     .prepared-side-list {
@@ -451,7 +463,8 @@
     }
 
     #toggle-visibility-modal,
-    #reorder-confirm-modal {
+    #reorder-confirm-modal,
+    #poem-unsaved-modal {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -461,6 +474,10 @@
       justify-content: center;
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
+    }
+
+    #poem-unsaved-modal {
+      z-index: 1400;
     }
 
     #album-studio-layout {
@@ -746,6 +763,15 @@
       position: relative;
     }
 
+    @keyframes efectoSalida {
+      from { opacity: 1; transform: scale(1) translateY(0); }
+      to { opacity: 0; transform: scale(0.97) translateY(10px); }
+    }
+
+    .anim-salida {
+      animation: efectoSalida 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    }
+
     .poem-edit-header {
       display: flex;
       justify-content: space-between;
@@ -909,6 +935,7 @@
     #preview-modal .preview-modal-content,
     #toggle-visibility-modal .modal-content,
     #reorder-confirm-modal .modal-content,
+    #poem-unsaved-modal .modal-content,
     #poem-edit-modal .poem-edit-content {
       animation: efectoEntrada 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
@@ -926,6 +953,19 @@
 <body class="admin-body">
   <div class="fondo-oscuro"></div>
 
+  <!-- Modal Independiente de Seguridad: Cambios sin guardar en el Poema en edición -->
+  <div id="poem-unsaved-modal">
+    <div class="modal-content">
+      <h3>¿Descartar cambios del poema?</h3>
+      <p>Tienes modificaciones en este poema que aún no has guardado en el tracklist.</p>
+      <div class="modal-buttons">
+        <button class="modal-btn-primary" onclick="guardarYSalirPoema()">Guardar y cerrar</button>
+        <button class="modal-btn-danger" onclick="descartarYSalirPoema()">Descartar cambios</button>
+        <button class="modal-btn-secondary" onclick="cerrarPoemUnsavedModal()">Continuar editando</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal de Confirmación para Guardar Nuevo Orden Reordenado -->
   <div id="reorder-confirm-modal">
     <div class="modal-content">
@@ -940,19 +980,19 @@
 
   <!-- Modal Inmersivo de Edición Amplia de Poema con Fondo Desenfoque -->
   <div id="poem-edit-modal">
-    <div class="poem-edit-content">
+    <div class="poem-edit-content" id="poem-edit-content">
       <div class="poem-edit-header">
         <div>
           <span class="poem-edit-badge" id="modal-track-num">Pista 01</span>
           <p style="margin: 0; font-size: 13px; color: #666;">Edición focalizada de título y contenido</p>
         </div>
-        <button class="preview-close-btn" onclick="cerrarPoemEditModal()">×</button>
+        <button class="preview-close-btn" onclick="intentarCerrarPoemEditModal()">×</button>
       </div>
 
       <label style="font-size: 12px; color: #666; font-weight: 600; margin-bottom: 4px;">Título del poema (soporta ENTER):</label>
       <textarea id="modal-poem-title" class="poem-edit-title-input" rows="1" placeholder="Título del poema..." oninput="autoResizeTextarea(this)"></textarea>
 
-      <div class="poem-edit-options">
+      <div class="poem-edit-options" id="modal-poem-oculto-container">
         <label class="switch-label">
           <input type="checkbox" id="modal-poem-oculto" style="width: 16px; height: 16px; cursor: pointer;">
           <span>Ocultar este título del álbum público (permanecerá guardado en tu panel)</span>
@@ -963,7 +1003,7 @@
       <textarea id="modal-poem-text" class="poem-edit-textarea" placeholder="Escribe o edita los versos libremente..."></textarea>
 
       <div class="poem-edit-footer">
-        <button class="action-top-btn secondary" onclick="cerrarPoemEditModal()">Cancelar</button>
+        <button class="action-top-btn secondary" onclick="intentarCerrarPoemEditModal()">Cancelar</button>
         <button class="action-top-btn" onclick="guardarPoemaDesdeModal()">Guardar en el álbum</button>
       </div>
     </div>
@@ -1057,7 +1097,9 @@
           </div>
           <div class="action-info"><h3>Montar álbum</h3><p>Crear lote completo</p></div>
         </div>
-        <div class="action-card">
+
+        <!-- Botón conectado a Sacar Individual -->
+        <div class="action-card" onclick="abrirSacarIndividual()">
           <div class="action-icon">
             <svg viewBox="0 0 64 64" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="32" cy="32" r="26"></circle><circle cx="32" cy="32" r="3" fill="currentColor"></circle>
@@ -1066,6 +1108,7 @@
           </div>
           <div class="action-info"><h3>Sacar individual</h3><p>Publicación suelta</p></div>
         </div>
+
         <div class="action-card">
           <div class="action-icon">
             <svg viewBox="0 0 64 28" width="34" height="26" fill="none" stroke="currentColor" stroke-width="2">
@@ -1077,30 +1120,31 @@
           <div class="action-info"><h3>Sucesivo</h3><p>Programar / Secuencia</p></div>
         </div>
 
+        <!-- Barra lateral con selector de pestañas Switch (Álbumes / Títulos) -->
         <div id="prepared-sidebar-container" style="display: none;">
-          <div class="prepared-title-row">
-            <h3>Álbumes Preparados</h3>
-            <span id="prepared-counter" style="font-size: 11px; background: #e0e0e0; padding: 2px 7px; border-radius: 10px; font-weight: 700;">0</span>
+          <div class="sidebar-tab-switch">
+            <button class="sidebar-tab-btn active" id="tab-btn-albumes" onclick="cambiarTabSidebar('albumes')">Álbumes (<span id="counter-albumes">0</span>)</button>
+            <button class="sidebar-tab-btn" id="tab-btn-titulos" onclick="cambiarTabSidebar('titulos')">Títulos (<span id="counter-titulos">0</span>)</button>
           </div>
           <div id="prepared-side-list" class="prepared-side-list"></div>
         </div>
       </div>
     </main>
 
-    <!-- Vista de Tres Columnas Equilibradas para Montar Álbum -->
+    <!-- Vista de Tres Columnas Dinámicas para Montar Álbum y Sacar Individual -->
     <div id="album-studio-layout">
       <div class="album-col album-col-left">
         <h3>
-          <span>Obras Disponibles</span>
+          <span id="source-list-heading">Obras Disponibles</span>
           <span id="available-count" style="font-size: 11px; color: #888; font-weight: normal;">0</span>
         </h3>
-        <p style="font-size: 12px; color: #666; margin: 0;">Haz clic en cualquier obra para añadirla al tracklist</p>
+        <p style="font-size: 12px; color: #666; margin: 0;" id="source-list-desc">Haz clic en cualquier obra para añadirla al tracklist</p>
         <div id="album-source-list" class="album-source-container"></div>
       </div>
 
       <div class="album-col album-col-center">
         <h3>
-          <span>Tracklist del Álbum</span>
+          <span id="tracklist-heading">Tracklist del Álbum</span>
           <span id="selected-count" style="font-size: 11px; background: #1a1a1a; color: #fff; padding: 2px 8px; border-radius: 10px;">0 / 2 mín</span>
         </h3>
         <textarea id="album-name-input" class="doc-title-input" rows="1" placeholder="Nombre del álbum (soporta ENTER)..." style="font-size: 20px; margin-bottom: 12px;" oninput="autoResizeTextarea(this)"></textarea>
@@ -1109,7 +1153,7 @@
       </div>
 
       <div class="album-col album-col-right">
-        <h3>Portada del Álbum</h3>
+        <h3 id="cover-section-heading">Portada del Álbum</h3>
         <div class="cover-dropzone" id="album-cover-dropzone" onclick="document.getElementById('cover-file-input').click()">
           <span id="cover-placeholder-text" style="font-size: 12px; color: #666; text-align: center; padding: 10px;">Subir o arrastrar portada</span>
           <input type="file" id="cover-file-input" accept="image/*" style="display: none;" onchange="cargarPortadaAlbum(event)">
@@ -1159,11 +1203,18 @@
     let draggedTrackIndex = null;
     let editingPoemIndex = null;
 
-    let targetToggleKey = null;
+    // Control de modo de estudio: 'album' o 'individual'
+    let studioMode = 'album';
 
-    // Variables para el Reordenamiento de Publicaciones con Drag & Drop
+    // Control de pestaña activa en la barra lateral: 'albumes' o 'titulos'
+    let currentSidebarTab = 'albumes';
+
+    let targetToggleKey = null;
     let draggedPreparedIndex = null;
     let pendingReorderedPosts = null;
+
+    // Estado inicial del poema al abrir el modal para detectar si hay cambios sin guardar
+    let initialPoemState = null;
 
     window.addEventListener('DOMContentLoaded', () => {
       const tokenGuardado = getToken();
@@ -1608,9 +1659,31 @@
       location.reload();
     }
 
-    /* --- LÓGICA DE MONTAR ÁLBUM Y GESTIÓN DE PREPARADOS --- */
+    /* --- LÓGICA DE ESTUDIO (MONTAR ÁLBUM Y SACAR INDIVIDUAL) --- */
+
+    function configurarInterfazEstudio() {
+      const isInd = (studioMode === 'individual');
+      
+      document.getElementById('source-list-heading').textContent = isInd ? "Obra para Publicar" : "Obras Disponibles";
+      document.getElementById('source-list-desc').textContent = isInd ? "Selecciona exactamente 1 obra (1/1 máx)" : "Haz clic en cualquier obra para añadirla al tracklist";
+      document.getElementById('tracklist-heading').textContent = isInd ? "Título Seleccionado" : "Tracklist del Álbum";
+      document.getElementById('album-name-input').placeholder = isInd ? "Nombre del título (soporta ENTER)..." : "Nombre del álbum (soporta ENTER)...";
+      document.getElementById('cover-section-heading').textContent = isInd ? "Portada del Título" : "Portada del Álbum";
+      
+      document.getElementById('modal-poem-oculto-container').style.display = isInd ? 'none' : 'flex';
+    }
 
     function abrirMontarAlbum() {
+      studioMode = 'album';
+      iniciarPantallaEstudio();
+    }
+
+    function abrirSacarIndividual() {
+      studioMode = 'individual';
+      iniciarPantallaEstudio();
+    }
+
+    function iniciarPantallaEstudio() {
       const albumLayout = document.getElementById('album-studio-layout');
       
       document.getElementById('main-admin-layout').style.display = 'none';
@@ -1644,6 +1717,7 @@
       document.getElementById('album-month').value = "";
       document.getElementById('album-year').value = "";
 
+      configurarInterfazEstudio();
       renderizarListasMontarAlbum();
     }
 
@@ -1666,6 +1740,7 @@
       const sourceList = document.getElementById('album-source-list');
       sourceList.innerHTML = "";
       
+      const isInd = (studioMode === 'individual');
       const titulosSeleccionados = albumPoemas.map(p => p.originalTitle);
       const availableDrafts = Object.keys(borradoresNube).filter(t => !titulosSeleccionados.includes(t));
       
@@ -1685,45 +1760,50 @@
 
       const tracklistContainer = document.getElementById('album-tracklist');
       tracklistContainer.innerHTML = "";
-      document.getElementById('selected-count').textContent = `${albumPoemas.length} / 2 mín`;
+      
+      document.getElementById('selected-count').textContent = isInd 
+        ? `${albumPoemas.length} / 1 máx` 
+        : `${albumPoemas.length} / 2 mín`;
 
       if (albumPoemas.length === 0) {
         tracklistContainer.innerHTML = `
           <div style="text-align: center; padding: 60px 20px; color: #888;">
-            <p style="font-size: 14px; margin-bottom: 6px; font-weight: 600;">Tracklist vacío</p>
-            <p style="font-size: 12px; margin: 0;">Selecciona al menos dos obras de la izquierda para formar el álbum.</p>
+            <p style="font-size: 14px; margin-bottom: 6px; font-weight: 600;">${isInd ? 'Sin obra seleccionada' : 'Tracklist vacío'}</p>
+            <p style="font-size: 12px; margin: 0;">${isInd ? 'Haz clic en una obra de la izquierda para publicarla.' : 'Selecciona al menos dos obras de la izquierda para formar el álbum.'}</p>
           </div>
         `;
       } else {
         albumPoemas.forEach((poema, idx) => {
           const trackRow = document.createElement('div');
           trackRow.className = 'tracklist-item';
-          trackRow.setAttribute('draggable', 'true');
-
-          trackRow.addEventListener('dragstart', (e) => {
-            draggedTrackIndex = idx;
-            e.dataTransfer.effectAllowed = 'move';
-            setTimeout(() => trackRow.classList.add('dragging'), 0);
-          });
-          trackRow.addEventListener('dragend', () => {
-            trackRow.classList.remove('dragging');
-            draggedTrackIndex = null;
-          });
-          trackRow.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
-          trackRow.addEventListener('drop', (e) => {
-            e.preventDefault();
-            if (draggedTrackIndex === null || draggedTrackIndex === idx) return;
-            const movedItem = albumPoemas.splice(draggedTrackIndex, 1)[0];
-            albumPoemas.splice(idx, 0, movedItem);
-            draggedTrackIndex = null;
-            renderizarListasMontarAlbum();
-          });
+          
+          if (!isInd) {
+            trackRow.setAttribute('draggable', 'true');
+            trackRow.addEventListener('dragstart', (e) => {
+              draggedTrackIndex = idx;
+              e.dataTransfer.effectAllowed = 'move';
+              setTimeout(() => trackRow.classList.add('dragging'), 0);
+            });
+            trackRow.addEventListener('dragend', () => {
+              trackRow.classList.remove('dragging');
+              draggedTrackIndex = null;
+            });
+            trackRow.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
+            trackRow.addEventListener('drop', (e) => {
+              e.preventDefault();
+              if (draggedTrackIndex === null || draggedTrackIndex === idx) return;
+              const movedItem = albumPoemas.splice(draggedTrackIndex, 1)[0];
+              albumPoemas.splice(idx, 0, movedItem);
+              draggedTrackIndex = null;
+              renderizarListasMontarAlbum();
+            });
+          }
 
           const numFormat = (idx + 1) < 10 ? `0${idx + 1}` : `${idx + 1}`;
-          const ocultoBadge = poema.oculto ? `<span class="badge-status oculto" style="margin-left: 8px;">Oculto</span>` : '';
+          const ocultoBadge = (!isInd && poema.oculto) ? `<span class="badge-status oculto" style="margin-left: 8px;">Oculto</span>` : '';
 
           trackRow.innerHTML = `
-            <span class="track-number">${numFormat}</span>
+            <span class="track-number">${isInd ? 'Obra' : numFormat}</span>
             <div class="track-details">
               <p class="track-title">${poema.title} ${ocultoBadge}</p>
             </div>
@@ -1732,7 +1812,7 @@
                 <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 Editar
               </button>
-              <button class="track-btn danger" onclick="removerPoemaDeAlbum('${poema.originalTitle}')" title="Quitar del álbum">×</button>
+              <button class="track-btn danger" onclick="removerPoemaDeAlbum('${poema.originalTitle}')" title="Quitar">×</button>
             </div>
           `;
           tracklistContainer.appendChild(trackRow);
@@ -1741,6 +1821,18 @@
     }
 
     function seleccionarPoemaParaAlbum(titulo) {
+      if (studioMode === 'individual') {
+        if (albumPoemas.length >= 1) {
+          if (!confirm("Ya has seleccionado una obra para este título. ¿Deseas reemplazarla por esta otra?")) return;
+          albumPoemas = [];
+        }
+        const albumNameInput = document.getElementById('album-name-input');
+        if (!albumNameInput.value.trim()) {
+          albumNameInput.value = titulo;
+          autoResizeTextarea(albumNameInput);
+        }
+      }
+
       albumPoemas.push({
         originalTitle: titulo,
         title: titulo,
@@ -1762,7 +1854,7 @@
       editingPoemIndex = index;
 
       const numFormat = (index + 1) < 10 ? `0${index + 1}` : `${index + 1}`;
-      document.getElementById('modal-track-num').textContent = `Pista ${numFormat}`;
+      document.getElementById('modal-track-num').textContent = (studioMode === 'individual') ? "Título Único" : `Pista ${numFormat}`;
       
       const titleInput = document.getElementById('modal-poem-title');
       titleInput.value = poema.title || '';
@@ -1770,7 +1862,15 @@
       document.getElementById('modal-poem-oculto').checked = (poema.oculto === true);
       document.getElementById('modal-poem-text').value = poema.text || '';
 
+      initialPoemState = {
+        title: (poema.title || '').trim(),
+        text: poema.text || '',
+        oculto: (poema.oculto === true)
+      };
+
       const modal = document.getElementById('poem-edit-modal');
+      const content = document.getElementById('poem-edit-content');
+      content.classList.remove('anim-salida');
       modal.style.display = 'flex';
 
       setTimeout(() => {
@@ -1778,9 +1878,51 @@
       }, 10);
     }
 
-    function cerrarPoemEditModal() {
-      document.getElementById('poem-edit-modal').style.display = 'none';
-      editingPoemIndex = null;
+    function intentarCerrarPoemEditModal() {
+      if (!initialPoemState) {
+        cerrarPoemEditModalDirecto();
+        return;
+      }
+
+      const currentTitle = document.getElementById('modal-poem-title').value.trim();
+      const currentText = document.getElementById('modal-poem-text').value;
+      const currentOculto = document.getElementById('modal-poem-oculto').checked;
+
+      const hayCambios = (currentTitle !== initialPoemState.title) ||
+                          (currentText !== initialPoemState.text) ||
+                          (currentOculto !== initialPoemState.oculto);
+
+      if (hayCambios) {
+        document.getElementById('poem-unsaved-modal').style.display = 'flex';
+      } else {
+        cerrarPoemEditModalDirecto();
+      }
+    }
+
+    function cerrarPoemUnsavedModal() {
+      document.getElementById('poem-unsaved-modal').style.display = 'none';
+    }
+
+    function descartarYSalirPoema() {
+      cerrarPoemUnsavedModal();
+      cerrarPoemEditModalDirecto();
+    }
+
+    function guardarYSalirPoema() {
+      cerrarPoemUnsavedModal();
+      guardarPoemaDesdeModal();
+    }
+
+    function cerrarPoemEditModalDirecto() {
+      const content = document.getElementById('poem-edit-content');
+      content.classList.add('anim-salida');
+
+      setTimeout(() => {
+        document.getElementById('poem-edit-modal').style.display = 'none';
+        content.classList.remove('anim-salida');
+        editingPoemIndex = null;
+        initialPoemState = null;
+      }, 180);
     }
 
     function guardarPoemaDesdeModal() {
@@ -1799,7 +1941,7 @@
       albumPoemas[editingPoemIndex].text = nuevoTexto;
       albumPoemas[editingPoemIndex].oculto = estaOculto;
 
-      cerrarPoemEditModal();
+      cerrarPoemEditModalDirecto();
       renderizarListasMontarAlbum();
     }
 
@@ -1865,9 +2007,30 @@
 
     function validarAlbumListo() {
       const nombreAlbum = document.getElementById('album-name-input').value.trim();
-      if (!nombreAlbum) { alert("Introduce el nombre del álbum."); return false; }
-      if (albumPoemas.length < 2) { alert("Debes seleccionar al menos dos títulos para formar un álbum válido."); return false; }
-      if (!albumPortadaBase64) { alert("Sube una imagen de portada para el álbum."); return false; }
+      const isInd = (studioMode === 'individual');
+
+      if (!nombreAlbum) { 
+        alert(isInd ? "Introduce el nombre del título." : "Introduce el nombre del álbum."); 
+        return false; 
+      }
+
+      if (isInd) {
+        if (albumPoemas.length !== 1) { 
+          alert("Debes seleccionar exactamente una obra para sacar un título individual."); 
+          return false; 
+        }
+      } else {
+        if (albumPoemas.length < 2) { 
+          alert("Debes seleccionar al menos dos títulos para formar un álbum válido."); 
+          return false; 
+        }
+      }
+
+      if (!albumPortadaBase64) { 
+        alert(isInd ? "Sube una imagen de portada para el título." : "Sube una imagen de portada para el álbum."); 
+        return false; 
+      }
+
       const dia = document.getElementById('album-day').value;
       const mes = document.getElementById('album-month').value;
       const año = document.getElementById('album-year').value;
@@ -1875,10 +2038,10 @@
       return true;
     }
 
-    /* LANZAMIENTO: Se posiciona SIEMPRE en la cima ([0] unshift) */
     async function lanzarAlbumDirecto() {
       if (!validarAlbumListo()) return;
-      if (!confirm("¿Deseas publicar este álbum directamente en el feed público?")) return;
+      const isInd = (studioMode === 'individual');
+      if (!confirm(`¿Deseas publicar este ${isInd ? 'título individual' : 'álbum'} directamente en el feed público?`)) return;
       if (!repoInfo) { alert("Repositorio no detectado."); return; }
 
       const token = getToken();
@@ -1890,7 +2053,7 @@
       const albumData = {
         id: slug,
         slug: slug,
-        tipo: "album",
+        tipo: isInd ? "individual" : "album",
         nombre: nombreAlbum,
         titulo: nombreAlbum,
         publicado: true,
@@ -1898,7 +2061,7 @@
           originalTitle: p.originalTitle, 
           titulo: p.title, 
           texto: p.text,
-          oculto: p.oculto === true
+          oculto: (!isInd && p.oculto === true)
         })),
         portada: albumPortadaBase64,
         fecha: {
@@ -1908,7 +2071,7 @@
         }
       };
 
-      document.getElementById('sync-status').textContent = "Publicando álbum...";
+      document.getElementById('sync-status').textContent = "Publicando...";
       try {
         let sha = null;
         let postsData = [];
@@ -1926,7 +2089,6 @@
           }
         }
 
-        // Si ya existía, lo quitamos de su posición antigua
         const indexExistente = postsData.findIndex(item => {
           const itemKey = item.id || item.slug || generarSlug(item.nombre || item.titulo);
           return (editingPreparedAlbumKey && (itemKey === editingPreparedAlbumKey || item.nombre === editingPreparedAlbumKey || item.titulo === editingPreparedAlbumKey)) ||
@@ -1937,7 +2099,6 @@
           postsData.splice(indexExistente, 1);
         }
 
-        // ASCENSO A LA CIMA: Se inserta siempre en la posición [0]
         postsData.unshift(albumData);
         postsData = deduplicarPosts(postsData);
 
@@ -1945,7 +2106,7 @@
         const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
           method: 'PUT',
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: `Publicar álbum en el feed: ${nombreAlbum}`, content: encodedContent, sha: sha })
+          body: JSON.stringify({ message: `Publicar ${isInd ? 'título' : 'álbum'}: ${nombreAlbum}`, content: encodedContent, sha: sha })
         });
 
         if (res.ok) {
@@ -1957,21 +2118,23 @@
           }
           albumesPreparadosNube[slug] = albumData;
 
+          if (isInd) currentSidebarTab = 'titulos';
+          else currentSidebarTab = 'albumes';
+
           renderizarPreparadosSidebar();
-          alert("¡Álbum lanzado y posicionado en la cima del feed!");
+          alert(`¡${isInd ? 'Título' : 'Álbum'} lanzado y posicionado en la cima del feed!`);
           volverAlEstudioNormal();
         } else {
           document.getElementById('sync-status').textContent = "Error al publicar";
           alert("Hubo un error al guardar en posts.json.");
         }
       } catch (e) {
-        console.error("Error al lanzar álbum:", e);
+        console.error("Error al lanzar:", e);
         document.getElementById('sync-status').textContent = "Error de red";
         alert("Error de red al intentar publicar.");
       }
     }
 
-    /* DESPLEGAR: Para álbumes NUEVOS, se inserta también al principio de la lista */
     async function desplegarAlbumPreparado() {
       if (!validarAlbumListo()) return;
       if (!repoInfo) { alert("Repositorio no detectado."); return; }
@@ -1979,13 +2142,14 @@
       const token = getToken();
       if (!token) { alert("No hay token guardado."); return; }
 
+      const isInd = (studioMode === 'individual');
       const nombreAlbum = document.getElementById('album-name-input').value.trim();
       const slug = generarSlug(nombreAlbum);
 
       const nuevoAlbum = {
         id: slug,
         slug: slug,
-        tipo: "album",
+        tipo: isInd ? "individual" : "album",
         nombre: nombreAlbum,
         titulo: nombreAlbum,
         publicado: false,
@@ -1993,7 +2157,7 @@
           originalTitle: p.originalTitle || p.title, 
           titulo: p.title || p.titulo, 
           texto: p.text || p.texto,
-          oculto: p.oculto === true
+          oculto: (!isInd && p.oculto === true)
         })),
         portada: albumPortadaBase64,
         fecha: {
@@ -2033,7 +2197,6 @@
           postsArray.splice(indexExistente, 1);
         }
 
-        // Se inserta arriba del todo
         postsArray.unshift(nuevoAlbum);
         postsArray = deduplicarPosts(postsArray);
 
@@ -2042,7 +2205,7 @@
         const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
           method: 'PUT',
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: `Guardar álbum preparado: ${nombreAlbum}`, content: encodedContent, sha: sha })
+          body: JSON.stringify({ message: `Guardar ${isInd ? 'título preparado' : 'álbum preparado'}: ${nombreAlbum}`, content: encodedContent, sha: sha })
         });
 
         if (res.ok) {
@@ -2050,8 +2213,11 @@
           window.postsNube = postsArray;
           albumesPreparadosNube[slug] = nuevoAlbum;
 
+          if (isInd) currentSidebarTab = 'titulos';
+          else currentSidebarTab = 'albumes';
+
           renderizarPreparadosSidebar();
-          alert("Álbum guardado en la sección de preparados.");
+          alert(`${isInd ? 'Título guardado' : 'Álbum guardado'} en la sección de preparados.`);
           volverAlEstudioNormal();
         } else {
           document.getElementById('sync-status').textContent = "Error en GitHub";
@@ -2062,7 +2228,6 @@
       }
     }
 
-    /* GUARDAR CAMBIOS: Mantiene posición y visibilidad exacta (publicado u oculto) */
     async function guardarCambiosAlbumPreparado() {
       if (!validarAlbumListo()) return;
       if (!repoInfo) { alert("Repositorio no detectado."); return; }
@@ -2070,6 +2235,7 @@
       const token = getToken();
       if (!token) { alert("No hay token guardado."); return; }
 
+      const isInd = (studioMode === 'individual');
       const nombreAlbum = document.getElementById('album-name-input').value.trim();
       const slug = generarSlug(nombreAlbum);
 
@@ -2081,7 +2247,7 @@
       const albumData = {
         id: slug,
         slug: slug,
-        tipo: "album",
+        tipo: isInd ? "individual" : "album",
         nombre: nombreAlbum,
         titulo: nombreAlbum,
         publicado: estadoPublicadoOriginal,
@@ -2089,7 +2255,7 @@
           originalTitle: p.originalTitle, 
           titulo: p.title, 
           texto: p.text,
-          oculto: p.oculto === true
+          oculto: (!isInd && p.oculto === true)
         })),
         portada: albumPortadaBase64,
         fecha: {
@@ -2099,7 +2265,7 @@
         }
       };
 
-      document.getElementById('sync-status').textContent = "Actualizando álbum...";
+      document.getElementById('sync-status').textContent = "Actualizando...";
       try {
         let sha = null;
         let postsData = [];
@@ -2136,7 +2302,7 @@
         const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
           method: 'PUT',
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: `Actualizar álbum: ${nombreAlbum}`, content: encodedContent, sha: sha })
+          body: JSON.stringify({ message: `Actualizar ${isInd ? 'título' : 'álbum'}: ${nombreAlbum}`, content: encodedContent, sha: sha })
         });
 
         if (res.ok) {
@@ -2150,7 +2316,7 @@
           editingPreparedAlbumKey = slug;
 
           renderizarPreparadosSidebar();
-          alert("Cambios guardados correctamente en el álbum.");
+          alert(`Cambios guardados correctamente en el ${isInd ? 'título' : 'álbum'}.`);
         } else {
           document.getElementById('sync-status').textContent = "Error al actualizar";
           alert("GitHub rechazó la actualización de cambios.");
@@ -2161,11 +2327,17 @@
       }
     }
 
-    /* RENDERIZADO DEL SIDEBAR CON DRAG & DROP Y ORDEN 1:1 CON EL FEED */
+    /* CONTROL DE PESTAÑAS SWITCH EN LA BARRA LATERAL */
+    function cambiarTabSidebar(tab) {
+      currentSidebarTab = tab;
+      document.getElementById('tab-btn-albumes').classList.toggle('active', tab === 'albumes');
+      document.getElementById('tab-btn-titulos').classList.toggle('active', tab === 'titulos');
+      renderizarPreparadosSidebar();
+    }
+
     function renderizarPreparadosSidebar() {
       const container = document.getElementById('prepared-sidebar-container');
       const lista = document.getElementById('prepared-side-list');
-      const counterEl = document.getElementById('prepared-counter');
       lista.innerHTML = "";
 
       const posts = window.postsNube || [];
@@ -2175,11 +2347,24 @@
       }
 
       container.style.display = 'block';
-      if (counterEl) counterEl.textContent = posts.length;
 
-      posts.forEach((album, idx) => {
-        const key = album.id || album.slug || generarSlug(album.nombre || album.titulo);
-        const esPublicado = album && album.publicado !== false;
+      const albumes = posts.filter(p => p.tipo !== 'individual');
+      const titulos = posts.filter(p => p.tipo === 'individual');
+
+      document.getElementById('counter-albumes').textContent = albumes.length;
+      document.getElementById('counter-titulos').textContent = titulos.length;
+
+      const listaActiva = (currentSidebarTab === 'albumes') ? albumes : titulos;
+
+      if (listaActiva.length === 0) {
+        lista.innerHTML = `<p style="font-size: 12px; color: #888; text-align: center; padding: 25px 10px;">No hay ${currentSidebarTab === 'albumes' ? 'álbumes' : 'títulos individuales'} guardados</p>`;
+        return;
+      }
+
+      listaActiva.forEach((itemObj) => {
+        const realIdx = posts.indexOf(itemObj);
+        const key = itemObj.id || itemObj.slug || generarSlug(itemObj.nombre || itemObj.titulo);
+        const esPublicado = itemObj.publicado !== false;
         
         const badgeClass = esPublicado ? 'publicado' : 'oculto';
         const badgeTexto = esPublicado ? 'Publicado' : 'Oculto';
@@ -2194,9 +2379,8 @@
         item.className = 'prepared-side-item';
         item.setAttribute('draggable', 'true');
 
-        // Drag and Drop para reordenar las publicaciones
         item.addEventListener('dragstart', (e) => {
-          draggedPreparedIndex = idx;
+          draggedPreparedIndex = realIdx;
           e.dataTransfer.effectAllowed = 'move';
           setTimeout(() => item.classList.add('dragging'), 0);
         });
@@ -2210,11 +2394,11 @@
         });
         item.addEventListener('drop', (e) => {
           e.preventDefault();
-          if (draggedPreparedIndex === null || draggedPreparedIndex === idx) return;
+          if (draggedPreparedIndex === null || draggedPreparedIndex === realIdx) return;
 
           pendingReorderedPosts = [...window.postsNube];
           const [moved] = pendingReorderedPosts.splice(draggedPreparedIndex, 1);
-          pendingReorderedPosts.splice(idx, 0, moved);
+          pendingReorderedPosts.splice(realIdx, 0, moved);
 
           solicitarConfirmacionReorden();
         });
@@ -2222,7 +2406,7 @@
         item.innerHTML = `
           <div class="prepared-item-header">
             <span class="badge-status ${badgeClass}">${badgeTexto}</span>
-            <span class="prepared-item-title" title="${album.nombre || album.titulo || key}">${album.nombre || album.titulo || key}</span>
+            <span class="prepared-item-title" title="${itemObj.nombre || itemObj.titulo || key}">${itemObj.nombre || itemObj.titulo || key}</span>
           </div>
           <div class="prepared-item-toolbar">
             <button class="action-icon-btn" title="Previsualizar" onclick="previsualizarAlbumPreparado('${key}')">
@@ -2231,7 +2415,7 @@
             <button class="action-icon-btn" title="${toggleTitle}" onclick="solicitarTogglePublicacion('${key}')">
               ${toggleIconSvg}
             </button>
-            <button class="action-icon-btn" title="Editar" onclick="editarAlbumPreparado('${key}')">
+            <button class="action-icon-btn" title="Editar" onclick="editarObraGenerica('${key}')">
               <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
             </button>
             <button class="action-icon-btn danger" title="Eliminar" onclick="eliminarAlbumPreparado('${key}', event)">
@@ -2243,7 +2427,6 @@
       });
     }
 
-    /* MODAL DE CONFIRMACIÓN DE REORDENAMIENTO */
     function solicitarConfirmacionReorden() {
       const modal = document.getElementById('reorder-confirm-modal');
       if (modal) modal.style.display = 'flex';
@@ -2257,7 +2440,7 @@
     function cancelarReordenPublicaciones() {
       cerrarModalReorden();
       pendingReorderedPosts = null;
-      renderizarPreparadosSidebar(); // Vuelve al orden anterior
+      renderizarPreparadosSidebar();
     }
 
     async function confirmarReordenPublicaciones() {
@@ -2469,7 +2652,7 @@
         const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/posts.json`, {
           method: 'PUT',
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: `Eliminar álbum: ${nombreMostrar}`, content: encodedContent, sha: sha })
+          body: JSON.stringify({ message: `Eliminar: ${nombreMostrar}`, content: encodedContent, sha: sha })
         });
 
         if (res.ok) {
@@ -2489,29 +2672,38 @@
       }
     }
 
-    function editarAlbumPreparado(key) {
-      const album = albumesPreparadosNube[key];
-      if (!album) return;
+    function editarObraGenerica(key) {
+      const obra = albumesPreparadosNube[key];
+      if (!obra) return;
 
-      abrirMontarAlbum();
+      studioMode = (obra.tipo === 'individual') ? 'individual' : 'album';
+      configurarInterfazEstudio();
+
+      const albumLayout = document.getElementById('album-studio-layout');
+      document.getElementById('main-admin-layout').style.display = 'none';
+      albumLayout.style.display = 'flex';
+
+      document.getElementById('header-actions-normal').style.display = 'none';
+      document.getElementById('header-actions-album').style.display = 'flex';
+
       editingPreparedAlbumKey = key;
       
       const albumNameInput = document.getElementById('album-name-input');
-      albumNameInput.value = album.nombre;
+      albumNameInput.value = obra.nombre || obra.titulo || '';
       autoResizeTextarea(albumNameInput);
 
       document.getElementById('btn-guardar-cambios').style.display = 'block';
       document.getElementById('btn-preparar').style.display = 'none';
       document.getElementById('btn-lanzar').style.display = 'block';
 
-      albumPoemas = (album.poemas || []).map(p => ({
+      albumPoemas = (obra.poemas || []).map(p => ({
         originalTitle: p.originalTitle || p.titulo,
         title: p.titulo,
         text: p.texto,
         oculto: p.oculto === true
       }));
 
-      albumPortadaBase64 = album.portada;
+      albumPortadaBase64 = obra.portada;
       if (albumPortadaBase64) {
         const dropzone = document.getElementById('album-cover-dropzone');
         dropzone.innerHTML = `
@@ -2520,9 +2712,9 @@
           <div class="cover-overlay">Cambiar o reemplazar portada</div>
         `;
       }
-      document.getElementById('album-day').value = album.fecha.dia;
-      document.getElementById('album-month').value = album.fecha.mes;
-      document.getElementById('album-year').value = album.fecha.año;
+      document.getElementById('album-day').value = obra.fecha ? obra.fecha.dia : '';
+      document.getElementById('album-month').value = obra.fecha ? obra.fecha.mes : '';
+      document.getElementById('album-year').value = obra.fecha ? obra.fecha.año : '';
       renderizarListasMontarAlbum();
     }
   </script>
