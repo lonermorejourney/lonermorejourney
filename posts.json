@@ -1,5 +1,27 @@
 [
   {
+    "id": "arbol-desdecorado",
+    "slug": "arbol-desdecorado",
+    "tipo": "individual",
+    "nombre": "ÁRBOL DESDECORADO",
+    "titulo": "ÁRBOL DESDECORADO",
+    "publicado": false,
+    "poemas": [
+      {
+        "originalTitle": "ÁRBOL DESDECORADO",
+        "titulo": "ÁRBOL DESDECORADO",
+        "texto": "SDSDSDSDSDSDS",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1789470731638_ÁRBOL_DESDECORADO_ARTE_PNG.png",
+    "fecha": {
+      "dia": "27",
+      "mes": "12",
+      "año": "2025"
+    }
+  },
+  {
     "id": "orfebre-de-la-intencion",
     "slug": "orfebre-de-la-intencion",
     "tipo": "album",
