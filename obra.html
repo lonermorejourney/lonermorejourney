@@ -25,7 +25,7 @@
 
           <!-- Metadatos MÓVIL -->
           <div class="album-meta-mobile">
-            <p class="album-genre-count">Poesía <span class="dot">•</span> <span id="mobile-count-text">0 Títulos</span></p>
+            <p class="album-genre-count" id="mobile-genre-count">Poesía <span class="dot">•</span> <span id="mobile-count-text">0 Títulos</span></p>
             <p class="album-indicator-date" id="mobile-indicator-date">Álbum</p>
             <div class="album-author-row">
               <img class="album-avatar" src="avatar.jpeg" alt="">
@@ -36,7 +36,7 @@
           <!-- Metadatos PC -->
           <div class="album-meta-desktop">
             <img class="album-avatar" src="avatar.jpeg" alt="">
-            <p class="album-meta-desktop-text">de felipeortegareyes <span class="dot">•</span> <span id="desktop-date-text"></span> <span class="dot">•</span> <span id="desktop-count-text">0 Títulos</span></p>
+            <p class="album-meta-desktop-text" id="desktop-meta-text">de felipeortegareyes <span class="dot">•</span> <span id="desktop-date-text"></span> <span class="dot">•</span> <span id="desktop-count-text">0 Títulos</span></p>
           </div>
         </div>
       </div>
@@ -53,8 +53,8 @@
   <script>
     document.getElementById('rights-year').textContent = new Date().getFullYear();
 
-document.addEventListener("DOMContentLoaded", async () => {
-    try {
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
         const urlParams = new URLSearchParams(window.location.search);
         const obraParam = urlParams.get('id');
 
@@ -70,16 +70,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Buscar obra por id, slug, nombre o índice
         let obra = null;
         if (obraParam !== null) {
-            obra = posts.find(p => 
-                (p.id && p.id === obraParam) || 
-                (p.slug && p.slug === obraParam) || 
-                (p.nombre && p.nombre === obraParam) || 
-                (p.titulo && p.titulo === obraParam)
-            );
+          obra = posts.find(p => 
+            (p.id && p.id === obraParam) || 
+            (p.slug && p.slug === obraParam) || 
+            (p.nombre && p.nombre === obraParam) || 
+            (p.titulo && p.titulo === obraParam)
+          );
 
-            if (!obra && !isNaN(obraParam)) {
-                obra = posts[parseInt(obraParam)];
-            }
+          if (!obra && !isNaN(obraParam)) {
+            obra = posts[parseInt(obraParam)];
+          }
         }
 
         if (!obra) obra = posts[posts.length - 1];
@@ -92,93 +92,121 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // Procesar fecha (objeto {dia, mes, año} o texto)
         function formatearFecha(fechaObj) {
-    if (!fechaObj) return '';
-    if (typeof fechaObj === 'object') {
-        const dia = fechaObj.dia || '';
-        let mes = fechaObj.mes || '';
-        const anio = fechaObj.año || fechaObj.anio || '';
+          if (!fechaObj) return '';
+          if (typeof fechaObj === 'object') {
+            const dia = fechaObj.dia || '';
+            let mes = fechaObj.mes || '';
+            const anio = fechaObj.año || fechaObj.anio || '';
 
-        // Diccionario con las abreviaturas de los meses en minúscula
-        const mesesMap = {
-            "1": "ene", "01": "ene", "2": "feb", "02": "feb",
-            "3": "mar", "03": "mar", "4": "abr", "04": "abr",
-            "5": "may", "05": "may", "6": "jun", "06": "jun",
-            "7": "jul", "07": "jul", "8": "ago", "08": "ago",
-            "9": "sep", "09": "sep", "10": "oct", "11": "nov", "12": "dic",
-            "enero": "ene", "febrero": "feb", "marzo": "mar", "abril": "abr", 
-            "mayo": "may", "junio": "jun", "julio": "jul", "agosto": "ago", 
-            "septiembre": "sep", "octubre": "oct", "noviembre": "nov", "diciembre": "dic"
-        };
+            const mesesMap = {
+              "1": "ene", "01": "ene", "2": "feb", "02": "feb",
+              "3": "mar", "03": "mar", "4": "abr", "04": "abr",
+              "5": "may", "05": "may", "6": "jun", "06": "jun",
+              "7": "jul", "07": "jul", "8": "ago", "08": "ago",
+              "9": "sep", "09": "sep", "10": "oct", "11": "nov", "12": "dic",
+              "enero": "ene", "febrero": "feb", "marzo": "mar", "abril": "abr", 
+              "mayo": "may", "junio": "jun", "julio": "jul", "agosto": "ago", 
+              "septiembre": "sep", "octubre": "oct", "noviembre": "nov", "diciembre": "dic"
+            };
 
-        const mesLower = String(mes).toLowerCase().trim();
-        if (mesesMap[mesLower]) {
-            mes = mesesMap[mesLower];
+            const mesLower = String(mes).toLowerCase().trim();
+            if (mesesMap[mesLower]) {
+              mes = mesesMap[mesLower];
+            }
+
+            return `${dia} ${mes} ${anio}`.trim();
+          }
+          
+          return String(fechaObj).replace(/\//g, ' ').toLowerCase();
         }
 
-        return `${dia} ${mes} ${anio}`.trim();
-    }
-    
-    // Si viene como texto plano tipo "15/12/2025", lo limpiamos y pasamos a minúsculas
-    return String(fechaObj).replace(/\//g, ' ').toLowerCase();
-}
+        let fechaTexto = formatearFecha(obra.fecha);
 
-// Uso en obra.html y reproductor.html:
-let fechaTexto = formatearFecha(obra.fecha);
-
-        // Asignar en la interfaz
-        document.getElementById('page-title').textContent = `${tituloObra} — Lonermorejourney`;
+        // Asignar en la pestaña limpiando saltos de línea
+        const tituloPestana = tituloObra.replace(/\n+/g, ' ').trim();
+        document.getElementById('page-title').textContent = `${tituloPestana} — Lonermorejourney`;
         
         const coverImg = document.getElementById('album-cover');
         coverImg.src = portadaObra;
-        coverImg.alt = tituloObra;
+        coverImg.alt = tituloPestana;
 
         document.getElementById('album-title-text').textContent = tituloObra;
 
-        // Conteo de poemas
-        const poemas = Array.isArray(obra.poemas) ? obra.poemas : [];
-        const totalPoemas = poemas.length;
+        // Filtrar poemas ocultos preservando el índice original para el reproductor
+        const rawPoemas = Array.isArray(obra.poemas) ? obra.poemas : [];
+        const poemasVisibles = rawPoemas
+          .map((poema, index) => ({ data: poema, rawIndex: index }))
+          .filter(item => {
+            const p = item.data;
+            if (typeof p === 'object' && p !== null) {
+              return p.oculto !== true;
+            }
+            return true;
+          });
+
+        const totalPoemas = poemasVisibles.length;
         const textoConteo = totalPoemas === 1 ? '1 Título' : `${totalPoemas} Títulos`;
 
         const tagEl = document.getElementById('album-tag');
+        const mobileGenreCountEl = document.getElementById('mobile-genre-count');
         const mobileDateEl = document.getElementById('mobile-indicator-date');
+        const desktopMetaTextEl = document.getElementById('desktop-meta-text');
 
+        // CONDICIONAL DE DETECCIÓN: Título Individual vs Álbum
         if (obra.tipo === 'individual') {
-            tagEl.textContent = "Título";
+          // Móvil: Título • Poesía / Fecha limpia / de felipeortegareyes
+          tagEl.textContent = "Título";
+          if (mobileGenreCountEl) {
+            mobileGenreCountEl.innerHTML = `Título <span class="dot">•</span> Poesía`;
+          }
+          if (mobileDateEl) {
             mobileDateEl.textContent = fechaTexto; 
+          }
+          // PC: de felipeortegareyes • Fecha (sin segundo punto ni número de títulos)
+          if (desktopMetaTextEl) {
+            desktopMetaTextEl.innerHTML = `de felipeortegareyes <span class="dot">•</span> ${fechaTexto}`;
+          }
         } else {
-            tagEl.textContent = "Álbum";
+          // Móvil: Poesía • X Títulos / Álbum Fecha / de felipeortegareyes
+          tagEl.textContent = "Álbum";
+          if (mobileGenreCountEl) {
+            mobileGenreCountEl.innerHTML = `Poesía <span class="dot">•</span> <span id="mobile-count-text">${textoConteo}</span>`;
+          }
+          if (mobileDateEl) {
             mobileDateEl.textContent = `Álbum ${fechaTexto}`;
+          }
+          // PC: de felipeortegareyes • Fecha • X Títulos
+          if (desktopMetaTextEl) {
+            desktopMetaTextEl.innerHTML = `de felipeortegareyes <span class="dot">•</span> <span id="desktop-date-text">${fechaTexto}</span> <span class="dot">•</span> <span id="desktop-count-text">${textoConteo}</span>`;
+          }
         }
 
-        document.getElementById('mobile-count-text').textContent = textoConteo;
-        document.getElementById('desktop-date-text').textContent = fechaTexto;
-        document.getElementById('desktop-count-text').textContent = textoConteo;
-
-        // Renderizar lista de poemas
+        // Renderizar lista de poemas visibles
         const poemsListContainer = document.getElementById('poems-list');
         poemsListContainer.innerHTML = '';
 
-        if (poemas.length > 0) {
-            poemas.forEach((poema, index) => {
-                const poemItem = document.createElement('a');
-                poemItem.href = `reproductor.html?id=${encodeURIComponent(idObra)}&poema=${index}`;
-                poemItem.className = 'poem-item';
+        if (poemasVisibles.length > 0) {
+          poemasVisibles.forEach(({ data: poema, rawIndex }) => {
+            const poemItem = document.createElement('a');
+            // Usamos el índice original para que no se desfase en reproductor.html
+            poemItem.href = `reproductor.html?id=${encodeURIComponent(idObra)}&poema=${rawIndex}`;
+            poemItem.className = 'poem-item';
 
-                const nombrePoema = typeof poema === 'string' ? poema : (poema.titulo || poema.originalTitle || 'Poema sin título');
-                const miniatura = (typeof poema === 'object' && poema.imagen) ? poema.imagen : portadaObra;
+            const nombrePoema = typeof poema === 'string' ? poema : (poema.titulo || poema.originalTitle || 'Poema sin título');
+            const miniatura = (typeof poema === 'object' && poema.imagen) ? poema.imagen : portadaObra;
 
-                poemItem.innerHTML = `
-                    <img class="poem-cover" src="${miniatura}" alt="">
-                    <span class="poem-title">${nombrePoema}<span class="reg">®</span></span>
-                `;
-                poemsListContainer.appendChild(poemItem);
-            });
+            poemItem.innerHTML = `
+              <img class="poem-cover" src="${miniatura}" alt="">
+              <span class="poem-title">${nombrePoema}<span class="reg">®</span></span>
+            `;
+            poemsListContainer.appendChild(poemItem);
+          });
         }
 
-    } catch (error) {
+      } catch (error) {
         console.error("Error al renderizar la obra:", error);
-    }
-});
+      }
+    });
   </script>
 </body>
 </html>
