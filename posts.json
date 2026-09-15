@@ -1,27 +1,5 @@
 [
   {
-    "id": "fuga-en-el-escenario",
-    "slug": "fuga-en-el-escenario",
-    "tipo": "individual",
-    "nombre": "FUGA EN EL ESCENARIO",
-    "titulo": "FUGA EN EL ESCENARIO",
-    "publicado": true,
-    "poemas": [
-      {
-        "originalTitle": "LA METAFORA\nDEL BENEVOLENTE",
-        "titulo": "FUGA EN EL ESCENARIO",
-        "texto": "SDADADADASDASDASDASDsdsd",
-        "oculto": false
-      }
-    ],
-    "portada": "portadas/portada_1789474466584_imagen_cuadrada_tonos_amarillos.png",
-    "fecha": {
-      "dia": "1",
-      "mes": "10",
-      "año": "2026"
-    }
-  },
-  {
     "id": "arbol-desdecorado",
     "slug": "arbol-desdecorado",
     "tipo": "individual",
