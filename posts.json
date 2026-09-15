@@ -1,1 +1,25 @@
-[]
+[
+  {
+    "id": "la-furia-de-encontrarte-feat-huracan",
+    "slug": "la-furia-de-encontrarte-feat-huracan",
+    "tipo": "individual",
+    "nombre": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
+    "titulo": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "poemas": [
+      {
+        "originalTitle": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
+        "titulo": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
+        "texto": "sdsdsdsdsdsdsdsdsdsdsds",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1789484883885_LA_FURIA_DE_ENCONTRARTE_(Feat._Huracán).jpg",
+    "fecha": {
+      "dia": "1",
+      "mes": "10",
+      "año": "2026"
+    }
+  }
+]
