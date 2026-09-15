@@ -1,5 +1,28 @@
 [
   {
+    "id": "mis-besos-rechinantes",
+    "slug": "mis-besos-rechinantes",
+    "tipo": "individual",
+    "nombre": "MIS BESOS RECHINANTES",
+    "titulo": "MIS BESOS RECHINANTES",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "poemas": [
+      {
+        "originalTitle": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "titulo": "MIS BESOS RECHINANTES",
+        "texto": "sdsdsdsdsdsdsdSDSDS",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1789511346040_TE_PERDÍ_PARA_NAVIDAD_2.png",
+    "fecha": {
+      "dia": "1",
+      "mes": "1",
+      "año": "2026"
+    }
+  },
+  {
     "id": "arbol-desdecorado",
     "slug": "arbol-desdecorado",
     "tipo": "individual",
