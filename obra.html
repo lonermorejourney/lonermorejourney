@@ -51,8 +51,6 @@
   </main>
 
   <script>
-    document.getElementById('rights-year').textContent = new Date().getFullYear();
-
     document.addEventListener("DOMContentLoaded", async () => {
       try {
         const urlParams = new URLSearchParams(window.location.search);
@@ -89,6 +87,15 @@
         const tituloObra = obra.titulo || obra.nombre || 'Sin título';
         const portadaObra = obra.portada || obra.imagen || 'portada.png';
         const idObra = obra.id || obra.slug || obraParam || 0;
+
+        // ASIGNACIÓN DEL AÑO DE DERECHOS RESERVADO (®)
+        const anioDerechosFinal = obra.anioDerechos || 
+                                  (obra.fecha && (obra.fecha.año || obra.fecha.anio)) || 
+                                  new Date().getFullYear();
+        const rightsYearEl = document.getElementById('rights-year');
+        if (rightsYearEl) {
+          rightsYearEl.textContent = anioDerechosFinal;
+        }
 
         // Procesar fecha (objeto {dia, mes, año} o texto)
         function formatearFecha(fechaObj) {
@@ -188,7 +195,6 @@
         if (poemasVisibles.length > 0) {
           poemasVisibles.forEach(({ data: poema, rawIndex }) => {
             const poemItem = document.createElement('a');
-            // Usamos el índice original para que no se desfase en reproductor.html
             poemItem.href = `reproductor.html?id=${encodeURIComponent(idObra)}&poema=${rawIndex}`;
             poemItem.className = 'poem-item';
 
