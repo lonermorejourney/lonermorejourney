@@ -1,5 +1,70 @@
 [
   {
+    "id": "te-perdi-para-navidad",
+    "slug": "te-perdi-para-navidad",
+    "tipo": "album",
+    "nombre": "TE PERDÍ PARA NAVIDAD",
+    "titulo": "TE PERDÍ PARA NAVIDAD",
+    "publicado": true,
+    "anioDerechos": "2026",
+    "poemas": [
+      {
+        "originalTitle": "ÁRBOL DESDECORADO",
+        "titulo": "ÁRBOL DESDECORADO",
+        "texto": "SDSDSDSDSDSDS",
+        "oculto": false
+      },
+      {
+        "originalTitle": "LA METAFORA\nDEL BENEVOLENTE",
+        "titulo": "NUESTRO ÚLTIMO AÑO",
+        "texto": "SDADADADASDASDASDASDsdsd",
+        "oculto": false
+      },
+      {
+        "originalTitle": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "titulo": "LAS RUTITAS Y LO MALO",
+        "texto": "sdsdsdsdsdsdsdSDSDS",
+        "oculto": false
+      },
+      {
+        "originalTitle": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
+        "titulo": "MIS BESOS RECHINANTES",
+        "texto": "sdsdsdsdsdsdsdsdsdsdsds",
+        "oculto": false
+      },
+      {
+        "originalTitle": "ALCOHOL E ISMO",
+        "titulo": "DE SU DESEO ASUSTADIZA",
+        "texto": "SDSDSDSDWADWDW",
+        "oculto": false
+      },
+      {
+        "originalTitle": "ENTELEQUIAS",
+        "titulo": "NUNCA TE ECHARE DE MÁS",
+        "texto": "SDSDSD",
+        "oculto": false
+      },
+      {
+        "originalTitle": "FUGA EN EL ESCENARIO",
+        "titulo": "HECHOS DEL CLARAZÓN",
+        "texto": "",
+        "oculto": false
+      },
+      {
+        "originalTitle": "LA METAFORA DEL BENEVOLENTE",
+        "titulo": "EL DÍA QUE NOS DESCONOCIMOS",
+        "texto": "",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1789539719641_TE_PERDÍ_PARA_NAVIDAD_2.png",
+    "fecha": {
+      "dia": "1",
+      "mes": "1",
+      "año": "2026"
+    }
+  },
+  {
     "id": "melodia-disonante-feat-huracan",
     "slug": "melodia-disonante-feat-huracan",
     "tipo": "individual",
