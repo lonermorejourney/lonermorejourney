@@ -740,21 +740,22 @@ body {
     margin-bottom: 10px;
   }
 
+  /* ALTURA FIJA CLAVADA A LA COLUMNA IZQUIERDA */
   .player-content-wrapper {
     display: flex;
     flex-direction: row;
     gap: 40px;
-    min-height: 680px; /* <--- PON ESTO EN SU LUGAR */
+    height: 710px; /* Altura exacta que impide que la tarjeta blanca se desborde hacia abajo */
   }
 
   .player-left {
-  display: flex;
-  flex-direction: column;
-  width: 490px;
-  flex-shrink: 0;
-  height: auto; /* <--- Único añadido para que la caja crezca con el texto */
-  padding-bottom: 0px; /* <--- Esto deja un margen interior fijo abajo para que el texto nunca toque el borde */
-}
+    display: flex;
+    flex-direction: column;
+    width: 490px;
+    flex-shrink: 0;
+    height: 100%;
+    padding-bottom: 0px;
+  }
 
   /* Portada en PC */
   .player-cover {
@@ -778,16 +779,16 @@ body {
   }
 
   .player-author {
-  font-size: 18px;
-  margin-top: 0px;    /* Espacio que lo separa del título de arriba */
-  margin-bottom: 4px; /* Espacio que lo separa de la fecha de abajo */
-}
+    font-size: 18px;
+    margin-top: 0px;    /* Espacio que lo separa del título de arriba */
+    margin-bottom: 4px; /* Espacio que lo separa de la fecha de abajo */
+  }
 
-.player-meta {
-  font-size: 17px;
-  margin-top: 0px;    /* Espacio arriba de la fecha */
-  margin-bottom: 5px; /* Espacio abajo para separarlo de los controles */
-}
+  .player-meta {
+    font-size: 17px;
+    margin-top: 0px;    /* Espacio arriba de la fecha */
+    margin-bottom: 5px; /* Espacio abajo para separarlo de los controles */
+  }
 
   .player-controls {
     gap: 2px;
@@ -802,18 +803,20 @@ body {
 
   .player-left .rights-stamp {
     color: #3d3d3d;
-    margin-top: 15px;
+    margin-top: auto; /* Ancla los derechos al fondo de la columna izquierda de forma exacta */
     margin-bottom: 0px; 
     font-size: 15px;
     text-align: left;
-    position: static !important; /* <--- SIN ESTO, SEGUIRÁ SALIÉNDOSE */
+    position: static !important;
   }
 
+  /* COLUMNA DERECHA: VENTANA DESLIZANTE HERMÉTICA */
   .poem-reading {
     display: flex;
     flex-direction: column;
     height: 100%;
     min-width: 0;
+    overflow: hidden; /* Corta el desbordamiento y activa el scroll interior */
   }
 
   .poem-origin-tag {
@@ -824,12 +827,13 @@ body {
     color: #070707;
     margin-top: 10px;
     margin-bottom: -5px;
+    flex-shrink: 0;
   }
 
   .poem-scroll {
     flex: 1;                /* Ocupa exactamente el espacio libre restante hacia abajo */
     min-height: 0;          /* Obligatorio para que aparezca la barra deslizante */
-    overflow-y: auto;
+    overflow-y: auto;       /* BARRA DESLIZANTE VERTICAL INTERNA */
     padding-right: 14px;
     font-size: 16px;        /* <-- Cambia aquí el tamaño de la letra del poema */
     line-height: 1.6;       /* <-- Cambia aquí el espaciado entre líneas */
@@ -846,12 +850,14 @@ body {
   }
 
   .disc-icon {
-  position: relative;
-  top: -5px;
-  transform: scaleY(1);     /* <-- AQUÍ CONTROLAS LA ALTURA VERTICAL (prueba con 0.80, 0.85... menor número = más compacta/aplastada) */
-  transform: scale(1.6);
+    position: relative;
+    top: -5px;
+    transform: scaleY(1);     /* <-- AQUÍ CONTROLAS LA ALTURA VERTICAL (prueba con 0.80, 0.85... menor número = más compacta/aplastada) */
+    transform: scale(1.6);
+  }
 }
-}/* ==========================================================
+
+/* ==========================================================
    ANIMACIÓN DEL DISCO DE VINILO
    ========================================================== */
 @keyframes spin {
