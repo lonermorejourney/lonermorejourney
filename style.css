@@ -740,12 +740,12 @@ body {
     margin-bottom: 10px;
   }
 
-  /* ALTURA FIJA CLAVADA A LA COLUMNA IZQUIERDA */
   .player-content-wrapper {
     display: flex;
     flex-direction: row;
     gap: 40px;
-    height: 710px; /* Altura exacta que impide que la tarjeta blanca se desborde hacia abajo */
+    min-height: 680px; /* <--- PON ESTO EN SU LUGAR */
+    align-items: stretch;
   }
 
   .player-left {
@@ -753,8 +753,8 @@ body {
     flex-direction: column;
     width: 490px;
     flex-shrink: 0;
-    height: 100%;
-    padding-bottom: 0px;
+    height: auto; /* <--- Único añadido para que la caja crezca con el texto */
+    padding-bottom: 0px; /* <--- Esto deja un margen interior fijo abajo para que el texto nunca toque el borde */
   }
 
   /* Portada en PC */
@@ -803,20 +803,20 @@ body {
 
   .player-left .rights-stamp {
     color: #3d3d3d;
-    margin-top: auto; /* Ancla los derechos al fondo de la columna izquierda de forma exacta */
+    margin-top: 15px;
     margin-bottom: 0px; 
     font-size: 15px;
     text-align: left;
-    position: static !important;
+    position: static !important; /* <--- SIN ESTO, SEGUIRÁ SALIÉNDOSE */
   }
 
-  /* COLUMNA DERECHA: VENTANA DESLIZANTE HERMÉTICA */
   .poem-reading {
+    flex: 1;                /* Ocupa todo el ancho restante hasta el tope derecho */
     display: flex;
     flex-direction: column;
-    height: 100%;
     min-width: 0;
-    overflow: hidden; /* Corta el desbordamiento y activa el scroll interior */
+    min-height: 0;
+    height: 100%;
   }
 
   .poem-origin-tag {
@@ -833,10 +833,26 @@ body {
   .poem-scroll {
     flex: 1;                /* Ocupa exactamente el espacio libre restante hacia abajo */
     min-height: 0;          /* Obligatorio para que aparezca la barra deslizante */
-    overflow-y: auto;       /* BARRA DESLIZANTE VERTICAL INTERNA */
+    max-height: 610px;      /* Delimita la ventana para que termine a la par de la columna izquierda */
+    overflow-y: auto;
     padding-right: 14px;
     font-size: 16px;        /* <-- Cambia aquí el tamaño de la letra del poema */
     line-height: 1.6;       /* <-- Cambia aquí el espaciado entre líneas */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  }
+
+  .poem-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .poem-scroll::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+  }
+
+  .poem-scroll::-webkit-scrollbar-track {
+    background: transparent;
   }
 
   .poem-title-reading {
