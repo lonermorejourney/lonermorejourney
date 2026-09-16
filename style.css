@@ -833,7 +833,7 @@ body {
   .poem-scroll {
     flex: 1;                /* Ocupa exactamente el espacio libre restante hacia abajo */
     min-height: 0;          /* Obligatorio para que aparezca la barra deslizante */
-    max-height: 610px;      /* Delimita la ventana para que termine a la par de la columna izquierda */
+    max-height: 660px;      /* Calibrado: termina exactamente justo sobre la etiqueta de derechos */
     overflow-y: auto;
     padding-right: 14px;
     font-size: 16px;        /* <-- Cambia aquí el tamaño de la letra del poema */
