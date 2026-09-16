@@ -1,5 +1,28 @@
 [
   {
+    "id": "melodia-disonante-feat-huracan",
+    "slug": "melodia-disonante-feat-huracan",
+    "tipo": "individual",
+    "nombre": "MELODÍA DISONANTE\n(FEAT. HURACÁN)",
+    "titulo": "MELODÍA DISONANTE\n(FEAT. HURACÁN)",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "poemas": [
+      {
+        "originalTitle": "ÁRBOL DESDECORADO",
+        "titulo": "MELODÍA DISONANTE\n(FEAT. HURACÁN)",
+        "texto": "SDSDSDSDSDSDSSDSDSD\nSDDSDSDSDS\nSDSDSDSD\n\nSDSDSDSDS\nDSDSDS\nSDSDSDSD\nSDSDSDSDSD",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1789539586026_FONDO_CIELO.png",
+    "fecha": {
+      "dia": "10",
+      "mes": "12",
+      "año": "2026"
+    }
+  },
+  {
     "id": "mis-besos-rechinantes",
     "slug": "mis-besos-rechinantes",
     "tipo": "individual",
