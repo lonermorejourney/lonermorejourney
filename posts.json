@@ -1,5 +1,28 @@
 [
   {
+    "id": "fluente-a-irradiar",
+    "slug": "fluente-a-irradiar",
+    "tipo": "individual",
+    "nombre": "FLUENTE A IRRADIAR",
+    "titulo": "FLUENTE A IRRADIAR",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "poemas": [
+      {
+        "originalTitle": "ÁRBOL DESDECORADO",
+        "titulo": "FLUENTE A IRRADIAR",
+        "texto": "SDSDSDSDSDSDS",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1789770916603_ChatGPT_Image_15_abr_2026,_22_04_58.png",
+    "fecha": {
+      "dia": "1",
+      "mes": "12",
+      "año": "2026"
+    }
+  },
+  {
     "id": "te-perdi-para-navidad",
     "slug": "te-perdi-para-navidad",
     "tipo": "album",
