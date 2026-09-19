@@ -1,5 +1,27 @@
 [
   {
+    "id": "anti-sonara-ep-i",
+    "slug": "anti-sonara-ep-i",
+    "tipo": "individual",
+    "nombre": "Anti Sonara EP I",
+    "titulo": "Anti Sonara EP I",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "poemas": [
+      {
+        "originalTitle": "ENTELEQUIAS",
+        "titulo": "ANTISONARA",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1789857909216_903bca4e-1a8d-4ff2-8e11-22f42f8a9285.jfif",
+    "fecha": {
+      "dia": "10",
+      "mes": "12",
+      "año": "2026"
+    }
+  },
+  {
     "id": "anti-sonara-i",
     "slug": "anti-sonara-i",
     "tipo": "album",
