@@ -1,5 +1,72 @@
 [
   {
+    "id": "mirar-hacia-el-horizonte",
+    "slug": "mirar-hacia-el-horizonte",
+    "tipo": "album",
+    "nombre": "Mirar hacia el horizonte",
+    "titulo": "Mirar hacia el horizonte",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "poemas": [
+      {
+        "originalTitle": "ENTELEQUIAS",
+        "titulo": "ENTELEQUIAS",
+        "oculto": false
+      },
+      {
+        "originalTitle": "ÁRBOL DESDECORADO",
+        "titulo": "ÁRBOL DESDECORADO",
+        "texto": "SDSDSDSDSDSDS",
+        "oculto": false
+      },
+      {
+        "originalTitle": "LA METAFORA\nDEL BENEVOLENTE",
+        "titulo": "LA METAFORA\nDEL BENEVOLENTE",
+        "texto": "SDADADADASDASDASDASDsdsd",
+        "oculto": false
+      },
+      {
+        "originalTitle": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "titulo": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "texto": "sdsdsdsdsdsdsdSDSDS",
+        "oculto": false
+      },
+      {
+        "originalTitle": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
+        "titulo": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
+        "texto": "sdsdsdsdsdsdsdsdsdsdsds",
+        "oculto": false
+      },
+      {
+        "originalTitle": "ALCOHOL E ISMO",
+        "titulo": "ALCOHOL E ISMO",
+        "texto": "SDSDSDSDWADWDW",
+        "oculto": false
+      },
+      {
+        "originalTitle": "FUGA EN EL ESCENARIO",
+        "titulo": "FUGA EN EL ESCENARIO",
+        "oculto": false
+      },
+      {
+        "originalTitle": "LA METAFORA DEL BENEVOLENTE",
+        "titulo": "LA METAFORA DEL BENEVOLENTE",
+        "oculto": false
+      },
+      {
+        "originalTitle": "UNA MELODÍA FELIZ",
+        "titulo": "UNA MELODÍA FELIZ",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1789826503808_WhatsApp_Image_2026-04-19_at_11.35.24.jpeg",
+    "fecha": {
+      "dia": "31",
+      "mes": "12",
+      "año": "2026"
+    }
+  },
+  {
     "id": "fluente-a-irradiar",
     "slug": "fluente-a-irradiar",
     "tipo": "individual",
