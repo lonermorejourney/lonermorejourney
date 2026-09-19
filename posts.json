@@ -10,52 +10,56 @@
     "poemas": [
       {
         "originalTitle": "ENTELEQUIAS",
-        "titulo": "ENTELEQUIAS",
+        "titulo": "Día duermevela",
+        "texto": "",
         "oculto": false
       },
       {
         "originalTitle": "ÁRBOL DESDECORADO",
-        "titulo": "ÁRBOL DESDECORADO",
+        "titulo": "Árbol desdecorado",
         "texto": "SDSDSDSDSDSDS",
         "oculto": false
       },
       {
         "originalTitle": "LA METAFORA\nDEL BENEVOLENTE",
-        "titulo": "LA METAFORA\nDEL BENEVOLENTE",
+        "titulo": "La metáfora\ndel benevolente",
         "texto": "SDADADADASDASDASDASDsdsd",
         "oculto": false
       },
       {
         "originalTitle": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
-        "titulo": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "titulo": "El viajero artílocuo (Feat. Huracán)",
         "texto": "sdsdsdsdsdsdsdSDSDS",
         "oculto": false
       },
       {
         "originalTitle": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
-        "titulo": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
+        "titulo": "La furia de encontrarte\n(Feat. Huracán)",
         "texto": "sdsdsdsdsdsdsdsdsdsdsds",
         "oculto": false
       },
       {
         "originalTitle": "ALCOHOL E ISMO",
-        "titulo": "ALCOHOL E ISMO",
+        "titulo": "Alcohol e ismo",
         "texto": "SDSDSDSDWADWDW",
         "oculto": false
       },
       {
         "originalTitle": "FUGA EN EL ESCENARIO",
-        "titulo": "FUGA EN EL ESCENARIO",
+        "titulo": "Fuga en el escenario",
+        "texto": "",
         "oculto": false
       },
       {
         "originalTitle": "LA METAFORA DEL BENEVOLENTE",
-        "titulo": "LA METAFORA DEL BENEVOLENTE",
+        "titulo": "Manadero de insidias",
+        "texto": "",
         "oculto": false
       },
       {
         "originalTitle": "UNA MELODÍA FELIZ",
-        "titulo": "UNA MELODÍA FELIZ",
+        "titulo": "Una melodía feliz",
+        "texto": "",
         "oculto": false
       }
     ],
