@@ -1,5 +1,27 @@
 [
   {
+    "id": "manadero-de-insidias",
+    "slug": "manadero-de-insidias",
+    "tipo": "individual",
+    "nombre": "Manadero de insidias",
+    "titulo": "Manadero de insidias",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "poemas": [
+      {
+        "originalTitle": "UNA MELODÍA FELIZ",
+        "titulo": "Manadero de insidias",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1789868324515_Screenshot_20260901-154242_X.jpg",
+    "fecha": {
+      "dia": "9",
+      "mes": "10",
+      "año": "2026"
+    }
+  },
+  {
     "id": "anti-sonara-ep-i",
     "slug": "anti-sonara-ep-i",
     "tipo": "individual",
