@@ -1,5 +1,72 @@
 [
   {
+    "id": "solo-esta-lejos-a-donde-no-queremos-ir",
+    "slug": "solo-esta-lejos-a-donde-no-queremos-ir",
+    "tipo": "album",
+    "nombre": "SOLO ESTÁ LEJOS A DONDE NO QUEREMOS IR",
+    "titulo": "SOLO ESTÁ LEJOS A DONDE NO QUEREMOS IR",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "poemas": [
+      {
+        "originalTitle": "ENTELEQUIAS",
+        "titulo": "ENTELEQUIAS",
+        "oculto": false
+      },
+      {
+        "originalTitle": "ÁRBOL DESDECORADO",
+        "titulo": "ÁRBOL DESDECORADO",
+        "texto": "SDSDSDSDSDSDS",
+        "oculto": false
+      },
+      {
+        "originalTitle": "LA METAFORA\nDEL BENEVOLENTE",
+        "titulo": "LA METAFORA\nDEL BENEVOLENTE",
+        "texto": "SDADADADASDASDASDASDsdsd",
+        "oculto": false
+      },
+      {
+        "originalTitle": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "titulo": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "texto": "sdsdsdsdsdsdsdSDSDS",
+        "oculto": false
+      },
+      {
+        "originalTitle": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
+        "titulo": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
+        "texto": "sdsdsdsdsdsdsdsdsdsdsds",
+        "oculto": false
+      },
+      {
+        "originalTitle": "ALCOHOL E ISMO",
+        "titulo": "ALCOHOL E ISMO",
+        "texto": "SDSDSDSDWADWDW",
+        "oculto": false
+      },
+      {
+        "originalTitle": "FUGA EN EL ESCENARIO",
+        "titulo": "FUGA EN EL ESCENARIO",
+        "oculto": false
+      },
+      {
+        "originalTitle": "LA METAFORA DEL BENEVOLENTE",
+        "titulo": "LA METAFORA DEL BENEVOLENTE",
+        "oculto": false
+      },
+      {
+        "originalTitle": "UNA MELODÍA FELIZ",
+        "titulo": "UNA MELODÍA FELIZ",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1790025617055_imagen_cuadrada_tonos_amarillos.png",
+    "fecha": {
+      "dia": "5",
+      "mes": "12",
+      "año": "2026"
+    }
+  },
+  {
     "id": "manadero-de-insidias",
     "slug": "manadero-de-insidias",
     "tipo": "individual",
