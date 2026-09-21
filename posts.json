@@ -1,5 +1,72 @@
 [
   {
+    "id": "poemas-de-verano-2025",
+    "slug": "poemas-de-verano-2025",
+    "tipo": "album",
+    "nombre": "POEMAS DE VERANO 2025",
+    "titulo": "POEMAS DE VERANO 2025",
+    "publicado": false,
+    "anioDerechos": "2025",
+    "poemas": [
+      {
+        "originalTitle": "ENTELEQUIAS",
+        "titulo": "ENTELEQUIAS",
+        "oculto": false
+      },
+      {
+        "originalTitle": "ÁRBOL DESDECORADO",
+        "titulo": "ÁRBOL DESDECORADO",
+        "texto": "SDSDSDSDSDSDS",
+        "oculto": false
+      },
+      {
+        "originalTitle": "LA METAFORA\nDEL BENEVOLENTE",
+        "titulo": "LA METAFORA\nDEL BENEVOLENTE",
+        "texto": "SDADADADASDASDASDASDsdsd",
+        "oculto": false
+      },
+      {
+        "originalTitle": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "titulo": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "texto": "sdsdsdsdsdsdsdSDSDS",
+        "oculto": false
+      },
+      {
+        "originalTitle": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
+        "titulo": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
+        "texto": "sdsdsdsdsdsdsdsdsdsdsds",
+        "oculto": false
+      },
+      {
+        "originalTitle": "ALCOHOL E ISMO",
+        "titulo": "ALCOHOL E ISMO",
+        "texto": "SDSDSDSDWADWDW",
+        "oculto": false
+      },
+      {
+        "originalTitle": "FUGA EN EL ESCENARIO",
+        "titulo": "FUGA EN EL ESCENARIO",
+        "oculto": false
+      },
+      {
+        "originalTitle": "LA METAFORA DEL BENEVOLENTE",
+        "titulo": "LA METAFORA DEL BENEVOLENTE",
+        "oculto": false
+      },
+      {
+        "originalTitle": "UNA MELODÍA FELIZ",
+        "titulo": "UNA MELODÍA FELIZ",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1790026805814_imagen_para_kindle.png",
+    "fecha": {
+      "dia": "29",
+      "mes": "5",
+      "año": "2025"
+    }
+  },
+  {
     "id": "solo-esta-lejos-a-donde-no-queremos-ir",
     "slug": "solo-esta-lejos-a-donde-no-queremos-ir",
     "tipo": "album",
