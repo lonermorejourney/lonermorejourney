@@ -183,7 +183,7 @@
     "tipo": "album",
     "nombre": "Anti Sonara I",
     "titulo": "Anti Sonara I",
-    "publicado": false,
+    "publicado": true,
     "anioDerechos": "2026",
     "poemas": [
       {
