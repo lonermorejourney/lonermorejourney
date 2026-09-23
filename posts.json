@@ -1,5 +1,28 @@
 [
   {
+    "id": "manadero-de-insidias",
+    "slug": "manadero-de-insidias",
+    "tipo": "individual",
+    "nombre": "MANADERO DE INSIDIAS",
+    "titulo": "MANADERO DE INSIDIAS",
+    "publicado": true,
+    "anioDerechos": "2026",
+    "poemas": [
+      {
+        "originalTitle": "ENTELEQUIAS",
+        "titulo": "MANADERO DE INSIDIAS",
+        "texto": "",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1790189773285_RENDER_PROMO_NOCHE!.png",
+    "fecha": {
+      "dia": "1",
+      "mes": "11",
+      "año": "2026"
+    }
+  },
+  {
     "id": "poemas-de-verano-2025",
     "slug": "poemas-de-verano-2025",
     "tipo": "album",
@@ -130,28 +153,6 @@
     "fecha": {
       "dia": "5",
       "mes": "12",
-      "año": "2026"
-    }
-  },
-  {
-    "id": "manadero-de-insidias",
-    "slug": "manadero-de-insidias",
-    "tipo": "individual",
-    "nombre": "Manadero de insidias",
-    "titulo": "Manadero de insidias",
-    "publicado": true,
-    "anioDerechos": "2026",
-    "poemas": [
-      {
-        "originalTitle": "UNA MELODÍA FELIZ",
-        "titulo": "Manadero de insidias",
-        "oculto": false
-      }
-    ],
-    "portada": "portadas/portada_1789868324515_Screenshot_20260901-154242_X.jpg",
-    "fecha": {
-      "dia": "9",
-      "mes": "10",
       "año": "2026"
     }
   },
