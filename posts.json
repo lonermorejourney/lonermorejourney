@@ -1,5 +1,28 @@
 [
   {
+    "id": "entelequias-radio-night-show-2026",
+    "slug": "entelequias-radio-night-show-2026",
+    "tipo": "individual",
+    "nombre": "@ENTELEQUIAS RADIO NIGHT SHOW 2026",
+    "titulo": "@ENTELEQUIAS RADIO NIGHT SHOW 2026",
+    "publicado": true,
+    "anioDerechos": "2026",
+    "poemas": [
+      {
+        "originalTitle": "ENTELEQUIAS",
+        "titulo": "ENTELEQUIAS Full Radio Show (2026)",
+        "texto": "",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1790497607008_Captura_de_pantalla_(215).png",
+    "fecha": {
+      "dia": "29",
+      "mes": "3",
+      "año": "2026"
+    }
+  },
+  {
     "id": "manadero-de-insidias",
     "slug": "manadero-de-insidias",
     "tipo": "individual",
