@@ -1,5 +1,70 @@
 [
   {
+    "id": "pasados-atados-parte-i",
+    "slug": "pasados-atados-parte-i",
+    "tipo": "album",
+    "nombre": "PASADOS ATADOS (PARTE I)",
+    "titulo": "PASADOS ATADOS (PARTE I)",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "poemas": [
+      {
+        "originalTitle": "DÍA DUERMEVELA",
+        "titulo": "DÍA DUERMEVELA",
+        "oculto": false
+      },
+      {
+        "originalTitle": "MANADERO DE INSIDIAS",
+        "titulo": "MANADERO DE INSIDIAS",
+        "oculto": false
+      },
+      {
+        "originalTitle": "LA METAFORA\nDEL BENEVOLENTE",
+        "titulo": "LA METAFORA\nDEL BENEVOLENTE",
+        "texto": "SDADADADASDASDASDASDsdsd",
+        "oculto": false
+      },
+      {
+        "originalTitle": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "titulo": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
+        "texto": "sdsdsdsdsdsdsdSDSDS",
+        "oculto": false
+      },
+      {
+        "originalTitle": "ALCOHOL E ISMO",
+        "titulo": "ALCOHOL E ISMO",
+        "texto": "SDSDSDSDWADWDW",
+        "oculto": false
+      },
+      {
+        "originalTitle": "FUGA EN EL ESCENARIO",
+        "titulo": "FUGA EN EL ESCENARIO",
+        "oculto": false
+      },
+      {
+        "originalTitle": "UNA MELODÍA FELIZ",
+        "titulo": "UNA MELODÍA FELIZ",
+        "oculto": false
+      },
+      {
+        "originalTitle": "ORFEBRE DE LA INTENCIÓN",
+        "titulo": "ORFEBRE DE LA INTENCIÓN",
+        "oculto": false
+      },
+      {
+        "originalTitle": "ÁRBOL DESDECORADO VIP",
+        "titulo": "ÁRBOL DESDECORADO VIP",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1790589072643_CARATULA_BOCETO_ARTE.png",
+    "fecha": {
+      "dia": "10",
+      "mes": "12",
+      "año": "2026"
+    }
+  },
+  {
     "id": "entelequias-radio-night-show-2026",
     "slug": "entelequias-radio-night-show-2026",
     "tipo": "individual",
