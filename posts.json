@@ -1,5 +1,28 @@
 [
   {
+    "id": "lejos-del-amor",
+    "slug": "lejos-del-amor",
+    "tipo": "individual",
+    "nombre": "Lejos del amor",
+    "titulo": "Lejos del amor",
+    "publicado": true,
+    "anioDerechos": "2026",
+    "poemas": [
+      {
+        "originalTitle": "ÁRBOL DESDECORADO VIP",
+        "titulo": "Lejos del amor",
+        "texto": "",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1791476785891_20260820_190527.jpg",
+    "fecha": {
+      "dia": "9",
+      "mes": "10",
+      "año": "2026"
+    }
+  },
+  {
     "id": "pasados-atados-parte-i",
     "slug": "pasados-atados-parte-i",
     "tipo": "album",
