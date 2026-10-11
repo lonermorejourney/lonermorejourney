@@ -1,16 +1,17 @@
 [
   {
-    "id": "fuga-en-el-escenario",
-    "slug": "fuga-en-el-escenario",
+    "id": "lo-que-dejamos-teaser-1",
+    "slug": "lo-que-dejamos-teaser-1",
     "tipo": "individual",
-    "nombre": "FUGA EN EL ESCENARIO",
-    "titulo": "FUGA EN EL ESCENARIO",
+    "nombre": "LO QUE DEJAMOS (TEASER 1)",
+    "titulo": "LO QUE DEJAMOS (TEASER 1)",
     "publicado": false,
     "anioDerechos": "2026",
     "poemas": [
       {
         "originalTitle": "FUGA EN EL ESCENARIO",
-        "titulo": "FUGA EN EL ESCENARIO",
+        "titulo": "LO QUE DEJAMOS (TEASER 1)",
+        "texto": "",
         "oculto": false
       }
     ],
