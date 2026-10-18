@@ -1,5 +1,28 @@
 [
   {
+    "id": "dia-duermevela",
+    "slug": "dia-duermevela",
+    "tipo": "individual",
+    "nombre": "DÍA DUERMEVELA",
+    "titulo": "DÍA DUERMEVELA",
+    "publicado": true,
+    "anioDerechos": "2026",
+    "poemas": [
+      {
+        "originalTitle": "DÍA DUERMEVELA",
+        "titulo": "DÍA DUERMEVELA",
+        "texto": "",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1792352169512_Screenshot_20261018-121108_TikTok.jpg",
+    "fecha": {
+      "dia": "20",
+      "mes": "12",
+      "año": "2026"
+    }
+  },
+  {
     "id": "lo-que-dejamos-teaser-1",
     "slug": "lo-que-dejamos-teaser-1",
     "tipo": "individual",
