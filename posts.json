@@ -406,32 +406,32 @@
     "id": "mirar-hacia-el-horizonte",
     "slug": "mirar-hacia-el-horizonte",
     "tipo": "album",
-    "nombre": "Mirar Hacia El Horizonte",
-    "titulo": "Mirar Hacia El Horizonte",
+    "nombre": "MIRAR HACIA EL HORIZONTE",
+    "titulo": "MIRAR HACIA EL HORIZONTE",
     "publicado": true,
     "anioDerechos": "2026",
     "poemas": [
       {
         "originalTitle": "ENTELEQUIAS",
-        "titulo": "Día duermevela",
+        "titulo": "DÍA DUERMEVELA",
         "texto": "",
         "oculto": false
       },
       {
         "originalTitle": "ÁRBOL DESDECORADO",
-        "titulo": "Árbol desdecorado",
+        "titulo": "ORFEBRE DE LA INTENCIÓN",
         "texto": "SDSDSDSDSDSDS",
         "oculto": false
       },
       {
         "originalTitle": "LA METAFORA\nDEL BENEVOLENTE",
-        "titulo": "La metáfora\ndel benevolente",
+        "titulo": "LA METÁFORA DEL\nBENEVOLENTE",
         "texto": "SDADADADASDASDASDASDsdsd",
         "oculto": false
       },
       {
         "originalTitle": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
-        "titulo": "El viajero artílocuo (Feat. Huracán)",
+        "titulo": "EL VIAJERO ARTÍLOCUO (Feat. Huracán)",
         "texto": "sdsdsdsdsdsdsdSDSDS",
         "oculto": false
       },
@@ -439,29 +439,29 @@
         "originalTitle": "LA FURIA DE ENCONTRARTE\n(Feat. Huracán)",
         "titulo": "La furia de encontrarte\n(Feat. Huracán)",
         "texto": "sdsdsdsdsdsdsdsdsdsdsds",
-        "oculto": false
+        "oculto": true
       },
       {
         "originalTitle": "ALCOHOL E ISMO",
-        "titulo": "Alcohol e ismo",
+        "titulo": "ALCOHOL E ISMO",
         "texto": "SDSDSDSDWADWDW",
         "oculto": false
       },
       {
         "originalTitle": "FUGA EN EL ESCENARIO",
-        "titulo": "Fuga en el escenario",
+        "titulo": "FUGA EN EL ESCENARIO",
         "texto": "",
         "oculto": false
       },
       {
         "originalTitle": "LA METAFORA DEL BENEVOLENTE",
-        "titulo": "Manadero de insidias",
+        "titulo": "MANADERO DE INSIDIAS",
         "texto": "",
         "oculto": false
       },
       {
         "originalTitle": "UNA MELODÍA FELIZ",
-        "titulo": "Una melodía feliz",
+        "titulo": "UNA MELODÍA FELIZ",
         "texto": "",
         "oculto": false
       }
