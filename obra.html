@@ -7,8 +7,8 @@
 
   <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/sf-ui-display">
   <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/proxima-nova-2">
-
   <link rel="stylesheet" href="style.css">
+
   <script>
     // CEREBRO DE TEMAS: Control anti-parpadeo y Memoria global
     (function() {
@@ -17,28 +17,23 @@
       const savedTime = localStorage.getItem('tema_timestamp');
       let theme = 'blanco-sutil';
 
-      // 1. Validar 12 horas de memoria
       if (savedTheme && savedTime && (now - savedTime < 12 * 3600000)) {
         theme = savedTheme;
       } else {
-        // 2. Piloto automático por hora
         const hour = new Date().getHours();
         if (hour >= 19 && hour <= 23) theme = 'lectura-inmersa';
         else if (hour >= 0 && hour < 7) theme = 'gradiente';
       }
 
-      // Aplicar tema
       if (theme !== 'blanco-sutil') document.documentElement.classList.add('tema-' + theme);
       window.__tema_inicial = theme;
 
-      // Mantener el color del gradiente al saltar de página sin parpadear
       const savedColor = localStorage.getItem('tema_color_dinamico');
       if (theme === 'gradiente' && savedColor) {
         document.documentElement.style.setProperty('--color-dinamico', savedColor);
       }
     })();
   </script>
-</head>
 </head>
 <body>
   <div class="fondo-oscuro"></div>
@@ -140,7 +135,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const obraParam = urlParams.get('id');
 
-        // Petición con timestamp para evitar la caché del navegador
         const response = await fetch('posts.json?v=' + Date.now());
         const rawPosts = await response.json();
 
@@ -149,7 +143,6 @@
         let posts = Array.isArray(rawPosts) ? rawPosts : Object.values(rawPosts);
         if (posts.length === 0) return;
 
-        // Buscar obra por id, slug, nombre o índice
         let obra = null;
         if (obraParam !== null) {
           obra = posts.find(p => 
@@ -167,21 +160,19 @@
         if (!obra) obra = posts[posts.length - 1];
         if (!obra) return;
 
-        // Extraer variables asegurando fallbacks correctos
+        // GUARDAMOS EL COLOR MANUAL EN UNA VARIABLE GLOBAL
+        window.__color_manual = obra.colorManual || null;
+
         const tituloObra = obra.titulo || obra.nombre || 'Sin título';
         const portadaObra = obra.portada || obra.imagen || 'portada.png';
         const idObra = obra.id || obra.slug || obraParam || 0;
 
-        // ASIGNACIÓN DEL AÑO DE DERECHOS RESERVADO (®)
-        const anioDerechosFinal = obra.anioDerechos || 
-                                  (obra.fecha && (obra.fecha.año || obra.fecha.anio)) || 
-                                  new Date().getFullYear();
+        const anioDerechosFinal = obra.anioDerechos || (obra.fecha && (obra.fecha.año || obra.fecha.anio)) || new Date().getFullYear();
         const rightsYearEl = document.getElementById('rights-year');
         if (rightsYearEl) {
           rightsYearEl.textContent = anioDerechosFinal;
         }
 
-        // Procesar fecha (objeto {dia, mes, año} o texto)
         function formatearFecha(fechaObj) {
           if (!fechaObj) return '';
           if (typeof fechaObj === 'object') {
@@ -207,13 +198,11 @@
 
             return `${dia} ${mes} ${anio}`.trim();
           }
-          
           return String(fechaObj).replace(/\//g, ' ').toLowerCase();
         }
 
         let fechaTexto = formatearFecha(obra.fecha);
 
-        // Asignar en la pestaña limpiando saltos de línea
         const tituloPestana = tituloObra.replace(/\n+/g, ' ').trim();
         document.getElementById('page-title').textContent = `${tituloPestana} — Lonermorejourney`;
         
@@ -222,11 +211,13 @@
         coverImg.alt = tituloPestana;
 
         document.getElementById('album-title-text').textContent = tituloObra;
-        if (tituloObra.includes('\n')) {
-  document.querySelector('.album-title').classList.add('titulo-reducido');
-}
 
-        // Filtrar poemas ocultos preservando el índice original para el reproductor
+        // Auto-escalado si el título tiene 2 líneas
+        if (tituloObra.includes('\n')) {
+          document.querySelector('.album-title').classList.add('titulo-reducido');
+          document.querySelector('.album-header').classList.add('titulo-dos-lineas');
+        }
+
         const rawPoemas = Array.isArray(obra.poemas) ? obra.poemas : [];
         const poemasVisibles = rawPoemas
           .map((poema, index) => ({ data: poema, rawIndex: index }))
@@ -246,36 +237,18 @@
         const mobileDateEl = document.getElementById('mobile-indicator-date');
         const desktopMetaTextEl = document.getElementById('desktop-meta-text');
 
-        // CONDICIONAL DE DETECCIÓN: Título Individual vs Álbum
         if (obra.tipo === 'individual') {
-          // Móvil: Título • Poesía / Fecha limpia / de felipeortegareyes
           tagEl.textContent = "Título";
-          if (mobileGenreCountEl) {
-            mobileGenreCountEl.innerHTML = `Título <span class="dot">•</span> Poesía`;
-          }
-          if (mobileDateEl) {
-            mobileDateEl.textContent = fechaTexto; 
-          }
-          // PC: de felipeortegareyes • Fecha (sin segundo punto ni número de títulos)
-          if (desktopMetaTextEl) {
-            desktopMetaTextEl.innerHTML = `de felipeortegareyes <span class="dot">•</span> ${fechaTexto}`;
-          }
+          if (mobileGenreCountEl) mobileGenreCountEl.innerHTML = `Título <span class="dot">•</span> Poesía`;
+          if (mobileDateEl) mobileDateEl.textContent = fechaTexto; 
+          if (desktopMetaTextEl) desktopMetaTextEl.innerHTML = `de felipeortegareyes <span class="dot">•</span> ${fechaTexto}`;
         } else {
-          // Móvil: Poesía • X Títulos / Álbum Fecha / de felipeortegareyes
           tagEl.textContent = "Álbum";
-          if (mobileGenreCountEl) {
-            mobileGenreCountEl.innerHTML = `Poesía <span class="dot">•</span> <span id="mobile-count-text">${textoConteo}</span>`;
-          }
-          if (mobileDateEl) {
-            mobileDateEl.textContent = `Álbum ${fechaTexto}`;
-          }
-          // PC: de felipeortegareyes • Fecha • X Títulos
-          if (desktopMetaTextEl) {
-            desktopMetaTextEl.innerHTML = `de felipeortegareyes <span class="dot">•</span> <span id="desktop-date-text">${fechaTexto}</span> <span class="dot">•</span> <span id="desktop-count-text">${textoConteo}</span>`;
-          }
+          if (mobileGenreCountEl) mobileGenreCountEl.innerHTML = `Poesía <span class="dot">•</span> <span id="mobile-count-text">${textoConteo}</span>`;
+          if (mobileDateEl) mobileDateEl.textContent = `Álbum ${fechaTexto}`;
+          if (desktopMetaTextEl) desktopMetaTextEl.innerHTML = `de felipeortegareyes <span class="dot">•</span> <span id="desktop-date-text">${fechaTexto}</span> <span class="dot">•</span> <span id="desktop-count-text">${textoConteo}</span>`;
         }
 
-        // Renderizar lista de poemas visibles
         const poemsListContainer = document.getElementById('poems-list');
         poemsListContainer.innerHTML = '';
 
@@ -300,8 +273,9 @@
         console.error("Error al renderizar la obra:", error);
       }
     });
+
     // ==========================================================
-    // LÓGICA DE TEMAS, EXTRACCIÓN DINÁMICA Y BOTÓN ATRÁS
+    // LÓGICA DE TEMAS, COLOR MANUAL Y EXTRACCIÓN DINÁMICA
     // ==========================================================
 
     function extraerColorDominante(imgEl) {
@@ -316,23 +290,17 @@
         
         for(let i = 0; i < data.length; i += 40) {
           let pR = data[i], pG = data[i+1], pB = data[i+2];
-          
-          // 1. EL FILTRO ANTI-NEGRO: Ignoramos los píxeles muy oscuros.
-          // Así obligamos al sistema a buscar el color vivo de la portada.
           if (pR < 30 && pG < 30 && pB < 30) continue;
-          
           r += pR; g += pG; b += pB;
           count++;
         }
 
-        // Si absolutamente TODA la portada era negra y no pilló nada, usamos un gris rescate
         if (count === 0) { r = 40; g = 40; b = 40; count = 1; }
 
         r = Math.floor(r / count);
         g = Math.floor(g / count);
         b = Math.floor(b / count);
 
-        // Conversión HSL
         let rf = r / 255, gf = g / 255, bf = b / 255;
         let max = Math.max(rf, gf, bf), min = Math.min(rf, gf, bf);
         let h, s, l = (max + min) / 2;
@@ -352,21 +320,29 @@
 
         const hue = Math.round(h * 360);
         let saturation = Math.round(s * 100);
-        let lightness = 25; // Mantenemos tu oscuridad elegante base
+        let lightness = 30; 
 
-        // 2. EL PROTECTOR DE GRISES (Anti-Marrón):
-        // Solo potenciamos la saturación si la foto YA TENÍA color real (más del 15%).
-        // Si es una foto gris (menos de 15%), la respeta y se queda gris puro.
-        if (saturation > 5) {
-            saturation = Math.max(saturation, 75);
+        if (saturation > 15) {
+            saturation = Math.max(saturation, 65);
         }
 
-        const colorFinal = `hsla(${hue}, ${saturation}%, ${lightness}%, 0.95)`;
-        localStorage.setItem('tema_color_dinamico', colorFinal);
-        return colorFinal;
+        return `hsla(${hue}, ${saturation}%, ${lightness}%, 0.95)`;
       } catch(e) {
         return '#2a2a2a'; 
       }
+    }
+
+    function obtenerColorGradiente(imgEl) {
+      let colorPuro = '';
+      if (window.__color_manual) {
+        colorPuro = window.__color_manual;
+      } else {
+        colorPuro = extraerColorDominante(imgEl);
+      }
+      
+      const gradienteBlindado = `linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%), linear-gradient(to bottom, ${colorPuro} 0%, var(--grad-fondo-base) var(--grad-distancia))`;
+      localStorage.setItem('tema_color_dinamico', gradienteBlindado);
+      return gradienteBlindado;
     }
 
     function aplicarTema(tema) {
@@ -375,14 +351,12 @@
         document.documentElement.classList.add('tema-' + tema);
       }
       
-      // Sincronizar los checks del menú
       document.querySelectorAll('.theme-option').forEach(btn => {
         if (btn.dataset.theme === tema) btn.classList.add('active');
         else btn.classList.remove('active');
       });
     }
 
-    // 1. SOLUCIÓN AL COLOR GRIS (Esperar a que cargue la portada real desde GitHub)
     const coverImgEl = document.getElementById('album-cover') || document.getElementById('player-cover');
     if (coverImgEl) {
       const observer = new MutationObserver((mutations) => {
@@ -390,7 +364,7 @@
           if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
             coverImgEl.addEventListener('load', function onRealLoad() {
               if (document.documentElement.classList.contains('tema-gradiente')) {
-                document.documentElement.style.setProperty('--color-dinamico', extraerColorDominante(coverImgEl));
+                document.documentElement.style.setProperty('--color-dinamico', obtenerColorGradiente(coverImgEl));
               }
               coverImgEl.removeEventListener('load', onRealLoad);
             }, { once: true });
@@ -400,7 +374,6 @@
       observer.observe(coverImgEl, { attributes: true });
     }
 
-    // Funciones del Menú
     function alternarMenuTema(event, btn) {
       event.stopPropagation();
       const wrapper = btn.closest('.theme-menu-wrapper');
@@ -424,7 +397,7 @@
         
         aplicarTema(temaSeleccionado);
         if (temaSeleccionado === 'gradiente' && coverImgEl && coverImgEl.complete) {
-          document.documentElement.style.setProperty('--color-dinamico', extraerColorDominante(coverImgEl));
+          document.documentElement.style.setProperty('--color-dinamico', obtenerColorGradiente(coverImgEl));
         }
         document.querySelectorAll('.theme-dropdown.open').forEach(d => d.classList.remove('open'));
       });
@@ -434,7 +407,6 @@
       aplicarTema(window.__tema_inicial);
     }
 
-    // 2. SOLUCIÓN AL BOTÓN "ATRÁS" DEL MÓVIL (Fuerza la sincronización al descongelar la página)
     window.addEventListener('pageshow', (e) => {
       if (e.persisted) {
         const savedTheme = localStorage.getItem('tema_visual') || 'blanco-sutil';
