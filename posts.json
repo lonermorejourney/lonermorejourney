@@ -46,17 +46,18 @@
     }
   },
   {
-    "id": "lejos-del-amor",
-    "slug": "lejos-del-amor",
+    "id": "en-vela-de-tu-mano",
+    "slug": "en-vela-de-tu-mano",
     "tipo": "individual",
-    "nombre": "Lejos Del Amor",
-    "titulo": "Lejos Del Amor",
+    "nombre": "EN VELA DE TU MANO",
+    "titulo": "EN VELA DE TU MANO",
     "publicado": true,
     "anioDerechos": "2026",
+    "colorManual": false,
     "poemas": [
       {
         "originalTitle": "ÁRBOL DESDECORADO VIP",
-        "titulo": "Lejos Del Amor",
+        "titulo": "EN VELA DE TU MANO",
         "texto": "",
         "oculto": false
       }
