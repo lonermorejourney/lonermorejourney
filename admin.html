@@ -322,7 +322,6 @@
       border: 1px solid rgba(255, 255, 255, 0.6);
     }
 
-    /* Switch de Pestañas en la Barra Lateral */
     .sidebar-tab-switch {
       display: flex;
       background: #ebebeb;
@@ -462,7 +461,6 @@
       border-color: #d9534f;
     }
 
-    /* Modales Flotantes con Desenfoque */
     #toggle-visibility-modal,
     #reorder-confirm-modal,
     #poem-unsaved-modal,
@@ -687,7 +685,6 @@
       background: #fff;
     }
 
-    /* ESTILO MINIMALISTA PARA CASILLA DE RESERVAR DERECHOS */
     .custom-checkbox-container {
       display: flex;
       align-items: center;
@@ -1203,7 +1200,6 @@
           <div class="action-info"><h3>Montar álbum</h3><p>Crear lote completo</p></div>
         </div>
 
-        <!-- Botón conectado a Sacar Individual -->
         <div class="action-card" onclick="abrirSacarIndividual()">
           <div class="action-icon">
             <svg viewBox="0 0 64 64" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
@@ -1278,8 +1274,25 @@
           <select id="album-year"><option value="">Año</option></select>
         </div>
 
+        <!-- CONTROL DE COLOR MANUAL DE GRADIENTE -->
+        <h3 style="margin-top: 15px;">Estilo del Tema Gradiente</h3>
+        <div style="display: flex; align-items: center; gap: 12px; margin-top: 6px; margin-bottom: 8px;">
+          <label class="custom-checkbox-container" style="margin: 0;">
+            <input type="checkbox" id="check-color-manual" onchange="toggleSelectorColor(this)">
+            <span class="custom-checkbox-box">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </span>
+            <span id="label-color-manual">Deslizar gradiente</span>
+          </label>
+          
+          <!-- Rueda de color oculta por defecto -->
+          <input type="color" id="album-color-picker" value="#363636" style="display: none; width: 30px; height: 30px; border: none; border-radius: 50%; cursor: pointer; padding: 0; background: transparent; overflow: hidden;" title="Elige un color para el fondo">
+        </div>
+
         <!-- SECCIÓN OBLIGATORIA: RESERVA DE DERECHOS DE AUTOR -->
-        <h3>Derechos de Autor</h3>
+        <h3 style="margin-top: 15px;">Derechos de Autor</h3>
         <label class="custom-checkbox-container" id="rights-checkbox-label">
           <input type="checkbox" id="album-rights-check" onchange="gestionarCheckDerechos(this)">
           <span class="custom-checkbox-box">
@@ -1398,6 +1411,16 @@
           opt.value = i; opt.textContent = i;
           selectRightsYear.appendChild(opt);
         }
+      }
+    }
+
+    // Mostrar/ocultar el selector de color manual
+    function toggleSelectorColor(checkbox) {
+      const picker = document.getElementById('album-color-picker');
+      if (checkbox.checked) {
+        picker.style.display = 'block';
+      } else {
+        picker.style.display = 'none';
       }
     }
 
@@ -1859,6 +1882,13 @@
       rightsYearSelect.disabled = false;
       rightsYearSelect.value = new Date().getFullYear();
 
+      // Resetear la opción de color manual al crear uno nuevo
+      const checkColorManual = document.getElementById('check-color-manual');
+      checkColorManual.checked = false;
+      const pickerColor = document.getElementById('album-color-picker');
+      pickerColor.value = '#363636';
+      pickerColor.style.display = 'none';
+
       document.getElementById('album-cover-dropzone').innerHTML = `
         <span id="cover-placeholder-text" style="font-size: 12px; color: #666; text-align: center; padding: 10px;">Subir o arrastrar portada</span>
         <input type="file" id="cover-file-input" accept="image/*" style="display: none;" onchange="cargarPortadaAlbum(event)">
@@ -2187,7 +2217,6 @@
       const año = document.getElementById('album-year').value;
       if (!dia || !mes || !año) { alert("Define la fecha completa de lanzamiento."); return false; }
 
-      // VALIDACIÓN OBLIGATORIA DE RESERVA DE DERECHOS
       const rightsCheck = document.getElementById('album-rights-check');
       if (!rightsCheck || !rightsCheck.checked) {
         mostrarModalRightsWarning();
@@ -2209,6 +2238,7 @@
       const nombreAlbum = document.getElementById('album-name-input').value.trim();
       const slug = generarSlug(nombreAlbum);
       const anioDerechosVal = document.getElementById('album-rights-year').value || String(new Date().getFullYear());
+      const colorManualVal = document.getElementById('check-color-manual').checked ? document.getElementById('album-color-picker').value : false;
 
       const albumData = {
         id: slug,
@@ -2218,6 +2248,7 @@
         titulo: nombreAlbum,
         publicado: true,
         anioDerechos: anioDerechosVal,
+        colorManual: colorManualVal,
         poemas: albumPoemas.map(p => ({ 
           originalTitle: p.originalTitle, 
           titulo: p.title, 
@@ -2307,6 +2338,7 @@
       const nombreAlbum = document.getElementById('album-name-input').value.trim();
       const slug = generarSlug(nombreAlbum);
       const anioDerechosVal = document.getElementById('album-rights-year').value || String(new Date().getFullYear());
+      const colorManualVal = document.getElementById('check-color-manual').checked ? document.getElementById('album-color-picker').value : false;
 
       const nuevoAlbum = {
         id: slug,
@@ -2316,6 +2348,7 @@
         titulo: nombreAlbum,
         publicado: false,
         anioDerechos: anioDerechosVal,
+        colorManual: colorManualVal,
         poemas: albumPoemas.map(p => ({ 
           originalTitle: p.originalTitle || p.title, 
           titulo: p.title || p.titulo, 
@@ -2412,6 +2445,8 @@
         }
       }
 
+      const colorManualVal = document.getElementById('check-color-manual').checked ? document.getElementById('album-color-picker').value : false;
+
       const albumData = {
         id: slug,
         slug: slug,
@@ -2420,6 +2455,7 @@
         titulo: nombreAlbum,
         publicado: estadoPublicadoOriginal,
         anioDerechos: anioDerechosOriginal,
+        colorManual: colorManualVal,
         poemas: albumPoemas.map(p => ({ 
           originalTitle: p.originalTitle, 
           titulo: p.title, 
@@ -2872,6 +2908,19 @@
       const rightsYearSelect = document.getElementById('album-rights-year');
       rightsYearSelect.value = obra.anioDerechos || (obra.fecha ? obra.fecha.año : new Date().getFullYear());
       rightsYearSelect.disabled = true;
+
+      // Restaurar color manual si lo tenía guardado en la obra
+      const checkColorManual = document.getElementById('check-color-manual');
+      const pickerColor = document.getElementById('album-color-picker');
+      if (obra.colorManual) {
+        checkColorManual.checked = true;
+        pickerColor.value = obra.colorManual;
+        pickerColor.style.display = 'block';
+      } else {
+        checkColorManual.checked = false;
+        pickerColor.value = '#363636';
+        pickerColor.style.display = 'none';
+      }
 
       albumPoemas = (obra.poemas || []).map(p => ({
         originalTitle: p.originalTitle || p.titulo,
