@@ -46,18 +46,18 @@
     }
   },
   {
-    "id": "en-vela-de-tu-mano",
-    "slug": "en-vela-de-tu-mano",
+    "id": "en-vela-de-tu-mano-feat-lynna",
+    "slug": "en-vela-de-tu-mano-feat-lynna",
     "tipo": "individual",
-    "nombre": "EN VELA DE TU MANO",
-    "titulo": "EN VELA DE TU MANO",
+    "nombre": "EN VELA DE TU MANO (Feat. Lynna)",
+    "titulo": "EN VELA DE TU MANO (Feat. Lynna)",
     "publicado": true,
     "anioDerechos": "2026",
     "colorManual": false,
     "poemas": [
       {
         "originalTitle": "ÁRBOL DESDECORADO VIP",
-        "titulo": "EN VELA DE TU MANO",
+        "titulo": "EN VELA DE TU MANO\n(Feat. Lynna)",
         "texto": "",
         "oculto": false
       }
