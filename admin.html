@@ -2133,55 +2133,98 @@
       const token = getToken();
       if (!token) { alert("No hay token guardado."); return; }
 
-      document.getElementById('sync-status').textContent = "Subiendo portada...";
+      document.getElementById('sync-status').textContent = "Optimizando imagen...";
 
       const reader = new FileReader();
-      reader.onload = async function(e) {
-        const base64Content = e.target.result.split(',')[1];
-        const fileName = `portada_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-        const filePath = `portadas/${fileName}`;
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = async function() {
+          // 1. Redimensionar manteniendo nitidez máxima (Tope de 1200px)
+          const MAX_SIZE = 1200;
+          let width = img.width;
+          let height = img.height;
 
-        try {
-          let sha = null;
-          const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/${filePath}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-          if (check.ok) {
-            const fileData = await check.json();
-            sha = fileData.sha;
-          }
-
-          const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/${filePath}`, {
-            method: 'PUT',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              message: `Subir imagen de portada: ${fileName}`,
-              content: base64Content,
-              sha: sha
-            })
-          });
-
-          if (res.ok) {
-            albumPortadaBase64 = filePath;
-            document.getElementById('sync-status').textContent = "Sincronizado";
-
-            const dropzone = document.getElementById('album-cover-dropzone');
-            dropzone.innerHTML = `
-              <img src="${e.target.result}" alt="Portada">
-              <input type="file" id="cover-file-input" accept="image/*" style="display: none;" onchange="cargarPortadaAlbum(event)">
-              <div class="cover-overlay">Cambiar o reemplazar portada</div>
-            `;
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height = Math.round((height * MAX_SIZE) / width);
+              width = MAX_SIZE;
+            }
           } else {
-            document.getElementById('sync-status').textContent = "Error al subir imagen";
-            alert("Hubo un error al subir la portada a GitHub.");
+            if (height > MAX_SIZE) {
+              width = Math.round((width * MAX_SIZE) / height);
+              height = MAX_SIZE;
+            }
           }
-        } catch (err) {
-          document.getElementById('sync-status').textContent = "Error de red";
-          console.error(err);
-        }
+
+          // 2. Dibujar en Canvas para comprimir peso sin perder definición
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+
+          // Fondo blanco preventivo (por si la imagen fuera un PNG con fondo transparente)
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, width, height);
+
+          // Calidad de dibujo nítida
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // 3. Compresión visual de alta fidelidad al 90% (image/jpeg)
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.90);
+          const base64Content = compressedDataUrl.split(',')[1];
+
+          // Generar nombre de archivo limpio terminado en .jpg
+          const rawName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+          const fileName = `portada_${Date.now()}_${rawName.replace(/\s+/g, '_')}.jpg`;
+          const filePath = `portadas/${fileName}`;
+
+          document.getElementById('sync-status').textContent = "Subiendo portada...";
+
+          try {
+            let sha = null;
+            const check = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/${filePath}`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (check.ok) {
+              const fileData = await check.json();
+              sha = fileData.sha;
+            }
+
+            const res = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/${filePath}`, {
+              method: 'PUT',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                message: `Subir imagen de portada optimizada: ${fileName}`,
+                content: base64Content,
+                sha: sha
+              })
+            });
+
+            if (res.ok) {
+              albumPortadaBase64 = filePath;
+              document.getElementById('sync-status').textContent = "Sincronizado";
+
+              const dropzone = document.getElementById('album-cover-dropzone');
+              dropzone.innerHTML = `
+                <img src="${compressedDataUrl}" alt="Portada">
+                <input type="file" id="cover-file-input" accept="image/*" style="display: none;" onchange="cargarPortadaAlbum(event)">
+                <div class="cover-overlay">Cambiar o reemplazar portada</div>
+              `;
+            } else {
+              document.getElementById('sync-status').textContent = "Error al subir imagen";
+              alert("Hubo un error al subir la portada a GitHub.");
+            }
+          } catch (err) {
+            document.getElementById('sync-status').textContent = "Error de red";
+            console.error(err);
+          }
+        };
+        img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
