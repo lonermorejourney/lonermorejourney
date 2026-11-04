@@ -1,5 +1,29 @@
 [
   {
+    "id": "el-saber-de-tus-lunares",
+    "slug": "el-saber-de-tus-lunares",
+    "tipo": "individual",
+    "nombre": "EL SABER DE TUS LUNARES",
+    "titulo": "EL SABER DE TUS LUNARES",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "colorManual": false,
+    "poemas": [
+      {
+        "originalTitle": "ÁRBOL DESDECORADO",
+        "titulo": "EL SABER DE TUS LUNARES",
+        "texto": "SDSDSDSDSDSDS",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1793788383340_Screenshot_20261104-074233_TikTok.jpg",
+    "fecha": {
+      "dia": "10",
+      "mes": "11",
+      "año": "2026"
+    }
+  },
+  {
     "id": "dia-duermevela",
     "slug": "dia-duermevela",
     "tipo": "individual",
