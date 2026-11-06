@@ -1,5 +1,28 @@
 [
   {
+    "id": "sonoros-television",
+    "slug": "sonoros-television",
+    "tipo": "individual",
+    "nombre": "SONOROS TELEVISION",
+    "titulo": "SONOROS TELEVISION",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "colorManual": false,
+    "poemas": [
+      {
+        "originalTitle": "ÁRBOL DESDECORADO VIP",
+        "titulo": "SONOROS TELEVISION",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1793957754936_Olivia_Welch_Lucky_Hank_2023_out.jpg",
+    "fecha": {
+      "dia": "14",
+      "mes": "2",
+      "año": "2026"
+    }
+  },
+  {
     "id": "una-melodia-feliz",
     "slug": "una-melodia-feliz",
     "tipo": "individual",
