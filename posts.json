@@ -24,18 +24,19 @@
     }
   },
   {
-    "id": "sonoros-television",
-    "slug": "sonoros-television",
+    "id": "sonoros-televisos",
+    "slug": "sonoros-televisos",
     "tipo": "individual",
-    "nombre": "SONOROS TELEVISION",
-    "titulo": "SONOROS TELEVISION",
+    "nombre": "SONOROS TELEVISOS",
+    "titulo": "SONOROS TELEVISOS",
     "publicado": false,
     "anioDerechos": "2026",
     "colorManual": "#d3ce36",
     "poemas": [
       {
         "originalTitle": "ÁRBOL DESDECORADO VIP",
-        "titulo": "SONOROS TELEVISION",
+        "titulo": "SONOROS TELEVISOS",
+        "texto": "",
         "oculto": false
       }
     ],
