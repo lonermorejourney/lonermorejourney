@@ -1,5 +1,29 @@
 [
   {
+    "id": "el-avion-nadador",
+    "slug": "el-avion-nadador",
+    "tipo": "individual",
+    "nombre": "EL AVIÓN NADADOR",
+    "titulo": "EL AVIÓN NADADOR",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "colorManual": false,
+    "poemas": [
+      {
+        "originalTitle": "ÁRBOL DESDECORADO VIP",
+        "titulo": "EL AVIÓN NADADOR",
+        "texto": "ASDAWDAWDAWD\nASDAWDAWD\nAWDAWDAWD\nADWAWD\n\nADWAWD\nAWDAWD\nAWDAWDWAD\nAWD\n\nAWDAWDAWD\nAWDAWD\nADWADAWD\nAWDAWD.",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1794353424713_descargar_(5).jpg",
+    "fecha": {
+      "dia": "13",
+      "mes": "12",
+      "año": "2026"
+    }
+  },
+  {
     "id": "enamorados-del-estado-febril-y-las-ciernes",
     "slug": "enamorados-del-estado-febril-y-las-ciernes",
     "tipo": "individual",
