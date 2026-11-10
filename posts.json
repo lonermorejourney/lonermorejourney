@@ -1,17 +1,18 @@
 [
   {
-    "id": "dolores-lanzadores",
-    "slug": "dolores-lanzadores",
+    "id": "enamorados-del-estado-febril-y-las-ciernes",
+    "slug": "enamorados-del-estado-febril-y-las-ciernes",
     "tipo": "individual",
-    "nombre": "DOLORES LANZADORES",
-    "titulo": "DOLORES LANZADORES",
+    "nombre": "ENAMORADOS DEL ESTADO FEBRIL Y LAS CIERNES",
+    "titulo": "ENAMORADOS DEL ESTADO FEBRIL Y LAS CIERNES",
     "publicado": false,
     "anioDerechos": "2026",
     "colorManual": false,
     "poemas": [
       {
         "originalTitle": "ÁRBOL DESDECORADO VIP",
-        "titulo": "DOLORES LANZADORES",
+        "titulo": "ENAMORADOS DEL ESTADO FEBRIL Y LAS CIERNES",
+        "texto": "",
         "oculto": false
       }
     ],
