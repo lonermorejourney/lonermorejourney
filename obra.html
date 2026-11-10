@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="style.css">
 
   <script>
-    // CEREBRO DE TEMAS: Control anti-parpadeo y Memoria global
     (function() {
       const now = Date.now();
       const savedTheme = localStorage.getItem('tema_visual');
@@ -120,9 +119,7 @@
         </div>
       </div>
 
-      <div class="poems-list" id="poems-list">
-        <!-- Los poemas se inyectarán dinámicamente aquí -->
-      </div>
+      <div class="poems-list" id="poems-list"></div>
 
       <p class="rights-stamp">®<span id="rights-year"></span> lonermorejourney</p>
 
@@ -135,16 +132,46 @@
         const urlParams = new URLSearchParams(window.location.search);
         const obraParam = urlParams.get('id');
 
+        // DOBLE LLAVE: Sello preview en URL + Sesión de Administrador activa
+        const isPreviewParam = urlParams.get('preview') === 'admin';
+        const isAdminSession = localStorage.getItem('admin_logueado') === 'true' || !!localStorage.getItem('github_token');
+        const allowPrivate = isPreviewParam && isAdminSession;
+
         const response = await fetch('posts.json?v=' + Date.now());
         const rawPosts = await response.json();
 
-        if (!rawPosts) return;
+        function mostrarNoDisponible(mensaje) {
+          document.getElementById('page-title').textContent = "Publicación no disponible — Lonermorejourney";
+          const card = document.querySelector('.album-card');
+          if (card) {
+            card.innerHTML = `
+              <div style="text-align: center; padding: 70px 20px; font-family: var(--fuente-cuerpo); color: inherit;">
+                <p style="font-size: 26px; font-weight: 800; margin-bottom: 12px; opacity: 0.9;">®</p>
+                <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 12px;">Publicación no disponible</h2>
+                <p style="font-size: 14px; opacity: 0.65; max-width: 440px; margin: 0 auto 30px; line-height: 1.6;">
+                  ${mensaje || 'El escrito o álbum que buscas ya no existe, ha sido eliminado o se encuentra en estado privado.'}
+                </p>
+                <a href="index.html" style="display: inline-block; padding: 11px 24px; border-radius: 24px; background: #1a1a1a; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                  ← Volver a los últimos escritos
+                </a>
+              </div>
+            `;
+          }
+        }
+
+        if (!rawPosts) {
+          mostrarNoDisponible();
+          return;
+        }
 
         let posts = Array.isArray(rawPosts) ? rawPosts : Object.values(rawPosts);
-        if (posts.length === 0) return;
+        if (posts.length === 0) {
+          mostrarNoDisponible();
+          return;
+        }
 
         let obra = null;
-        if (obraParam !== null) {
+        if (obraParam !== null && obraParam.trim() !== '') {
           obra = posts.find(p => 
             (p.id && p.id === obraParam) || 
             (p.slug && p.slug === obraParam) || 
@@ -157,10 +184,17 @@
           }
         }
 
-        if (!obra) obra = posts[posts.length - 1];
-        if (!obra) return;
+        // CERO SUPLANTACIONES: Si no existe, error. Si está oculto y no tiene las 2 llaves, error.
+        if (!obra) {
+          mostrarNoDisponible();
+          return;
+        }
 
-        // GUARDAMOS EL COLOR MANUAL EN UNA VARIABLE GLOBAL
+        if (obra.publicado === false && !allowPrivate) {
+          mostrarNoDisponible("Esta obra está oculta temporalmente por el autor y no se encuentra disponible al público.");
+          return;
+        }
+
         window.__color_manual = obra.colorManual || null;
 
         const tituloObra = obra.titulo || obra.nombre || 'Sin título';
@@ -212,7 +246,6 @@
 
         document.getElementById('album-title-text').textContent = tituloObra;
 
-        // Auto-escalado si el título tiene 2 líneas
         if (tituloObra.includes('\n')) {
           document.querySelector('.album-title').classList.add('titulo-reducido');
           document.querySelector('.album-header').classList.add('titulo-dos-lineas');
@@ -224,6 +257,8 @@
           .filter(item => {
             const p = item.data;
             if (typeof p === 'object' && p !== null) {
+              // Si el autor está previsualizando en modo admin, le mostramos también las pistas ocultas
+              if (allowPrivate) return true;
               return p.oculto !== true;
             }
             return true;
@@ -253,17 +288,20 @@
         poemsListContainer.innerHTML = '';
 
         if (poemasVisibles.length > 0) {
+          const previewQuery = allowPrivate ? '&preview=admin' : '';
+
           poemasVisibles.forEach(({ data: poema, rawIndex }) => {
             const poemItem = document.createElement('a');
-            poemItem.href = `reproductor.html?id=${encodeURIComponent(idObra)}&poema=${rawIndex}`;
+            poemItem.href = `reproductor.html?id=${encodeURIComponent(idObra)}&poema=${rawIndex}${previewQuery}`;
             poemItem.className = 'poem-item';
 
             const nombrePoema = typeof poema === 'string' ? poema : (poema.titulo || poema.originalTitle || 'Poema sin título');
             const miniatura = (typeof poema === 'object' && poema.imagen) ? poema.imagen : portadaObra;
+            const ocultoBadge = (allowPrivate && poema.oculto) ? `<span style="font-size: 10px; background: #fff3e0; color: #e65100; padding: 2px 6px; border-radius: 4px; margin-left: 8px; font-weight: bold;">Oculto</span>` : '';
 
             poemItem.innerHTML = `
               <img class="poem-cover" src="${miniatura}" alt="">
-              <span class="poem-title">${nombrePoema}<span class="reg">®</span></span>
+              <span class="poem-title">${nombrePoema}<span class="reg">®</span> ${ocultoBadge}</span>
             `;
             poemsListContainer.appendChild(poemItem);
           });
@@ -273,10 +311,6 @@
         console.error("Error al renderizar la obra:", error);
       }
     });
-
-    // ==========================================================
-    // LÓGICA DE TEMAS, COLOR MANUAL Y EXTRACCIÓN DINÁMICA
-    // ==========================================================
 
     function extraerColorDominante(imgEl) {
       const canvas = document.createElement('canvas');
