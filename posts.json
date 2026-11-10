@@ -1,5 +1,28 @@
 [
   {
+    "id": "dolores-lanzadores",
+    "slug": "dolores-lanzadores",
+    "tipo": "individual",
+    "nombre": "DOLORES LANZADORES",
+    "titulo": "DOLORES LANZADORES",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "colorManual": false,
+    "poemas": [
+      {
+        "originalTitle": "ÁRBOL DESDECORADO VIP",
+        "titulo": "DOLORES LANZADORES",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1794345050562_descargar_(3).jpg",
+    "fecha": {
+      "dia": "20",
+      "mes": "3",
+      "año": "2026"
+    }
+  },
+  {
     "id": "fotones-corazones",
     "slug": "fotones-corazones",
     "tipo": "individual",
