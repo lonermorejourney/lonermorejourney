@@ -1200,6 +1200,7 @@
           <div class="action-info"><h3>Montar álbum</h3><p>Crear lote completo</p></div>
         </div>
 
+        <!-- Botón conectado a Sacar Individual -->
         <div class="action-card" onclick="abrirSacarIndividual()">
           <div class="action-icon">
             <svg viewBox="0 0 64 64" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
@@ -1287,7 +1288,6 @@
             <span id="label-color-manual">Deslizar gradiente</span>
           </label>
           
-          <!-- Rueda de color oculta por defecto -->
           <input type="color" id="album-color-picker" value="#363636" style="display: none; width: 30px; height: 30px; border: none; border-radius: 50%; cursor: pointer; padding: 0; background: transparent; overflow: hidden;" title="Elige un color para el fondo">
         </div>
 
@@ -1414,7 +1414,6 @@
       }
     }
 
-    // Mostrar/ocultar el selector de color manual
     function toggleSelectorColor(checkbox) {
       const picker = document.getElementById('album-color-picker');
       if (checkbox.checked) {
@@ -1882,7 +1881,6 @@
       rightsYearSelect.disabled = false;
       rightsYearSelect.value = new Date().getFullYear();
 
-      // Resetear la opción de color manual al crear uno nuevo
       const checkColorManual = document.getElementById('check-color-manual');
       checkColorManual.checked = false;
       const pickerColor = document.getElementById('album-color-picker');
@@ -2139,7 +2137,6 @@
       reader.onload = function(e) {
         const img = new Image();
         img.onload = async function() {
-          // 1. Redimensionar manteniendo nitidez máxima (Tope de 1200px)
           const MAX_SIZE = 1200;
           let width = img.width;
           let height = img.height;
@@ -2156,26 +2153,21 @@
             }
           }
 
-          // 2. Dibujar en Canvas para comprimir peso sin perder definición
           const canvas = document.createElement('canvas');
           canvas.width = width;
           canvas.height = height;
           const ctx = canvas.getContext('2d');
 
-          // Fondo blanco preventivo (por si la imagen fuera un PNG con fondo transparente)
           ctx.fillStyle = '#ffffff';
           ctx.fillRect(0, 0, width, height);
 
-          // Calidad de dibujo nítida
           ctx.imageSmoothingEnabled = true;
           ctx.imageSmoothingQuality = 'high';
           ctx.drawImage(img, 0, 0, width, height);
 
-          // 3. Compresión visual de alta fidelidad al 90% (image/jpeg)
           const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.90);
           const base64Content = compressedDataUrl.split(',')[1];
 
-          // Generar nombre de archivo limpio terminado en .jpg
           const rawName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
           const fileName = `portada_${Date.now()}_${rawName.replace(/\s+/g, '_')}.jpg`;
           const filePath = `portadas/${fileName}`;
@@ -2848,12 +2840,13 @@
       }
     }
 
+    // PREVISUALIZAR CON EL SELLO EXCLUSIVO DE ADMIN (&preview=admin)
     function previsualizarAlbumPreparado(key) {
       const album = albumesPreparadosNube[key];
       if (!album) return;
 
       const slug = album.slug || album.id || generarSlug(album.nombre || key);
-      window.open(`obra.html?id=${slug}`, '_blank');
+      window.open(`obra.html?id=${slug}&preview=admin`, '_blank');
     }
 
     function cerrarPreviewModal() {
@@ -2952,7 +2945,6 @@
       rightsYearSelect.value = obra.anioDerechos || (obra.fecha ? obra.fecha.año : new Date().getFullYear());
       rightsYearSelect.disabled = true;
 
-      // Restaurar color manual si lo tenía guardado en la obra
       const checkColorManual = document.getElementById('check-color-manual');
       const pickerColor = document.getElementById('album-color-picker');
       if (obra.colorManual) {
