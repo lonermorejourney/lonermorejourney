@@ -1,5 +1,28 @@
 [
   {
+    "id": "fotones-corazones",
+    "slug": "fotones-corazones",
+    "tipo": "individual",
+    "nombre": "FOTONES CORAZONES",
+    "titulo": "FOTONES CORAZONES",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "colorManual": false,
+    "poemas": [
+      {
+        "originalTitle": "ÁRBOL DESDECORADO VIP",
+        "titulo": "FOTONES CORAZONES",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1794344432325_descargar.jpg",
+    "fecha": {
+      "dia": "5",
+      "mes": "1",
+      "año": "2026"
+    }
+  },
+  {
     "id": "en-vela-de-tu-mano-book-fest-2026-in-harmony-of-the-seas",
     "slug": "en-vela-de-tu-mano-book-fest-2026-in-harmony-of-the-seas",
     "tipo": "individual",
