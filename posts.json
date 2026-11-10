@@ -1,5 +1,28 @@
 [
   {
+    "id": "en-vela-de-tu-mano-book-fest-2026-in-harmony-of-the-seas",
+    "slug": "en-vela-de-tu-mano-book-fest-2026-in-harmony-of-the-seas",
+    "tipo": "individual",
+    "nombre": "EN VELA DE TU MANO @Book Fest 2026 In Harmony Of The Seas",
+    "titulo": "EN VELA DE TU MANO @Book Fest 2026 In Harmony Of The Seas",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "colorManual": false,
+    "poemas": [
+      {
+        "originalTitle": "ÁRBOL DESDECORADO VIP",
+        "titulo": "EN VELA DE TU MANO @Book Fest 2026 In Harmony Of The Seas",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1794339616327_connor-gan-Ap1_91nfcfI-unsplash.jpg",
+    "fecha": {
+      "dia": "10",
+      "mes": "8",
+      "año": "2026"
+    }
+  },
+  {
     "id": "te-perdi-desde-hoy",
     "slug": "te-perdi-desde-hoy",
     "tipo": "individual",
