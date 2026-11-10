@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="style.css">
 
   <script>
-    // CEREBRO DE TEMAS: Control anti-parpadeo y Memoria global
     (function() {
       const now = Date.now();
       const savedTheme = localStorage.getItem('tema_visual');
@@ -93,7 +92,7 @@
               </svg>
             </button>
 
-            <!-- BOTÓN TEMA (Pincel integrado dentro del botón) -->
+            <!-- BOTÓN TEMA (Pincel) -->
             <div class="theme-menu-wrapper">
               <button type="button" class="theme-btn" aria-label="Temas" onclick="alternarMenuTema(event, this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -161,15 +160,46 @@
         const trackVal = urlParams.get('track') !== null ? urlParams.get('track') : urlParams.get('poema');
         const poemaIndex = parseInt(trackVal) || 0;
 
+        // DOBLE LLAVE: Sello preview en URL + Sesión de Administrador activa
+        const isPreviewParam = urlParams.get('preview') === 'admin';
+        const isAdminSession = localStorage.getItem('admin_logueado') === 'true' || !!localStorage.getItem('github_token');
+        const allowPrivate = isPreviewParam && isAdminSession;
+
         const response = await fetch('posts.json?v=' + Date.now());
         const rawPosts = await response.json();
 
-        if (!rawPosts) return;
+        function mostrarNoDisponible(mensaje) {
+          document.getElementById('page-title').textContent = "Publicación no disponible — Lonermorejourney";
+          const card = document.querySelector('.player-card');
+          if (card) {
+            card.innerHTML = `
+              <div style="text-align: center; padding: 70px 20px; font-family: var(--fuente-cuerpo); color: inherit;">
+                <p style="font-size: 26px; font-weight: 800; margin-bottom: 12px; opacity: 0.9;">®</p>
+                <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 12px;">Publicación no disponible</h2>
+                <p style="font-size: 14px; opacity: 0.65; max-width: 440px; margin: 0 auto 30px; line-height: 1.6;">
+                  ${mensaje || 'El poema o escrito que buscas ya no existe, ha sido eliminado o se encuentra en estado privado.'}
+                </p>
+                <a href="index.html" style="display: inline-block; padding: 11px 24px; border-radius: 24px; background: #1a1a1a; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                  ← Volver al inicio
+                </a>
+              </div>
+            `;
+          }
+        }
+
+        if (!rawPosts) {
+          mostrarNoDisponible();
+          return;
+        }
+
         const posts = Array.isArray(rawPosts) ? rawPosts : Object.values(rawPosts);
-        if (posts.length === 0) return;
+        if (posts.length === 0) {
+          mostrarNoDisponible();
+          return;
+        }
 
         let obra = null;
-        if (obraParam !== null) {
+        if (obraParam !== null && obraParam.trim() !== '') {
           obra = posts.find(p => 
             (p.id && p.id === obraParam) || 
             (p.slug && p.slug === obraParam) || 
@@ -182,10 +212,17 @@
           }
         }
 
-        if (!obra) obra = posts[0];
-        if (!obra) return;
+        // CERO SUPLANTACIONES: Si no existe o está oculta sin permisos, error
+        if (!obra) {
+          mostrarNoDisponible();
+          return;
+        }
 
-        // GUARDAMOS EL COLOR MANUAL EN UNA VARIABLE GLOBAL
+        if (obra.publicado === false && !allowPrivate) {
+          mostrarNoDisponible("Esta obra está oculta temporalmente por el autor y no se encuentra disponible al público.");
+          return;
+        }
+
         window.__color_manual = obra.colorManual || null;
 
         const idObra = obra.id || obra.slug || obraParam || 0;
@@ -200,7 +237,17 @@
 
         const poemas = obra.poemas || [];
         const poema = poemas[poemaIndex] || poemas[0];
-        if (!poema) return;
+        
+        if (!poema) {
+          mostrarNoDisponible("El poema solicitado no se encuentra disponible.");
+          return;
+        }
+
+        // Si el poema está marcado como oculto y no es el administrador previsualizando
+        if (poema.oculto === true && !allowPrivate) {
+          mostrarNoDisponible("Este poema está en estado privado o no disponible actualmente.");
+          return;
+        }
 
         const nombrePoema = typeof poema === 'string' ? poema : (poema.titulo || poema.originalTitle || 'Sin título');
 
@@ -237,7 +284,8 @@
         const tituloObraLimpio = String(tituloObra).replace(/\n+/g, ' ').trim();
         document.getElementById('page-title').textContent = `${nombrePoemaLimpio} — ${tituloObraLimpio} — Lonermorejourney`;
         
-        document.getElementById('back-link').href = `obra.html?id=${encodeURIComponent(idObra)}`;
+        const previewQuery = allowPrivate ? '&preview=admin' : '';
+        document.getElementById('back-link').href = `obra.html?id=${encodeURIComponent(idObra)}${previewQuery}`;
 
         const coverImg = document.getElementById('player-cover');
         coverImg.src = (typeof poema === 'object' && poema.imagen) ? poema.imagen : portadaObra;
@@ -256,7 +304,6 @@
 
         let contenidoTexto = (typeof poema === 'object' && poema.texto) ? poema.texto : '';
 
-        // Separación editorial de los versos y estrofas
         if (Array.isArray(contenidoTexto)) {
           contenidoTexto.forEach(parrafo => {
             const p = document.createElement('p');
@@ -264,11 +311,9 @@
             bodyContainer.appendChild(p);
           });
         } else if (typeof contenidoTexto === 'string' && contenidoTexto.trim() !== '') {
-          // Separa por estrofas completas (cuando dejas un doble salto de línea)
           const estrofas = contenidoTexto.trim().split(/\n\s*\n/);
           estrofas.forEach(estrofa => {
             const p = document.createElement('p');
-            // Los versos de la misma estrofa van pegados con salto simple
             p.innerHTML = estrofa.replace(/\n/g, '<br>');
             bodyContainer.appendChild(p);
           });
@@ -283,25 +328,28 @@
 
         btnPrev.onclick = () => {
           const prevIndex = poemaIndex > 0 ? poemaIndex - 1 : poemas.length - 1;
-          window.location.href = `reproductor.html?id=${encodeURIComponent(idObra)}&track=${prevIndex}`;
+          window.location.href = `reproductor.html?id=${encodeURIComponent(idObra)}&track=${prevIndex}${previewQuery}`;
         };
 
         btnNext.onclick = () => {
           const nextIndex = poemaIndex < poemas.length - 1 ? poemaIndex + 1 : 0;
-          window.location.href = `reproductor.html?id=${encodeURIComponent(idObra)}&track=${nextIndex}`;
+          window.location.href = `reproductor.html?id=${encodeURIComponent(idObra)}&track=${nextIndex}${previewQuery}`;
         };
 
         const btnShare = document.getElementById('btn-share');
         btnShare.onclick = () => {
+          // PROTECCIÓN: Al compartir, se elimina el sello de previsualización para compartir solo enlaces limpios
+          const shareUrl = window.location.href.replace(/([&?])preview=admin(&|$)/g, '$1').replace(/[?&]$/, '');
+
           if (navigator.share) {
             navigator.share({
               title: nombrePoemaLimpio,
               text: `Lee "${nombrePoemaLimpio}" de ${tituloObraLimpio} en Lonermorejourney`,
-              url: window.location.href,
+              url: shareUrl,
             }).catch(console.error);
           } else {
-            navigator.clipboard.writeText(window.location.href);
-            alert('¡Enlace copiado al portapapeles!');
+            navigator.clipboard.writeText(shareUrl);
+            alert('¡Enlace público copiado al portapapeles!');
           }
         };
 
@@ -309,10 +357,6 @@
         console.error("Error al cargar los datos del reproductor:", error);
       }
     });
-
-    // ==========================================================
-    // LÓGICA DE TEMAS, COLOR MANUAL Y EXTRACCIÓN DINÁMICA
-    // ==========================================================
 
     function extraerColorDominante(imgEl) {
       const canvas = document.createElement('canvas');
