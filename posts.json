@@ -1,5 +1,28 @@
 [
   {
+    "id": "entelequias-2027",
+    "slug": "entelequias-2027",
+    "tipo": "individual",
+    "nombre": "ENTELEQUIAS 2027",
+    "titulo": "ENTELEQUIAS 2027",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "colorManual": false,
+    "poemas": [
+      {
+        "originalTitle": "ÁRBOL DESDECORADO VIP",
+        "titulo": "ENTELEQUIAS 2027",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1794496325743_HWw7WSZbwAAhiFP.jpg",
+    "fecha": {
+      "dia": "23",
+      "mes": "1",
+      "año": "2026"
+    }
+  },
+  {
     "id": "el-avion-nadador",
     "slug": "el-avion-nadador",
     "tipo": "individual",
