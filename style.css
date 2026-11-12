@@ -97,11 +97,15 @@ body {
 
 .post-title {
   font-family: var(--fuente-cuerpo); /* Proxima Nova */
-  font-weight: 400;
+  font-weight: 700;
   font-size: 18px;
   margin-top: 20px; /* separación entre imagen y título del post */
   margin-left: 5px; /* separa el título de la portada */
   white-space: pre-line;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 
 .post-meta {
@@ -289,10 +293,10 @@ body {
 
 .album-title {
   font-family: var(--fuente-cuerpo);
-  font-weight: 400;
+  font-weight: 700;
   font-size: 27px;
   margin: 10px 0 5px;
-  letter-spacing: -0.07em; /* junta las letras - valor de prueba */
+  letter-spacing: -0.08em; /* junta las letras - valor de prueba */
   white-space: pre-line; /* Permite saltos de línea con ENTER */
 }
 
@@ -302,7 +306,7 @@ body {
 
 .album-genre-count {
   font-family: var(--fuente-cuerpo);
-  font-size: 16px;
+  font-size: 18px;
   color: #1a1919;
   margin-bottom: 4px;
 }
@@ -313,14 +317,14 @@ body {
 
 .album-indicator-date {
   font-family: var(--fuente-cuerpo);
-  font-size: 16px;
+  font-size: 18px;
   color: #161616;
   margin-bottom: 8px;
 }
 
 .album-author {
   font-family: var(--fuente-cuerpo);
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .album-avatar {
@@ -346,8 +350,13 @@ body {
   font-family: var(--fuente-cuerpo);
   font-weight: 500;
   font-size: 24px;
+  line-height: 1;
   letter-spacing: -0.06em; /* junta las letras - valor de prueba */
   white-space: pre-line; /* Permite saltos de línea con ENTER */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 .poem-title .reg {
@@ -445,6 +454,7 @@ body {
     font-weight: 900;
     font-size: 60px;
     margin: 0 0 8px;
+    letter-spacing: -0.07em; /* junta las letras - valor de prueba */
   }
   .album-title.titulo-reducido {
     font-size: 38px;
@@ -664,8 +674,8 @@ body {
 
   .player-poem-title {
     font-size: 25px;
-    font-weight: 500;
-    letter-spacing: -0.06em; /* junta las letras - valor de prueba */
+    font-weight: 700;
+    letter-spacing: -0.08em; /* junta las letras - valor de prueba */
     font-family: var(--fuente-cuerpo);
   }
 
@@ -1119,13 +1129,13 @@ body {
 html.tema-lectura-inmersa {
   --oscuro-fondo-tarjeta: #121213;   
   
-  --oscuro-titulo-album: #f5f5f7;    
+  --oscuro-titulo-album: #ffffff;    
   --oscuro-titulos-poemas: #f5f5f7;  
   
-  --oscuro-autor: #dddddd;           
-  --oscuro-fecha: #dfdfdf;           
-  --oscuro-tag-album: #e7e7e7;       
-  --oscuro-derechos: #e0e0e0;        
+  --oscuro-autor: #ffffff;           
+  --oscuro-fecha: #ffffff;           
+  --oscuro-tag-album: #ffffff;       
+  --oscuro-derechos: #ffffff;        
   
   --oscuro-texto-poema: #d1d1d6;     
   --oscuro-origen-tag: #e9e9e9;      
@@ -1165,19 +1175,19 @@ html.tema-gradiente {
   --grad-titulo-album: #ffffff;      
   --grad-titulos-poemas: #ffffff;    
   
-  --grad-autor: #f0f0f0;             
-  --grad-fecha: #cecece;             
-  --grad-tag-album: #e0e0e0;         
-  --grad-derechos: #e6e6e6;          
+  --grad-autor: #ffffff;             
+  --grad-fecha: #ffffff;             
+  --grad-tag-album: #ffffff;         
+  --grad-derechos: #f3f3f3;          
   
   --grad-texto-poema: #e5e5e5;       
-  --grad-origen-tag: #a7a7a7;        
+  --grad-origen-tag: #f7f7f7;        
   
-  --grad-iconos-enlaces: #dbdbdb;    
+  --grad-iconos-enlaces: #eeeeee;    
   
-  --grad-boton-fondo: #d6d6d6;       
+  --grad-boton-fondo: #f3f2f2;       
   --grad-boton-icono: #1a1a1a;       
-  --grad-boton-hover: #e7e7e7;       
+  --grad-boton-hover: #f0f0f0;       
 }
 
 /* Aplicación Desglosada - Gradiente */
@@ -1197,3 +1207,46 @@ html.tema-gradiente .poem-item:hover, html.tema-gradiente .tracklist-item:hover 
 html.tema-gradiente .theme-dropdown { background: #282828 !important; border-color: #333333 !important; }
 html.tema-gradiente .theme-option { color: #ffffff !important; }
 html.tema-gradiente .theme-option:hover { background-color: #3e3e3e !important; }
+
+/* ============================
+   PIE DE PÁGINA — DERECHOS
+   ============================ */
+
+/* MÓVIL */
+@media (max-width: 767px) {
+  .site-footer {
+    width: 100%;
+    margin-top: 190px;
+    padding: 28px 18px 36px;
+    text-align: center;
+  }
+
+  .site-footer p {
+    margin: 0;
+    font-family: var(--fuente-cuerpo);
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 1.3;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+  }
+}
+
+/* PC */
+@media (min-width: 768px) {
+  .site-footer {
+    width: 100%;
+    padding: 36px 24px 48px;
+    text-align: center;
+  }
+
+  .site-footer p {
+    margin: 0;
+    font-family: var(--fuente-cuerpo);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.3;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+  }
+}

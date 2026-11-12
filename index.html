@@ -19,9 +19,13 @@
       <!-- Los posts se inyectarán dinámicamente aquí -->
     </div>
   </main>
+  <footer class="site-footer">
+  <p>LONERMOREJOURNEY OFFICIAL COMMUNITY<br><span id="footer-year"></span> ALL RIGHTS RESERVED®</p>
+</footer>
 
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
+        document.getElementById('footer-year').textContent = new Date().getFullYear();
         try {
             const response = await fetch('posts.json');
             const posts = await response.json();

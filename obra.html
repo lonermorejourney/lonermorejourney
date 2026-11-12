@@ -125,9 +125,13 @@
 
     </div>
   </main>
+  <footer class="site-footer">
+  <p>LONERMOREJOURNEY OFFICIAL COMMUNITY<br><span id="obra-footer-year"></span> ALL RIGHTS RESERVED®</p>
+</footer>
 
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
+      document.getElementById('obra-footer-year').textContent = new Date().getFullYear();
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const obraParam = urlParams.get('id');
