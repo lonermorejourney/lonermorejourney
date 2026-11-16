@@ -1,5 +1,29 @@
 [
   {
+    "id": "el-camino-del-fin",
+    "slug": "el-camino-del-fin",
+    "tipo": "individual",
+    "nombre": "EL CAMINO DEL FIN",
+    "titulo": "EL CAMINO DEL FIN",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "colorManual": false,
+    "poemas": [
+      {
+        "originalTitle": "EL CAMINO DEL FIN",
+        "titulo": "EL CAMINO DEL FIN",
+        "texto": "Asi no hay quien<div>muera en paz.</div>",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1794865339700_descargar.jpg",
+    "fecha": {
+      "dia": "12",
+      "mes": "12",
+      "año": "2026"
+    }
+  },
+  {
     "id": "manadero-de-insidias-book-fest-2026-in-harmony-of-the-seas",
     "slug": "manadero-de-insidias-book-fest-2026-in-harmony-of-the-seas",
     "tipo": "individual",
