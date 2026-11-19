@@ -1,5 +1,29 @@
 [
   {
+    "id": "carta-a-mi-persona",
+    "slug": "carta-a-mi-persona",
+    "tipo": "individual",
+    "nombre": "CARTA A MI PERSONA",
+    "titulo": "CARTA A MI PERSONA",
+    "publicado": false,
+    "anioDerechos": "2026",
+    "colorManual": false,
+    "poemas": [
+      {
+        "originalTitle": "EL CAMINO DEL FIN",
+        "titulo": "CARTA A MI PERSONA (2024)",
+        "texto": "Es la cuenta regresiva del año\ncon el tiempo dejándonos\natrás.\n\n(Nunca me ve)",
+        "oculto": false
+      }
+    ],
+    "portada": "portadas/portada_1795106569148_cosmic-light-4000x5000-20408.jpg",
+    "fecha": {
+      "dia": "31",
+      "mes": "11",
+      "año": "2026"
+    }
+  },
+  {
     "id": "el-camino-del-fin",
     "slug": "el-camino-del-fin",
     "tipo": "individual",
